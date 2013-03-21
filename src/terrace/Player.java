@@ -1,5 +1,6 @@
 package terrace;
 
-public interface Player {
-
+public class Player {
+	
+	void move(Piece piece, Posn to);
 }
