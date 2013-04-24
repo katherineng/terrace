@@ -38,7 +38,8 @@ public class TriangleBoard implements Board<TriangleBoard> {
 	}
 
 	@Override
-	public void movePiece(Posn from, Posn to) {
+	public Piece movePiece(Posn from, Posn to) {
+		return null;
 		// TODO Auto-generated method stub
 
 	}
@@ -59,6 +60,12 @@ public class TriangleBoard implements Board<TriangleBoard> {
 	public List<Posn> getTerracePosns(Posn p) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void setPiece(int x, int y, Piece piece) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -1,12 +1,12 @@
 package terrace;
 
 public class Piece implements Comparable<Piece> {
-	private final PieceSize _size;
+	private final int _size;
 	private final boolean _isTPiece;
 	private Posn _posn;
 	private Player _player;
 	
-	public Piece(PieceSize size, boolean isTPiece, Posn posn, Player player) {
+	public Piece(int size, boolean isTPiece, Posn posn, Player player) {
 		_size = size;
 		_isTPiece = isTPiece;
 		_posn = posn;
@@ -17,12 +17,16 @@ public class Piece implements Comparable<Piece> {
 		_posn = posn;
 	}
 	
-	public PieceSize getSize() {
+	public int getSize() {
 		return _size;
 	}
 	
 	public Posn getPosn() {
 		return _posn;
+	}
+	
+	public void setPosn(Posn p) {
+		_posn = p;
 	}
 	
 	public boolean isTPiece() {
@@ -35,7 +39,7 @@ public class Piece implements Comparable<Piece> {
 
 	@Override
 	public int compareTo(Piece o) {
-		return _size.compareTo(o.getSize());
+		return _size - o.getSize();
 	}
 	
 	@Override
@@ -50,6 +54,15 @@ public class Piece implements Comparable<Piece> {
 			return _size == p.getSize() && _isTPiece == p.isTPiece() && _posn.equals(p.getPosn());
 		}
 		return false;
+	}
+	
+	@Override
+	public String toString() {
+		if (_isTPiece) {
+			return "(" + _player.getColor().toString() + ", T)";
+		} else {
+			return "(" + _player.getColor().toString() + ", " + _size + ")";
+		}
 	}
 	
 }

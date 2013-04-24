@@ -1,6 +1,8 @@
 package terrace.ai;
 
-public class AI{
+import terrace.Player;
+
+public class AI extends Player {
 	public AI(Player p) {
 		
 	}

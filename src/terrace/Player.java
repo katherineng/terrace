@@ -4,9 +4,11 @@ import java.util.*;
 
 public class Player {
 	private Set<Piece> _pieces;
+	PlayerColor _color;
 	
-	public Player() {
+	public Player(PlayerColor color) {
 		_pieces = new HashSet<Piece>();
+		_color = color;
 	}
 	
 	public void removePiece(Piece piece) {
@@ -22,4 +24,8 @@ public class Player {
 	}
 	
 	void move(Piece piece, Posn to) {}
+	
+	public PlayerColor getColor() {
+		return _color;
+	}
 }
