@@ -1,15 +1,16 @@
 package gui;
 
+import javax.vecmath.*;
 
 public class Camera {
 	double zoom;
 	double fovy;
 	double theta;
 	double phi;
-	Vector3 center;
-	Vector3 up;
+	Vector3d center;
+	Vector3d up;
 	
-	public Camera(Vector3 center, Vector3 up, double theta, double phi, double fovy, double zoom){
+	public Camera(Vector3d center, Vector3d up, double theta, double phi, double fovy, double zoom){
 		this.zoom = zoom;
 		this.fovy = fovy;
 		this.theta = theta;
@@ -18,7 +19,7 @@ public class Camera {
 		this.up = up;
 	}
 	
-	void mouseMove(Vector2 delta) {
+	void mouseMove(Vector2d delta) {
 	    // Rotate the eye vector around the origin
 	    theta += delta.x * 0.01f;
 	    phi -= delta.y * 0.01;
@@ -33,7 +34,7 @@ public class Camera {
 	    zoom *= Math.pow(0.999f, delta);
 	}
 	
-	Vector3 fromAngles() {
-	    return new Vector3(Math.cos(theta) * Math.cos(phi), Math.sin(phi), Math.sin(theta) * Math.cos(phi));
+	Vector3d fromAngles() {
+	    return new Vector3d(Math.cos(theta) * Math.cos(phi), Math.sin(phi), Math.sin(theta) * Math.cos(phi));
 	}
 }

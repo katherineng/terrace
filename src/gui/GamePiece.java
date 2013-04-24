@@ -5,10 +5,11 @@ import javax.media.opengl.GL2;
 import javax.media.opengl.GLContext;
 import javax.media.opengl.glu.GLU;
 import javax.media.opengl.glu.GLUquadric;
+import javax.vecmath.*;
 
 public class GamePiece {
 	GLUquadric quadric;
-	Vector3 position;
+	Vector3d position;
 	boolean selected;
 	
 	public GamePiece(GL2 gl){
@@ -17,11 +18,8 @@ public class GamePiece {
 
 	    glu.gluQuadricNormals(quadric, gl.GL_SMOOTH);
 	    
-	    position = new Vector3();
+	    position = new Vector3d(Math.random(), Math.random(), Math.random());
 
-	    position.x = Math.random();
-	    position.y = Math.random();
-	    position.z = Math.random();
 	    
 	    selected = false;
 	}
@@ -45,10 +43,6 @@ public class GamePiece {
 		if (selected) gl.glColor3f(0.7f,1,0.7f);
 		else gl.glColor3f(0f,0,0.7f);
 		glu.gluSphere(quadric, 0.5f, 90, 90);
-	}
-	
-	public void changeSelection(){
-		selected = !selected;
 	}
 
 }

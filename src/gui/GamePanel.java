@@ -11,18 +11,18 @@ import javax.media.opengl.GLEventListener;
 import javax.media.opengl.GLProfile;
 import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.glu.GLU;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.*;
 
 import com.jogamp.opengl.util.Animator;
 import java.util.*;
+import javax.vecmath.*;
 
 
 public class GamePanel extends GLCanvas implements MouseWheelListener{
 
 	Camera m_camera;
 	GamePanel this_gui;
-	Vector2 m_prevMousePos;
+	Vector2d m_prevMousePos;
 	java.util.List<GamePiece> pieces;
 	GamePiece selection; //todo
 	
@@ -45,7 +45,7 @@ public class GamePanel extends GLCanvas implements MouseWheelListener{
 	    this.addMouseListener(new MouseListener(){
 			@Override
 			public void mousePressed(MouseEvent e) {
-				m_prevMousePos = new Vector2(e.getX(), e.getY());
+				m_prevMousePos = new Vector2d(e.getX(), e.getY());
 			}
 
 			@Override
@@ -62,8 +62,8 @@ public class GamePanel extends GLCanvas implements MouseWheelListener{
 			@Override
 			public void mouseDragged(MouseEvent e) {
 				if ((e.getModifiers() & InputEvent.BUTTON3_MASK) != 0) {
-					Vector2 pos = new Vector2(e.getX(), e.getY());
-					m_camera.mouseMove(pos.minus(m_prevMousePos));
+					Vector2d pos = new Vector2d(e.getX(), e.getY());
+					m_camera.mouseMove(new Vector2d(pos.x - m_prevMousePos.x, pos.y - m_prevMousePos.y));
 					m_prevMousePos = pos;
 				}
 			}
@@ -72,8 +72,8 @@ public class GamePanel extends GLCanvas implements MouseWheelListener{
 	    	
 	    });
 	    //set up camera;
-	    Vector3 center = new Vector3(0., 0., 0.);
-	    Vector3 up = new Vector3(0.f, 1.f, 0.f);
+	    Vector3d center = new Vector3d(0., 0., 0.);
+	    Vector3d up = new Vector3d(0.f, 1.f, 0.f);
 	    double theta = Math.PI * 1.5f, phi = 0.2, fovy = 60., zoom = 3.5;
 	    m_camera = new Camera(center, up, theta, phi, fovy, zoom);
 	    setVisible(true);
@@ -90,8 +90,9 @@ public class GamePanel extends GLCanvas implements MouseWheelListener{
 			GLU glu = new GLU();
 			//set up camera stuff
 			double ratio = ((double) this_gui.getWidth())/ this_gui.getHeight();
-			Vector3 dir = m_camera.fromAngles();
-			Vector3 eye = m_camera.center.minus(dir.mult(m_camera.zoom));
+			Vector3d dir = m_camera.fromAngles();
+			dir = new Vector3d(dir.x * m_camera.zoom, dir.y * m_camera.zoom, dir.z * m_camera.zoom);
+			Vector3d eye = new Vector3d(m_camera.center.x - dir.x, m_camera.center.y - dir.y, m_camera.center.z - dir.z);
 
 			gl.glMatrixMode(GL2.GL_PROJECTION);
 			gl.glLoadIdentity();
