@@ -124,7 +124,8 @@ public class GamePanel extends GLCanvas implements MouseWheelListener{
 			if (selection_draw){
 				//doPick(gl);
 				setSelection(arg0);
-				m_selection.changeSelection();
+				if (m_selection != null)
+					m_selection.changeSelection();
 				selection_draw = false;
 			} else {
 				applyCameraPerspective(gl);		
