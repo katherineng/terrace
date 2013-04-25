@@ -19,8 +19,6 @@ public class GamePiece {
 	    glu.gluQuadricNormals(quadric, gl.GL_SMOOTH);
 	    
 	    position = new Vector3d(Math.random(), Math.random(), Math.random());
-
-	    
 	    selected = false;
 	}
 	
@@ -38,11 +36,15 @@ public class GamePiece {
 		glu.gluQuadricNormals(quadric, GL.GL_TRUE);
 
 		gl.glLoadIdentity();
-		gl.glTranslatef(.2f,0,0);
+		gl.glTranslated(position.x, position.y, position.z);
 
 		if (selected) gl.glColor3f(0.7f,1,0.7f);
 		else gl.glColor3f(0f,0,0.7f);
 		glu.gluSphere(quadric, 0.5f, 90, 90);
+	}
+	
+	public void changeSelection(){
+		selected = !selected;
 	}
 
 }
