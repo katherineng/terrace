@@ -6,7 +6,7 @@ import terrace.exception.IllegalMoveException;
 
 public class Game {
 	private DefaultBoard _board;
-	private Player _currPlayer;
+	private int _currPlayer;
 	private List<Player> _players;
 	private final int _numPlayers;
 	private boolean _isGameOver;
@@ -24,6 +24,8 @@ public class Game {
 			_players.add(new Player(PlayerColor.values()[i]));
 		}
 		
+		_currPlayer = 0;
+		
 		setUpPieces();
 	}
 	
@@ -32,7 +34,7 @@ public class Game {
 	}
 	
 	public Player getCurrentPlayer() {
-		return _currPlayer;
+		return _players.get(_currPlayer);
 	}
 	
 	/**
@@ -54,18 +56,42 @@ public class Game {
 		return _isGameOver;
 	}
 	
-	public void movePiece(Posn from, Posn to) throws IllegalMoveException {
+	private void changeTurn() {
+		if (_currPlayer < _numPlayers - 1) _currPlayer++;
+		else _currPlayer = 0;
+	}
+	
+	
+	/**
+	 * Attempts to make a move from a given position to a given position and returns the captured piece, if any
+	 * @param from The position from which to move
+	 * @param to The destination position
+	 * @return The captured piece, if any; otherwise null
+	 * @throws IllegalMoveException When a move from the given position to the given destination position is not legal
+	 */
+	public Piece movePiece(Posn from, Posn to) throws IllegalMoveException {
 		Piece playerPiece = _board.getPieceAt(from);
-		if (playerPiece == null || !_currPlayer.getPieces().contains(playerPiece)) {
+		if (playerPiece == null || !getCurrentPlayer().getPieces().contains(playerPiece)) {
 			throw new IllegalMoveException("ERROR: " + _currPlayer + "\'s piece not found at " + from.toString());
 		} else {
 			 Set<Posn> possibleMoves = _board.getMoves(playerPiece);
+			 
 			 if (!possibleMoves.contains(to)) {
 				 throw new IllegalMoveException("ERROR: Piece at " + from.toString() + " can't be moved to " + to.toString());
 			 } else {
 				 _board.setPiece(from.x, from.y, null);
-				 playerPiece.setPosn(to);
+				 
+				 Piece captured = _board.getPieceAt(to);
+				 if (captured != null) {
+					 captured.getPlayer().getPieces().remove(captured);
+				 }
+					 
+ 				 playerPiece.setPosn(to);
 				 _board.setPiece(to.x, to.y, playerPiece);
+				 
+				 changeTurn();
+				 
+				 return captured;
 			 }
 		}
 	}
