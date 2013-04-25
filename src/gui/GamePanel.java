@@ -136,13 +136,8 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 		    SelectionRecorder recorder = new SelectionRecorder(gl);
 
 		    // See if the (x, y) mouse position hits any primitives.
-		    ArrayList<GamePiece> pieces = new ArrayList<GamePiece>();
-		    GamePiece[][] piecesArr = _board.getGamePieces();
-		    for (int i = 0; i < piecesArr.length; i++){
-		    	for (int j = 0; j < piecesArr[0].length; j++){
-		    		if (piecesArr[i][j] != null) pieces.add(piecesArr[i][j]);
-		    	}
-		    }
+		    ArrayList<GamePiece> pieces = _board.getGamePieces();
+
 		    recorder.enterSelectionMode((int) _selection_mouse.x, (int) _selection_mouse.y, pieces.size());
 		    for (int i = 0; i < pieces.size(); i++){
 		        recorder.setObjectIndex(i);
