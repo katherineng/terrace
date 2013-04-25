@@ -1,8 +1,5 @@
 package gui;
-import java.awt.*;
 import java.awt.event.*;
-
-
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
@@ -13,10 +10,8 @@ import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.glu.GLU;
 import javax.swing.*;
 
-import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.util.Animator;
 
-import java.nio.IntBuffer;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -93,8 +88,6 @@ public class GamePanel extends GLCanvas implements MouseWheelListener{
 	    setVisible(true);
 
 	}
-	private static float deltaZ=0;
-	private static float deltaZ2=0;
 	
 
 	public class GraphicListener implements GLEventListener{
@@ -114,18 +107,15 @@ public class GamePanel extends GLCanvas implements MouseWheelListener{
 			glu.gluLookAt(eye.x, eye.y, eye.z,
 					eye.x + dir.x, eye.y + dir.y, eye.z + dir.z,
 					m_camera.up.x, m_camera.up.y, m_camera.up.z);
-			gl.glMatrixMode(gl.GL_MODELVIEW);
+			gl.glMatrixMode(GL2.GL_MODELVIEW);
 			gl.glLoadIdentity();
 		}
 		
 		public void display(GLAutoDrawable arg0) {
 			GL2 gl=arg0.getGL().getGL2();
-			GLU glu = new GLU();
 			if (selection_draw){
-				//doPick(gl);
 				setSelection(arg0);
-				if (m_selection != null)
-					m_selection.changeSelection();
+				if (m_selection != null) m_selection.changeSelection();
 				selection_draw = false;
 			} else {
 				applyCameraPerspective(gl);		
@@ -166,7 +156,6 @@ public class GamePanel extends GLCanvas implements MouseWheelListener{
 		public void init(GLAutoDrawable arg0) {
 
 			GL2 gl=arg0.getGL().getGL2();
-			GLU glu = new GLU();
 			
 			// set up lighting
 			gl.glEnable(GL2.GL_LIGHTING);
@@ -199,7 +188,7 @@ public class GamePanel extends GLCanvas implements MouseWheelListener{
 			gl.glFogf(GL2.GL_FOG_START,0.3f);
 			gl.glFogf(GL2.GL_FOG_END,1);
 			gl.glFogi(GL2.GL_FOG_MODE,GL.GL_LINEAR);
-			float fogColor[]={1,0.8f,0.8f,1};
+			float fogColor[]={.5f,.5f,.5f,1};
 			gl.glFogfv(GL2.GL_FOG_COLOR,fogColor,0);
 			gl.glClearColor(fogColor[0],fogColor[1],fogColor[2],fogColor[3]);
 			
@@ -211,15 +200,10 @@ public class GamePanel extends GLCanvas implements MouseWheelListener{
 		    m_pieces.add(test2);
 		}
 
-		public void reshape(GLAutoDrawable arg0, int arg1, int arg2, int arg3, int arg4) {
-			
-		}
+		public void reshape(GLAutoDrawable arg0, int arg1, int arg2, int arg3, int arg4) {}
 
 		@Override
-		public void dispose(GLAutoDrawable arg0) {
-			// TODO Auto-generated method stub
-			
-		}
+		public void dispose(GLAutoDrawable arg0) {}
 	}
 	
 
@@ -237,7 +221,7 @@ public class GamePanel extends GLCanvas implements MouseWheelListener{
 	public static void main(String[] args) {
 		JFrame frame = new JFrame();
 		frame.add(new GamePanel());
-		frame.setSize(600, 600);
+		frame.setSize(1200, 1200);
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}

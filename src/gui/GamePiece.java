@@ -2,7 +2,6 @@ package gui;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
-import javax.media.opengl.GLContext;
 import javax.media.opengl.glu.GLU;
 import javax.media.opengl.glu.GLUquadric;
 import javax.vecmath.*;
@@ -16,7 +15,7 @@ public class GamePiece {
 		GLU glu = new GLU();
 		this.quadric = glu.gluNewQuadric();
 
-	    glu.gluQuadricNormals(quadric, gl.GL_SMOOTH);
+	    glu.gluQuadricNormals(quadric, GL2.GL_SMOOTH);
 	    
 	    position = new Vector3d(Math.random(), Math.random(), Math.random());
 	    selected = false;
