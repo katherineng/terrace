@@ -18,6 +18,8 @@ import com.jogamp.opengl.util.Animator;
 
 import java.nio.IntBuffer;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import javax.vecmath.*;
 
 
@@ -125,7 +127,13 @@ public class GamePanel extends GLCanvas implements MouseWheelListener{
 				m_selection.changeSelection();
 				selection_draw = false;
 			} else {
-				applyCameraPerspective(gl);
+				applyCameraPerspective(gl);		
+				gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+
+				gl.glEnable(GL.GL_DEPTH_TEST);  
+				gl.glCullFace(GL.GL_FRONT);
+				gl.glEnable(GL.GL_CULL_FACE); 
+				gl.glFrontFace(GL.GL_CW); 
 				for (GamePiece piece: m_pieces)
 					piece.draw(gl);
 			}
@@ -145,8 +153,8 @@ public class GamePanel extends GLCanvas implements MouseWheelListener{
 		    }
 
 		    // Set or clear the selection, and set m_hit to be the intersection point.
-		    int index = new Integer(0);
-		    m_selection = recorder.exitSelectionMode(index, m_hit) ? m_pieces.get(index) : null;
+		    AtomicInteger index = new AtomicInteger(0);
+		    m_selection = recorder.exitSelectionMode(index, m_hit) ? m_pieces.get(index.get()) : null;
 		    m_hit.w = 1;
 		}
 

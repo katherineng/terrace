@@ -26,12 +26,7 @@ public class GamePiece {
 
 		GLU glu = new GLU();
 		
-		gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 
-		gl.glEnable(GL.GL_DEPTH_TEST);  
-		gl.glCullFace(GL.GL_FRONT);
-		gl.glEnable(GL.GL_CULL_FACE); 
-		gl.glFrontFace(GL.GL_CW); 
 
 		glu.gluQuadricNormals(quadric, GL.GL_TRUE);
 
