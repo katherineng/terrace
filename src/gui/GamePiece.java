@@ -1,6 +1,5 @@
 package gui;
 
-import java.util.HashMap;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
@@ -8,9 +7,7 @@ import javax.media.opengl.glu.GLU;
 import javax.media.opengl.glu.GLUquadric;
 import javax.vecmath.*;
 
-import terrace.DefaultBoard;
 import terrace.Piece;
-import terrace.Player;
 import terrace.Posn;
 
 public class GamePiece implements Drawable {

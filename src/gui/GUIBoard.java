@@ -2,10 +2,9 @@ package gui;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import javax.media.opengl.*;
-import javax.media.opengl.glu.*;
 import javax.vecmath.*;
 
 
@@ -20,19 +19,16 @@ public class GUIBoard extends Board {
 	private ArrayList<GamePiece> _gamePieces;
 	protected DefaultBoard _board;
 	protected int _dimension;
-	private GLUquadric _gluQuadric;
 	HashMap<Player, Vector3d> _playerColors;
 	private Game _game;
 
 	public GUIBoard(GL2 gl, Game game){
 		_game = game;
-		GLU glu = new GLU();
 		_foundation = new RectPrism(1.,.01,1.);
 		_board = _game.getBoard();
 		_dimension = _board.getDimensions();
 		_boardPieces = new BoardPiece[_dimension][_dimension];
-		_gamePieces = new ArrayList<GamePiece>();//[_dimension][_dimension];
-		_gluQuadric = glu.gluNewQuadric();
+		_gamePieces = new ArrayList<GamePiece>();
 		setUpColors();
 		
 		setUpBoard(gl);
@@ -40,6 +36,14 @@ public class GUIBoard extends Board {
 	
 	public int getDimensions(){
 		return _board.getDimensions();
+	}
+	
+	public List<BoardPiece> getBoardPieces(){
+		LinkedList<BoardPiece> toRet = new LinkedList<BoardPiece>();
+		for (int i = 0; i < _boardPieces.length; i++)
+			for (int j = 0; j < _boardPieces[0].length; j++)
+				toRet.addLast(_boardPieces[i][j]);
+		return toRet;
 	}
 	
 	/**
