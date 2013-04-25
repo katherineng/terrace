@@ -1,7 +1,5 @@
 package gui;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.*;
 
 import javax.media.opengl.*;
@@ -11,6 +9,7 @@ import javax.vecmath.*;
 import terrace.DefaultBoard;
 import terrace.Game;
 import terrace.Player;
+import terrace.Posn;
 
 public class GUIBoard extends Board {
 
@@ -73,20 +72,18 @@ public class GUIBoard extends Board {
 		}
 	}
 
+	public double getElevation(int row, int col){
+		return  _board.getElevation(row, col)/60.0;		
+	}
+	
 	private void setUpBoard(GL2 gl){
 		
 		//needed because translation is relative to center of shape, not the corner
-		double shiftFactor = 1.0/_board.getDimensions()/2;
-
 		for (int row = 0; row < _dimension; row++){
-			double rowShift = 1.0/_dimension*row;
 			for (int col = 0; col < _dimension; col++){
-				double colShift = 1.0/_dimension*col;
-
-				double height =  _board.getElevation(row, col)/60.0;
+				double height = getElevation(row, col);
 				// set up _boardPiece
-				BoardPiece piece = new BoardPiece(1.0/_dimension, height, 
-						new Vector2d(.5 - shiftFactor - rowShift, .5 - shiftFactor - colShift));
+				BoardPiece piece = new BoardPiece(this, height, new Posn(row, col));
 				_boardPieces[row][col] = piece;
 
 				// set up _gamePiece
