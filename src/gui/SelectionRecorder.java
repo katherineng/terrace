@@ -10,10 +10,7 @@ import javax.vecmath.Vector4d;
 
 import com.jogamp.common.nio.Buffers;
 
-
 public class SelectionRecorder{
-
-	
 
     IntBuffer m_selectionBuffer;
     int m_mouseX, m_mouseY;
