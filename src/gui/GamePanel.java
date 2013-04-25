@@ -57,7 +57,7 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 	    /*==== Camera setup ====*/
 	    Vector3d center = new Vector3d(0., 0., 0.);
 	    Vector3d up = new Vector3d(0.f, 1.f, 0.f);
-	    double theta = Math.PI * 1.5f, phi = 0.2, fovy = 60., zoom = 1;
+	    double theta = Math.PI * 1.5f, phi = -.6, fovy = 60., zoom = 1;
 	    _camera = new Camera(center, up, theta, phi, fovy, zoom);
 	    
 	    
@@ -109,7 +109,6 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 			switch (_mode){
 			case SELECTION: // if the user has selected something
 				setPieceSelection(arg0);
-				if (_selection != null) _selection.changeSelection();
 				_mode = Mode.NORMAL;
 				break;
 			case NORMAL: // regular drawing
@@ -131,8 +130,9 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 		/**
 		 * Gets the GamePiece the user has selected. Occurs on click
 		 * @param arg0
+		 * @return whether or not _selection has been updated
 		 */
-		void setPieceSelection(GLAutoDrawable arg0){
+		boolean setPieceSelection(GLAutoDrawable arg0){
 			GL2 gl=arg0.getGL().getGL2();
 		    SelectionRecorder recorder = new SelectionRecorder(gl);
 
@@ -148,12 +148,20 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 		    // Set or clear the selection, and set m_hit to be the intersection point.
 		    AtomicInteger index = new AtomicInteger(0);
 		    GamePiece newSelection = recorder.exitSelectionMode(index, _hit) ? pieces.get(index.get()) : null;
-		    if (newSelection != null) System.out.println(newSelection._piece.getPlayer() + " " + _game.getCurrentPlayer());
-		    if (newSelection != null && newSelection._piece.getPlayer().equals(_game.getCurrentPlayer())){
-			    if (_selection != null) _selection.changeSelection();
-			    _selection = newSelection;
-		    }
+		    System.out.println("checking for selection");
+		    System.out.println("Selection is currently: " + _selection);
+		    System.out.println("Might change selection to: " + newSelection);
 		    _hit.w = 1;
+		    if (newSelection != null){
+		    	if (newSelection._piece.getPlayer() == _game.getCurrentPlayer()){
+			    	if (_selection != null) _selection.changeSelection();
+			    	System.out.println("here");
+			    	_selection = newSelection;
+			    	_selection.changeSelection();
+			    	return true;
+		    	}
+		    }
+		    return false;
 		}
 
 		public void displayChanged(GLAutoDrawable arg0, boolean arg1, boolean arg2) {}

@@ -51,9 +51,11 @@ public class GamePiece implements Drawable {
 		gl.glLoadIdentity();
 		gl.glTranslated(_position.x, _elevation + _radius, _position.y);
 
-		Vector3d vec = _playerColors.get(_piece.getPlayer());
 		if (_selected) gl.glColor3f(0.7f,1,0.7f);
-		else gl.glColor3d(vec.x, vec.y, vec.z);
+		else {
+			Vector3d vec = _playerColors.get(_piece.getPlayer());
+			gl.glColor3d(vec.x, vec.y, vec.z);
+		}
 		
 		glu.gluSphere(_quadric, _radius, 90, 90);
 	    gl.glPopMatrix();

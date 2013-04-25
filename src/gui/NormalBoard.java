@@ -3,7 +3,6 @@ package gui;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 import javax.media.opengl.*;
 import javax.media.opengl.glu.*;

@@ -4,7 +4,7 @@ import java.util.*;
 
 public class Player {
 	private Set<Piece> _pieces;
-	PlayerColor _color;
+	public PlayerColor _color;
 	
 	public Player(PlayerColor color) {
 		_pieces = new HashSet<Piece>();
@@ -27,5 +27,27 @@ public class Player {
 	
 	public PlayerColor getColor() {
 		return _color;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((_color == null) ? 0 : _color.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Player other = (Player) obj;
+		if (_color != other._color)
+			return false;
+		return true;
 	}
 }
