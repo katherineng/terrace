@@ -1,5 +1,7 @@
 package terrace;
 
+import terrace.ai.AI;
+
 public class Players {
 	
 	public Player newAIPlayer(){

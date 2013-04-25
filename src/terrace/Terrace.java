@@ -7,14 +7,16 @@ public class Terrace {
 	private final Game game;
 	
 	public Terrace(int localPlayers, int aiPlayers, int networkPlayers) {
-		this.game = new Game(localPlayers + aiPlayers + netWorkPlayers);
+		this.game = new Game(localPlayers + aiPlayers + networkPlayers);
 		
 		
 	}
+	
 	public List<Player> getLocalPlayers() {
-		
+		return null;
 	}
-	public void setNetworkInfo(...) {
+	
+	public void setNetworkInfo() {
 		
 	}
 }

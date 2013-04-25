@@ -1,5 +1,5 @@
 package terrace;
 
 public enum PieceSize {
-	SMALL, MEDIUM, LARGE, FUCKINGHUGE
+	S, M, L, XL
 }
