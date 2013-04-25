@@ -1,5 +1,7 @@
 package gui;
 
+import java.util.HashMap;
+
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
@@ -7,6 +9,7 @@ import javax.media.opengl.glu.GLUquadric;
 import javax.vecmath.*;
 
 import terrace.Piece;
+import terrace.Player;
 
 public class GamePiece implements Drawable {
 	GLUquadric _quadric;
@@ -15,8 +18,10 @@ public class GamePiece implements Drawable {
 	double _elevation;
 	private double _radius;
 	private GLU glu;
+	private HashMap<Player, Vector3d> _playerColors;
+	Piece _piece;
 	
-	public GamePiece(GL2 gl, Piece piece, double d, Vector2d pos, GLUquadric quadric){
+	public GamePiece(GL2 gl, Piece piece, double d, Vector2d pos, GLUquadric quadric, HashMap<Player, Vector3d> playerColors){
 		glu = new GLU();
 		this._quadric = quadric;
 
@@ -26,6 +31,8 @@ public class GamePiece implements Drawable {
 	    _elevation = d;
 	    _selected = false;
 	    _radius = (piece.getSize() + 1) * .01;
+	    _playerColors = playerColors;
+	    _piece = piece;
 	}
 	
 	/**
@@ -44,8 +51,9 @@ public class GamePiece implements Drawable {
 		gl.glLoadIdentity();
 		gl.glTranslated(_position.x, _elevation + _radius, _position.y);
 
+		Vector3d vec = _playerColors.get(_piece.getPlayer());
 		if (_selected) gl.glColor3f(0.7f,1,0.7f);
-		else gl.glColor3f(0f,0,0.7f);
+		else gl.glColor3d(vec.x, vec.y, vec.z);
 		
 		glu.gluSphere(_quadric, _radius, 90, 90);
 	    gl.glPopMatrix();

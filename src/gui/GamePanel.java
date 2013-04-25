@@ -33,6 +33,7 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 	
 	/*==== For Gameplay ====*/
 	NormalBoard _board;
+	Game _game;
 	
 	/*==== For Selection ====*/
 	GamePiece _selection; 		/** The GamePiece that has currently been selected **/
@@ -147,9 +148,11 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 		    // Set or clear the selection, and set m_hit to be the intersection point.
 		    AtomicInteger index = new AtomicInteger(0);
 		    GamePiece newSelection = recorder.exitSelectionMode(index, _hit) ? pieces.get(index.get()) : null;
-		    if (newSelection != null && _selection != null) _selection.changeSelection();
-		    
-	    	_selection = newSelection;
+		    if (newSelection != null) System.out.println(newSelection._piece.getPlayer() + " " + _game.getCurrentPlayer());
+		    if (newSelection != null && newSelection._piece.getPlayer().equals(_game.getCurrentPlayer())){
+			    if (_selection != null) _selection.changeSelection();
+			    _selection = newSelection;
+		    }
 		    _hit.w = 1;
 		}
 
@@ -203,6 +206,7 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 
 		    /*==== Gameplay ====*/ 
 		    Game game = new Game(2, 8, Variant.STANDARD);
+		    _game = game;
 		    _board = new NormalBoard(gl, game);
 			
 		}
