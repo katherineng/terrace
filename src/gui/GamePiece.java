@@ -8,30 +8,28 @@ import javax.media.opengl.glu.GLU;
 import javax.media.opengl.glu.GLUquadric;
 import javax.vecmath.*;
 
+import terrace.DefaultBoard;
 import terrace.Piece;
 import terrace.Player;
+import terrace.Posn;
 
 public class GamePiece implements Drawable {
-	GLUquadric _quadric;
-	Vector2d _position;	/** The position of this object in 3d space **/
 	boolean _selected;	/** Whether or not this object has been selected by the user **/
 	double _elevation;
 	private double _radius;
 	private GLU glu;
-	private HashMap<Player, Vector3d> _playerColors;
+	GUIBoard _board;
 	Piece _piece;
 	
-	public GamePiece(GL2 gl, Piece piece, double d, Vector2d pos, GLUquadric quadric, HashMap<Player, Vector3d> playerColors){
-		glu = new GLU();
-		this._quadric = quadric;
+	public GamePiece(GL2 gl, GUIBoard board, Piece piece, double d){
 
 	 //   glu.gluQuadricNormals(_quadric, GL2.GL_SMOOTH);
 	    
-	    _position = pos;
+		glu = new GLU();
+		_board = board;
 	    _elevation = d;
 	    _selected = false;
 	    _radius = (piece.getSize() + 1) * .01;
-	    _playerColors = playerColors;
 	    _piece = piece;
 	}
 	
@@ -46,18 +44,24 @@ public class GamePiece implements Drawable {
 	@Override
 	public void draw(GL2 gl){
 
+		GLUquadric _quadric = glu.gluNewQuadric();
 	    gl.glPushMatrix();			
 		glu.gluQuadricNormals(_quadric, GL.GL_TRUE);
 		gl.glLoadIdentity();
-		gl.glTranslated(_position.x, _elevation + _radius, _position.y);
+		Posn pos = _piece.getPosn();
+		double shiftFactor = 1.0/_board.getDimensions()/2;
+		double rowShift = 1.0/_board.getDimensions()*pos.x;
+		double colShift = 1.0/_board.getDimensions()*pos.y;
+		gl.glTranslated(.5 - shiftFactor - rowShift, _elevation + _radius, .5 - shiftFactor - colShift);
 
-		if (_selected) gl.glColor3f(0.7f,1,0.7f);
+		double mult = (_piece.isTPiece()) ? .5 : 1;
+		if (_selected) gl.glColor3d(mult*0.7f,mult*1,0.7f);
 		else {
-			Vector3d vec = _playerColors.get(_piece.getPlayer());
-			gl.glColor3d(vec.x, vec.y, vec.z);
+			Vector3d vec = _board._playerColors.get(_piece.getPlayer());
+			gl.glColor3d(mult*vec.x, mult*vec.y, vec.z);
 		}
 		
-		glu.gluSphere(_quadric, _radius, 90, 90);
+		glu.gluSphere(_quadric, _radius, 25, 25);
 	    gl.glPopMatrix();
 	}
 	
