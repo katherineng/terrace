@@ -17,74 +17,60 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.vecmath.*;
 
+import terrace.Game;
+import terrace.Variant;
 
-public class GamePanel extends GLCanvas implements MouseWheelListener{
 
-	Camera m_camera;
+public class GamePanel extends GLCanvas implements MouseWheelListener, MouseListener, MouseMotionListener{
+	
+	/** Determines current drawing mode **/
+	private enum Mode {NORMAL, SELECTION};
+
+	/*==== General Drawing ====*/
+	Camera _camera;
 	GamePanel this_gui;
-	Vector2d m_prevMousePos;
-	java.util.ArrayList<GamePiece> m_pieces;
-	GamePiece m_selection; //todo
-	Vector4d m_hit;
-	boolean selection_draw;
-	Vector2d selection_mouse;
+	Vector2d _prevMousePos;
+	
+	/*==== For Gameplay ====*/
+	NormalBoard _board;
+	
+	/*==== For Selection ====*/
+	GamePiece _selection; 		/** The GamePiece that has currently been selected **/
+	Vector4d _hit;
+	Vector2d _selection_mouse;
+	Mode _mode;
 	
 	public GamePanel(){
+
+		/*==== General Drawing ====*/
 		super(new GLCapabilities(GLProfile.getDefault()));
 		setSize(600,600);
-		
 		GraphicListener listener=new GraphicListener();
 		setVisible(true);
 	    addGLEventListener(listener);
-	    
 	    Animator animator = new Animator(this);
 	    animator.start();
 	    this_gui = this;
-	    m_hit = new Vector4d(0,0,0,0);
-	    m_pieces = new ArrayList<GamePiece>();
-	    m_selection = null;
-	    selection_draw = false;
+	    _mode = Mode.NORMAL;
 	    
-	    
-	    
-	    this.addMouseListener(new MouseListener(){
-			@Override
-			public void mousePressed(MouseEvent e) {
-				m_prevMousePos = new Vector2d(e.getX(), e.getY());
-			}
-
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				selection_mouse = new Vector2d(e.getX(), e.getY());
-				selection_draw = true;
-				repaint();
-			}
-			@Override
-			public void mouseReleased(MouseEvent e) {}
-			@Override
-			public void mouseEntered(MouseEvent e) {}
-			@Override
-			public void mouseExited(MouseEvent e) {}
-	    });
-	    
-	    this.addMouseMotionListener(new MouseMotionListener(){
-			@Override
-			public void mouseDragged(MouseEvent e) {
-				if ((e.getModifiers() & InputEvent.BUTTON3_MASK) != 0) {
-					Vector2d pos = new Vector2d(e.getX(), e.getY());
-					m_camera.mouseMove(new Vector2d(pos.x - m_prevMousePos.x, pos.y - m_prevMousePos.y));
-					m_prevMousePos = pos;
-				}
-			}
-			@Override
-			public void mouseMoved(MouseEvent e) {}
-	    	
-	    });
-	    //set up camera;
+	    /*==== Camera setup ====*/
 	    Vector3d center = new Vector3d(0., 0., 0.);
 	    Vector3d up = new Vector3d(0.f, 1.f, 0.f);
-	    double theta = Math.PI * 1.5f, phi = 0.2, fovy = 60., zoom = 3.5;
-	    m_camera = new Camera(center, up, theta, phi, fovy, zoom);
+	    double theta = Math.PI * 1.5f, phi = 0.2, fovy = 60., zoom = 1;
+	    _camera = new Camera(center, up, theta, phi, fovy, zoom);
+	    
+	    
+	    /*==== Selection ===*/
+	    _hit = new Vector4d(0,0,0,0);
+	    _selection = null;
+	    
+	    
+	    /*==== Listeners ====*/
+	    this.addMouseWheelListener(this);
+	    this.addMouseListener(this);
+	    
+	    this.addMouseMotionListener(this);
+	    
 	    setVisible(true);
 
 	}
@@ -92,32 +78,40 @@ public class GamePanel extends GLCanvas implements MouseWheelListener{
 
 	public class GraphicListener implements GLEventListener{
 
-		
+		/**
+		 * Sets up stuff for the camera
+		 * @param gl
+		 */
 		private void applyCameraPerspective(GL2 gl){
 			GLU glu = new GLU();
 			//set up camera stuff
 			double ratio = ((double) this_gui.getWidth())/ this_gui.getHeight();
-			Vector3d dir = m_camera.fromAngles();
-			dir = new Vector3d(dir.x * m_camera.zoom, dir.y * m_camera.zoom, dir.z * m_camera.zoom);
-			Vector3d eye = new Vector3d(m_camera.center.x - dir.x, m_camera.center.y - dir.y, m_camera.center.z - dir.z);
+			Vector3d dir = _camera.fromAngles();
+			dir = new Vector3d(dir.x * _camera.zoom, dir.y * _camera.zoom, dir.z * _camera.zoom);
+			Vector3d eye = new Vector3d(_camera.center.x - dir.x, _camera.center.y - dir.y, _camera.center.z - dir.z);
 
 			gl.glMatrixMode(GL2.GL_PROJECTION);
 			gl.glLoadIdentity();
-			glu.gluPerspective(m_camera.fovy, ratio, 0.1f, 21000.f);
+			glu.gluPerspective(_camera.fovy, ratio, 0.1f, 21000.f);
 			glu.gluLookAt(eye.x, eye.y, eye.z,
 					eye.x + dir.x, eye.y + dir.y, eye.z + dir.z,
-					m_camera.up.x, m_camera.up.y, m_camera.up.z);
+					_camera.up.x, _camera.up.y, _camera.up.z);
 			gl.glMatrixMode(GL2.GL_MODELVIEW);
 			gl.glLoadIdentity();
 		}
 		
+		/**
+		 * Does the actual drawing
+		 */
 		public void display(GLAutoDrawable arg0) {
 			GL2 gl=arg0.getGL().getGL2();
-			if (selection_draw){
-				setSelection(arg0);
-				if (m_selection != null) m_selection.changeSelection();
-				selection_draw = false;
-			} else {
+			switch (_mode){
+			case SELECTION: // if the user has selected something
+				setPieceSelection(arg0);
+				if (_selection != null) _selection.changeSelection();
+				_mode = Mode.NORMAL;
+				break;
+			case NORMAL: // regular drawing
 				applyCameraPerspective(gl);		
 				gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 
@@ -125,34 +119,53 @@ public class GamePanel extends GLCanvas implements MouseWheelListener{
 				gl.glCullFace(GL.GL_FRONT);
 				gl.glEnable(GL.GL_CULL_FACE); 
 				gl.glFrontFace(GL.GL_CW); 
-				for (GamePiece piece: m_pieces)
-					piece.draw(gl);
+				_board.draw(gl);
+				break;
+			default:// should never get here
+				assert(false); 
+				break;
 			}
 		}
 
-
-	
-		void setSelection(GLAutoDrawable arg0){
+		/**
+		 * Gets the GamePiece the user has selected. Occurs on click
+		 * @param arg0
+		 */
+		void setPieceSelection(GLAutoDrawable arg0){
 			GL2 gl=arg0.getGL().getGL2();
 		    SelectionRecorder recorder = new SelectionRecorder(gl);
 
 		    // See if the (x, y) mouse position hits any primitives.
-		    recorder.enterSelectionMode((int) selection_mouse.x, (int) selection_mouse.y, m_pieces.size());
-		    for (int i = 0; i < m_pieces.size(); i++){
+		    ArrayList<GamePiece> pieces = new ArrayList<GamePiece>();
+		    GamePiece[][] piecesArr = _board.getGamePieces();
+		    for (int i = 0; i < piecesArr.length; i++){
+		    	for (int j = 0; j < piecesArr[0].length; j++){
+		    		if (piecesArr[i][j] != null) pieces.add(piecesArr[i][j]);
+		    	}
+		    }
+		    recorder.enterSelectionMode((int) _selection_mouse.x, (int) _selection_mouse.y, pieces.size());
+		    for (int i = 0; i < pieces.size(); i++){
 		        recorder.setObjectIndex(i);
-		        m_pieces.get(i).draw(gl);
+		        pieces.get(i).draw(gl);
 		    }
 
 		    // Set or clear the selection, and set m_hit to be the intersection point.
 		    AtomicInteger index = new AtomicInteger(0);
-		    m_selection = recorder.exitSelectionMode(index, m_hit) ? m_pieces.get(index.get()) : null;
-		    m_hit.w = 1;
+		    GamePiece newSelection = recorder.exitSelectionMode(index, _hit) ? pieces.get(index.get()) : null;
+		    if (newSelection != null && _selection != null) _selection.changeSelection();
+		    
+	    	_selection = newSelection;
+		    _hit.w = 1;
 		}
 
-		public void displayChanged(GLAutoDrawable arg0, boolean arg1, boolean arg2) {
-			
-		}
+		public void displayChanged(GLAutoDrawable arg0, boolean arg1, boolean arg2) {}
 
+		/**
+		 * Setting up rendering environment: 
+		 * lighting
+		 * making game pieces
+		 * setting up board
+		 */
 		public void init(GLAutoDrawable arg0) {
 
 			GL2 gl=arg0.getGL().getGL2();
@@ -192,12 +205,11 @@ public class GamePanel extends GLCanvas implements MouseWheelListener{
 			gl.glFogfv(GL2.GL_FOG_COLOR,fogColor,0);
 			gl.glClearColor(fogColor[0],fogColor[1],fogColor[2],fogColor[3]);
 			
-			GamePiece test1= new GamePiece(gl);
-			test1.position = new Vector3d(.2, 0, 0);
-			GamePiece test2= new GamePiece(gl);
-			test2.position = new Vector3d(.2, .9, 0);
-		    m_pieces.add(test1);
-		    m_pieces.add(test2);
+
+		    /*==== Gameplay ====*/ 
+		    Game game = new Game(2, 8, Variant.STANDARD);
+		    _board = new NormalBoard(gl, game);
+			
 		}
 
 		public void reshape(GLAutoDrawable arg0, int arg1, int arg2, int arg3, int arg4) {}
@@ -211,13 +223,48 @@ public class GamePanel extends GLCanvas implements MouseWheelListener{
 	static final long serialVersionUID=100;
 	
 
-
+	/**
+	 * Used for zoom
+	 */
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
-        m_camera.mouseWheel(-e.getWheelRotation()*10);
+        _camera.mouseWheel(-e.getWheelRotation()*10);
 	}
 
+	@Override
+	public void mousePressed(MouseEvent e) {
+		_prevMousePos = new Vector2d(e.getX(), e.getY());
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		_selection_mouse = new Vector2d(e.getX(), e.getY());
+		_mode = Mode.SELECTION;
+		repaint();
+	}
 	
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		if ((e.getModifiers() & InputEvent.BUTTON3_MASK) != 0) {
+			Vector2d pos = new Vector2d(e.getX(), e.getY());
+			_camera.mouseMove(new Vector2d(pos.x - _prevMousePos.x, pos.y - _prevMousePos.y));
+			_prevMousePos = pos;
+		}
+	}
+	
+	@Override
+	public void mouseMoved(MouseEvent e) {}
+	@Override
+	public void mouseReleased(MouseEvent e) {}
+	@Override
+	public void mouseEntered(MouseEvent e) {}
+	@Override
+	public void mouseExited(MouseEvent e) {}
+	/**
+	 * TESTING PURPOSES ONLY
+	 * TODO: delete later
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		JFrame frame = new JFrame();
 		frame.add(new GamePanel());

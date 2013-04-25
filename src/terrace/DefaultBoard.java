@@ -59,6 +59,19 @@ public class DefaultBoard implements Board<DefaultBoard> {
 		return _elevations[p.x][p.y];
 	}
 	
+	public int getElevation(int x, int y) {
+		return _elevations[x][y];
+	}
+	
+	public Piece getPiece(int x, int y) {
+		return _board[x][y];
+	}
+	
+
+	public int getDimensions(){
+		return _dimensions;
+	}
+	
 	@Override
 	public List<Posn> getTerracePosns(Posn p) {
 		int halfWidth = _dimensions / 2;
