@@ -30,7 +30,7 @@ class Camera {
 
 	    // Keep theta in [0, 2pi] and phi in [-pi/2, pi/2]
 	    theta -= Math.floor(theta / (2*Math.PI)) * (2*Math.PI);
-	    phi = Math.max(0.01 - Math.PI / 2, Math.min(Math.PI / 2 - 0.01, phi));
+	    phi = Math.max(-Math.PI / 2, Math.min(-Math.PI / 10, phi));
 
 	}
 
