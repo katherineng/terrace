@@ -357,7 +357,7 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 	 */
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
-        _camera.mouseWheel(-e.getWheelRotation()*10);
+		_camera.mouseWheel(-e.getWheelRotation());
 	}
 
 	@Override
@@ -374,7 +374,7 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 	
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		if ((e.getModifiers() & InputEvent.BUTTON3_MASK) != 0) {
+		if (SwingUtilities.isRightMouseButton(e)) {
 			Vector2d pos = new Vector2d(e.getX(), e.getY());
 			_camera.mouseMove(new Vector2d(pos.x - _prevMousePos.x, pos.y - _prevMousePos.y));
 			_prevMousePos = pos;
