@@ -9,19 +9,35 @@ public class Posn {
 		this.y = y;
 	}
 	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
 	@Override
 	public int hashCode() {
-		return (x * 31) ^ y;
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + x;
+		result = prime * result + y;
+		return result;
 	}
 	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	@Override
-	public boolean equals(Object o) {
-		if (this.getClass() == o.getClass()) {
-			Posn p = (Posn) o;
-			return this.x == p.x && this.y == p.y;
-		}
-		
-		return false;
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof Posn))
+			return false;
+		Posn other = (Posn) obj;
+		if (x != other.x)
+			return false;
+		if (y != other.y)
+			return false;
+		return true;
 	}
 	
 	@Override
