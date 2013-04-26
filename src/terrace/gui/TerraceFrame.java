@@ -16,7 +16,5 @@ public class TerraceFrame extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		add(new GamePanel(), GAME);
-		
-		layout.show(this, GAME);
 	}
 }
