@@ -40,6 +40,7 @@ class Camera {
 	 */
 	void mouseWheel(float delta) {
 	    zoom *= Math.pow(0.9f, delta);
+	    zoom = Math.max(0.5, Math.min(2, zoom));
 	}
 	
 	/**
