@@ -1,4 +1,4 @@
-package gui;
+package terrace.gui;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;

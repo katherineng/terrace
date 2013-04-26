@@ -287,7 +287,7 @@ public class DefaultBoard implements Board<DefaultBoard> {
 			for (int x = 0; x < _dimensions; x++) {
 				Piece p = _board[x][y];
 				if (p != null) {
-					pieces += p.toString() + " ";
+					pieces += p.toString() + " " + p.getPosn() + " ";
 				} else {
 					pieces += "(EMPTY) ";
 				}

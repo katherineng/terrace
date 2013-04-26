@@ -1,12 +1,14 @@
 package terrace;
 
-public class Posn {
-	public final int x;
-	public final int y;
+import javax.vecmath.*;
+
+@SuppressWarnings("serial")
+public class Posn extends Point3i{
 
 	public Posn(int x, int y) {
-		this.x = x;
-		this.y = y;
+		super(x, y, 0);
+//		this.x = x;
+//		this.y = y;
 	}
 	
 	/* (non-Javadoc)

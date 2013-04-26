@@ -1,4 +1,4 @@
-package gui;
+package terrace.gui;
 
 import javax.media.opengl.GL2;
 import javax.vecmath.Vector2d;
@@ -26,13 +26,16 @@ public class BoardPiece implements Drawable {
 	}
 	
 	
+	public Posn getPosn(){
+		return _pos;
+	}
 	@Override
 	public void draw(GL2 gl) {	
 		double dim = 1.0/_board.getDimensions();
 		double shiftFactor = 1.0/_board.getDimensions()/2;
 
-		double rowShift = 1.0/_board.getDimensions()*_pos.x;
-		double colShift = 1.0/_board.getDimensions()*_pos.y;
+		double rowShift = 1.0/_board.getDimensions()*_pos.y;
+		double colShift = 1.0/_board.getDimensions()*_pos.x;
 		Vector2d pos = new Vector2d(.5 - shiftFactor - rowShift, .5 - shiftFactor - colShift);
 		gl.glPushMatrix();
 		gl.glTranslated(pos.x, _height/2, pos.y);

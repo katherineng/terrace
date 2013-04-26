@@ -1,4 +1,4 @@
-package gui;
+package terrace.gui;
 import java.awt.event.*;
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
@@ -19,6 +19,7 @@ import javax.vecmath.*;
 
 import terrace.Game;
 import terrace.Variant;
+import terrace.exception.IllegalMoveException;
 
 
 public class GamePanel extends GLCanvas implements MouseWheelListener, MouseListener, MouseMotionListener{
@@ -60,7 +61,7 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 	    /*==== Camera setup ====*/
 	    Vector3d center = new Vector3d(0., 0., 0.);
 	    Vector3d up = new Vector3d(0.f, 1.f, 0.f);
-	    double theta = Math.PI * 1.5f, phi = -.6, fovy = 60., zoom = 1;
+	    double theta = Math.PI * 1.5f, phi = -.6, fovy = 60., zoom = 1.2;
 	    _camera = new Camera(center, up, theta, phi, fovy, zoom);
 	    
 	    
@@ -112,12 +113,21 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 		public void display(GLAutoDrawable arg0) {
 			GL2 gl=arg0.getGL().getGL2();
 			switch (_mode){
-			case SELECTION: // if the user has selected something
-				setPieceSelection(gl);
+			case SELECTION: // activated when the user has selected something
+				GamePiece pieceSelection = getGamePieceSelection(gl, _selection_mouse);
+				
+				// If the user has
+				if (pieceSelection != null) setPieceSelection(pieceSelection);
+				else {
+					BoardPiece boardSelection = getBoardPieceSelection(gl, _selection_mouse);
+					if (boardSelection != null && _selection != null)
+						setMove(getBoardPieceSelection(gl, _hover_mouse));
+				}
 				_mode = (_selection == null) ? Mode.NORMAL : Mode.HOVER;
 				break;
-			case HOVER:
-				setBoardSelection(gl);
+			case HOVER: // the user has selected something and is moving over objects
+				BoardPiece boardSelection = getBoardPieceSelection(gl, _hover_mouse);
+				if (boardSelection != null) setBoardSelection(boardSelection);
 				applyCameraPerspective(gl);		
 				gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 
@@ -143,17 +153,126 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 		}
 
 		/**
-		 * Gets the GamePiece the user has selected. Occurs on click
-		 * @param arg0
-		 * @return whether or not _selection has been updated
+		 * Sets the GamePiece the user has selected. Occurs on click
+		 * @param newSelection - the GamePiece the user has clicked. Can not be null
+		 * @return whether or not the user selected their own game piece (i.e. selecting change anything)
 		 */
-		boolean setPieceSelection(GL2 gl){
+		boolean setPieceSelection(GamePiece newSelection){
+			assert(newSelection != null);
+			
+			//only act of user is the same
+			if (newSelection._piece.getPlayer() == _game.getCurrentPlayer()){ 
+				if (_selection == newSelection){ // if they are the same, that means user unselected
+					
+					//change selection settings
+					_selection.changeSelection();
+					_selection = null;
+					
+					// change hover settings
+					if (_hover != null && _hover.isSelected()) _hover.changeSelection();
+					_hover = null;
+					
+					// change mode
+					_mode = Mode.NORMAL;
+				} else { // set selection to something new. Remains in selection mode
+					if (_selection != null) _selection.changeSelection(); // unselect old thing
+					_selection = newSelection;
+					System.out.println("Selected piece at position: " + newSelection.getPosn());
+					_selection.changeSelection();
+				}
+				return true;
+			}
+			return false;
+		}
+
+
+		/**
+		 * Makes a move
+		 * @param newSelection - the BoardPiece where you want to move your selection to.
+		 * Can't be null
+		 * @return true if move successfully made, false otherwise
+		 */
+		boolean setMove(BoardPiece newSelection){
+			assert(newSelection != null);
+
+			try {
+				_game.movePiece(_selection.getPosn(), newSelection.getPosn());
+			} catch (IllegalMoveException e) {
+				System.out.println(e.getMessage());
+				_mode = Mode.HOVER;
+				return false;
+			}
+
+			if (_selection != null && _selection.isSelected()) _selection.changeSelection();
+			if (_hover != null && _hover.isSelected()) _hover.changeSelection();
+			_hover = null;
+			_selection = null;
+			_mode = Mode.NORMAL;
+			return true;
+		}
+		
+		/**
+		 * Sets what is currently being hovered over
+		 * @param newSelection - a BoardPiece that is being hovered over
+		 * @return true if the selection has changed, false otherwise
+		 */
+		boolean setBoardSelection(BoardPiece newSelection){
+			assert(newSelection != null);
+			
+		    if (newSelection != _hover){
+		    	if (_hover != null) _hover.changeSelection();
+		    	_hover = newSelection;
+				System.out.println("Hovering over: " + newSelection.getPosn());
+		    	_hover.changeSelection();
+		    	return true;
+		    }
+		    return false;
+		}
+		
+
+
+		/*===================
+		 * SELECTION HELPERS
+		 * =================*/
+
+		/**
+		 * Gets the BoardPiece that is intersecting with the given mouse coordinate
+		 * @param gl - a GL2 object
+		 * @param mouse_coord - a Vector2d representing the mouse's position
+		 * @return - a BoardPiece intersecting with <mouse_coord>
+		 */
+		private BoardPiece getBoardPieceSelection(GL2 gl, Vector2d mouse_coord){
 		    SelectionRecorder recorder = new SelectionRecorder(gl);
+
+		    // See if the (x, y) mouse position hits any primitives.
+		    List<BoardPiece> pieces = _board.getBoardPieces();
+		    recorder.enterSelectionMode((int) mouse_coord.x, (int) mouse_coord.y, pieces.size());
+		    for (int i = 0; i < pieces.size(); i++){
+		        recorder.setObjectIndex(i);
+		        pieces.get(i).draw(gl);
+		    }
+
+		    // Set or clear the selection, and set m_hit to be the intersection point.
+		    AtomicInteger index = new AtomicInteger(0);
+		    BoardPiece newSelection = recorder.exitSelectionMode(index, _hit) ? pieces.get(index.get()) : null;
+		    _hit.w = 1;
+		    return newSelection;
+		}
+
+
+		/**
+		 * Gets the GamePiece that is intersecting with the given mouse coordinate
+		 * @param gl - a GL2 object
+		 * @param mouse_coord - a Vector2d representing the mouse's position
+		 * @return - a GamePiece intersecting with <mouse_coord>
+		 */
+		private GamePiece getGamePieceSelection(GL2 gl, Vector2d mouse_coord){
+			SelectionRecorder recorder = new SelectionRecorder(gl);
 
 		    // See if the (x, y) mouse position hits any primitives.
 		    ArrayList<GamePiece> pieces = _board.getGamePieces();
 
-		    recorder.enterSelectionMode((int) _selection_mouse.x, (int) _selection_mouse.y, pieces.size());
+		    recorder.enterSelectionMode((int) mouse_coord.x, (int) mouse_coord.y, pieces.size());
 		    for (int i = 0; i < pieces.size(); i++){
 		        recorder.setObjectIndex(i);
 		        pieces.get(i).draw(gl);
@@ -163,58 +282,10 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 		    AtomicInteger index = new AtomicInteger(0);
 		    GamePiece newSelection = recorder.exitSelectionMode(index, _hit) ? pieces.get(index.get()) : null;
 		    _hit.w = 1;
-		    if (newSelection != null){
-		    	if (newSelection._piece.getPlayer() == _game.getCurrentPlayer()){
-		    		if (_selection == newSelection){
-		    			_selection.changeSelection();
-		    			if (_hover != null && _hover.isSelected()) {
-		    				_hover.changeSelection();
-		    				_hover = null;
-		    			}
-		    			_selection = null;
-		    			_mode = Mode.NORMAL;
-		    		} else {
-				    	if (_selection != null) _selection.changeSelection();
-				    	_selection = newSelection;
-				    	_selection.changeSelection();
-				    	return true;
-		    		}
-		    	}
-		    }
-		    return false;
+		    return newSelection;
 		}
 		
-		/**
-		 * Gets the GamePiece the user has selected. Occurs on click
-		 * @param arg0
-		 * @return whether or not _selection has been updated
-		 */
-		boolean setBoardSelection(GL2 gl){
-		    SelectionRecorder recorder = new SelectionRecorder(gl);
-
-		    // See if the (x, y) mouse position hits any primitives.
-		    List<BoardPiece> pieces = _board.getBoardPieces();
-		    recorder.enterSelectionMode((int) _hover_mouse.x, 
-		    		(int) _hover_mouse.y, 
-		    		pieces.size());
-		    for (int i = 0; i < pieces.size(); i++){
-		        recorder.setObjectIndex(i);
-		        pieces.get(i).draw(gl);
-		    }
-
-		    // Set or clear the selection, and set m_hit to be the intersection point.
-		    AtomicInteger index = new AtomicInteger(0);
-		    BoardPiece newSelection = recorder.exitSelectionMode(index, _hit) ? pieces.get(index.get()) : null;
-
-		    _hit.w = 1;
-		    if (newSelection != null && newSelection != _hover){
-		    	if (_hover != null) _hover.changeSelection();
-		    	_hover = newSelection;
-		    	_hover.changeSelection();
-		    }
-		    return false;
-		}
-
+		
 		public void displayChanged(GLAutoDrawable arg0, boolean arg1, boolean arg2) {}
 
 		/**
@@ -286,7 +357,7 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 	 */
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
-        _camera.mouseWheel(-e.getWheelRotation()*10);
+        _camera.mouseWheel(-e.getWheelRotation());
 	}
 
 	@Override
@@ -303,7 +374,7 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 	
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		if ((e.getModifiers() & InputEvent.BUTTON3_MASK) != 0) {
+		if (SwingUtilities.isRightMouseButton(e)) {
 			Vector2d pos = new Vector2d(e.getX(), e.getY());
 			_camera.mouseMove(new Vector2d(pos.x - _prevMousePos.x, pos.y - _prevMousePos.y));
 			_prevMousePos = pos;
@@ -323,16 +394,4 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 	public void mouseEntered(MouseEvent e) {}
 	@Override
 	public void mouseExited(MouseEvent e) {}
-	/**
-	 * TESTING PURPOSES ONLY
-	 * TODO: delete later
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		JFrame frame = new JFrame();
-		frame.add(new GamePanel());
-		frame.setSize(1200, 1200);
-		frame.setVisible(true);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	}
 }
