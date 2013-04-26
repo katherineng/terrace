@@ -5,40 +5,37 @@ import java.util.*;
 import javax.media.opengl.*;
 import javax.vecmath.*;
 
-
-import terrace.DefaultBoard;
 import terrace.Game;
 import terrace.Player;
 import terrace.Posn;
 
 public class GUIBoard extends Board {
 
-	private RectPrism _foundation;
-	private BoardPiece[][] _boardPieces;
-	private ArrayList<GamePiece> _gamePieces;
-	protected DefaultBoard _board;
-	protected int _dimension;
-	HashMap<Player, Vector3d> _playerColors;
-	private Game _game;
+	private RectPrism _foundation;				/** The foundation of the board **/
+	private BoardTile[][] _boardPieces;			/** A 2d Array of the Board tiles **/
+	private ArrayList<GamePiece> _gamePieces;	/** An array of the game pieces **/
+	HashMap<Player, Vector3d> _playerColors;	/** Maps players to their colors **/
+	HashMap<Posn, BoardTile> _posnToTile;		/** Maps positions to BoardTiles **/
+	private Game _game;							/** a Game instance **/
 
 	public GUIBoard(GL2 gl, Game game){
 		_game = game;
 		_foundation = new RectPrism(1.,.01,1.);
-		_board = _game.getBoard();
-		_dimension = _board.getDimensions();
-		_boardPieces = new BoardPiece[_dimension][_dimension];
+		int dimension = _game.getBoard().getDimensions();
+		_boardPieces = new BoardTile[dimension][dimension];
 		_gamePieces = new ArrayList<GamePiece>();
 		setUpColors();
 		
+		_posnToTile = new HashMap<Posn, BoardTile>();
 		setUpBoard(gl);
 	}
 	
 	public int getDimensions(){
-		return _board.getDimensions();
+		return _game.getBoard().getDimensions();
 	}
 	
-	public List<BoardPiece> getBoardPieces(){
-		LinkedList<BoardPiece> toRet = new LinkedList<BoardPiece>();
+	public List<BoardTile> getBoardPieces(){
+		LinkedList<BoardTile> toRet = new LinkedList<BoardTile>();
 		for (int i = 0; i < _boardPieces.length; i++)
 			for (int j = 0; j < _boardPieces[0].length; j++)
 				toRet.addLast(_boardPieces[i][j]);
@@ -73,28 +70,31 @@ public class GUIBoard extends Board {
 	}
 
 	public double getElevation(int col, int row){
-		return  _board.getElevation(col, row)/60.0;		
+		return  _game.getBoard().getElevation(col, row)/60.0;		
 	}
 	
 	private void setUpBoard(GL2 gl){
 		
+		int dimension = _game.getBoard().getDimensions();
 		//needed because translation is relative to center of shape, not the corner
-		for (int row = 0; row < _dimension; row++){
-			for (int col = 0; col < _dimension; col++){
+		for (int row = 0; row < dimension; row++){
+			for (int col = 0; col < dimension; col++){
 				double height = getElevation(col, row);
 				// set up _boardPiece
-				BoardPiece piece = new BoardPiece(this, height, new Posn(col, row));
+				Posn pos = new Posn(col, row);
+				BoardTile piece = new BoardTile(this, height, pos);
 				_boardPieces[col][row] = piece;
+				_posnToTile.put(pos, piece);
 
 				// set up _gamePiece
-				if (_board.getPiece(col,  row) != null) 
-					_gamePieces.add(new GamePiece(gl, this, _board.getPiece(col,  row), height));
+				if (_game.getBoard().getPiece(col,  row) != null) 
+					_gamePieces.add(new GamePiece(gl, this, _game.getBoard().getPiece(col,  row), height));
 			}
 		}
 		
-		System.out.println(_board.elevationsToString());
+		System.out.println(_game.getBoard().elevationsToString());
 		System.out.println("===================");
-		System.out.println(_board.piecesToString());
+		System.out.println(_game.getBoard().piecesToString());
 	}
 
 	public ArrayList<GamePiece> getGamePieces(){
@@ -104,8 +104,8 @@ public class GUIBoard extends Board {
 	@Override
 	public void draw(GL2 gl) {
 		_foundation.draw(gl);	
-		for (BoardPiece[] pieceArray: _boardPieces)
-			for (BoardPiece piece: pieceArray)
+		for (BoardTile[] pieceArray: _boardPieces)
+			for (BoardTile piece: pieceArray)
 				piece.draw(gl);
 
 		for (GamePiece piece: _gamePieces)

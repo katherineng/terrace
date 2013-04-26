@@ -11,14 +11,14 @@ import terrace.Posn;
  * @author ww15
  *
  */
-public class BoardPiece implements Drawable {
+public class BoardTile implements Drawable {
 	
 	private double _height;
 	private Posn _pos;
 	boolean selected;
 	GUIBoard _board;
 
-	public BoardPiece(GUIBoard board, double height, Posn pos){
+	public BoardTile(GUIBoard board, double height, Posn pos){
 		_board = board;
 		_height = height;
 		_pos = pos;
