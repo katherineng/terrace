@@ -31,6 +31,7 @@ public class Repl {
 			
 			Game game = new Game(numPlayers, dimensions, var);
 			System.out.println(game.getBoard().piecesToString());
+			System.out.println(game.getCurrentPlayer().getColor() + "\'s turn");
 			
 			try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
 				String line = br.readLine();
@@ -46,6 +47,7 @@ public class Repl {
 						
 						game.movePiece(new Posn(fromX, fromY), new Posn(toX, toY));
 						System.out.println(game.getBoard().piecesToString());
+						System.out.println(game.getCurrentPlayer().getColor() + "\'s turn");
 						
 					} catch (NumberFormatException e) {
 						System.err.println("ERROR: Position coordinates must be integers");
@@ -55,6 +57,8 @@ public class Repl {
 						
 					line = br.readLine();
 				}
+				
+				System.out.println("GAME OVER! " + game.getWinner().getName() + " won!");
 			} catch (IOException e) {
 				System.err.println(e.getMessage());
 				System.exit(0);

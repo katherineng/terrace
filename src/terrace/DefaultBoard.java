@@ -11,7 +11,8 @@ import java.util.*;
  */
 public class DefaultBoard implements Board<DefaultBoard> {
 	private final int _dimensions;
-	private static int[][] _elevations;
+	//private static int[][] _elevations;
+	private static HashMap<Integer, int[][]> _elevationsMap;
 	private Piece[][] _board;
 	private Variant _variant;
 
@@ -19,7 +20,8 @@ public class DefaultBoard implements Board<DefaultBoard> {
 		_dimensions = dimensions;
 		_board = new Piece[_dimensions][_dimensions];
 		_variant = variant;
-		_elevations = new int[_dimensions][_dimensions];
+		_elevationsMap = new HashMap<Integer, int[][]>();
+		//_elevations = new int[_dimensions][_dimensions];
 	}
 	
 	/**
@@ -27,40 +29,45 @@ public class DefaultBoard implements Board<DefaultBoard> {
 	 * Should only be invoked when setting up the board for the first time
 	 */
 	public void setUp() {
-		int halfWidth = _dimensions / 2;
-		
-		for (int i = 0; i < halfWidth; i++) { // lower left quadrant
-			for (int j = 0; j < halfWidth; j++) {
-				_elevations[i][j] = Math.max(i, j);
+		if (_elevationsMap.get(_dimensions) == null) { 
+			int halfWidth = _dimensions / 2;
+			int[][] elevations = new int[_dimensions][_dimensions];
+			
+			for (int i = 0; i < halfWidth; i++) { // lower left quadrant
+				for (int j = 0; j < halfWidth; j++) {
+					elevations[i][j] = Math.max(i, j);
+				}
 			}
-		}
-		
-		for (int i = halfWidth; i < _dimensions; i++) { // lower right quadrant
-			for (int j = 0; j < halfWidth; j++) {
-				_elevations[i][j] = Math.min(i, _dimensions - j - 1);
+			
+			for (int i = halfWidth; i < _dimensions; i++) { // lower right quadrant
+				for (int j = 0; j < halfWidth; j++) {
+					elevations[i][j] = Math.min(i, _dimensions - j - 1);
+				}
 			}
-		}
-		
-		for (int i = 0; i < halfWidth; i++) { // upper left quadrant
-			for (int j = halfWidth; j < _dimensions; j++) {
-				_elevations[i][j] = Math.min(_dimensions - i - 1, j);
+			
+			for (int i = 0; i < halfWidth; i++) { // upper left quadrant
+				for (int j = halfWidth; j < _dimensions; j++) {
+					elevations[i][j] = Math.min(_dimensions - i - 1, j);
+				}
 			}
-		}
-		
-		for (int i = halfWidth; i < _dimensions; i++) { // upper right quadrant
-			for (int j = halfWidth; j < _dimensions; j++) {
-				_elevations[i][j] = Math.max(_dimensions - i - 1, _dimensions - j - 1);
+			
+			for (int i = halfWidth; i < _dimensions; i++) { // upper right quadrant
+				for (int j = halfWidth; j < _dimensions; j++) {
+					elevations[i][j] = Math.max(_dimensions - i - 1, _dimensions - j - 1);
+				}
 			}
+			
+			_elevationsMap.put(_dimensions, elevations);
 		}
 	}
 	
 	@Override
 	public int getElevation(Posn p) {
-		return _elevations[p.x][p.y];
+		return _elevationsMap.get(_dimensions)[p.x][p.y];
 	}
 	
 	public int getElevation(int x, int y) {
-		return _elevations[x][y];
+		return _elevationsMap.get(_dimensions)[x][y];
 	}
 	
 	public Piece getPiece(int x, int y) {
@@ -145,8 +152,8 @@ public class DefaultBoard implements Board<DefaultBoard> {
 		List<Posn> neighbors = getNeighbors(currPosn);
 		for (Posn posn: neighbors) {
 			Piece p = _board[posn.x][posn.y];
-			int neighborElevation = _elevations[posn.x][posn.y];
-			int currElevation = _elevations[currPosn.x][currPosn.y];
+			int neighborElevation = _elevationsMap.get(_dimensions)[posn.x][posn.y];
+			int currElevation = _elevationsMap.get(_dimensions)[currPosn.x][currPosn.y];
 			
 			if (neighborElevation > currElevation) {  // up
 				if (posn.x != currPosn.x && posn.y != currPosn.y) { // diagonally up
@@ -203,12 +210,16 @@ public class DefaultBoard implements Board<DefaultBoard> {
 	@Override
 	public List<Posn> getNeighbors(Posn posn) {
 		List<Posn> neighbors = new ArrayList<Posn>();
-		for(int i = posn.x -1; i < posn.x + 1; i ++) {
-			for(int j = posn.y - 1; j < posn.y + 1; j ++) {
-				if ((i != posn.x) && (j != posn.y)) {
-					if (((i >= 0) && (i < _dimensions)) && ((j >= 0) && (j < _dimensions))) {
-						neighbors.add(new Posn(i, j));
-					}
+		
+		int startX = Math.max(0, posn.x - 1);
+		int endX = Math.min(posn.x + 1, _dimensions - 1);
+		int startY = Math.max(0, posn.y - 1);
+		int endY = Math.min(posn.y + 1, _dimensions - 1);
+		
+		for(int i = startX; i <= endX; i++) {
+			for(int j = startY; j <= endY; j++) {
+				if ((i != posn.x) || (j != posn.y)) {
+					neighbors.add(new Posn(i, j));
 				}
 			}
 		}
@@ -233,7 +244,7 @@ public class DefaultBoard implements Board<DefaultBoard> {
 			for (int j = 0; j < _dimensions; j++) {
 				Piece p = _board[i][j];
 				if (p != null) {
-					copy.setPiece(i, j, new Piece(p.getSize(), p.isTPiece(), p.getPosn(), p.getPlayer()));
+					copy.setPiece(i, j, new Piece(p.getSize(), p.isTPiece(), p.getPosn(), _dimensions, p.getPlayer()));
 				}
 			}
 		}
@@ -260,7 +271,7 @@ public class DefaultBoard implements Board<DefaultBoard> {
 		for (int y = _dimensions - 1; y >= 0; y--) {
 			elevations += "[ ";
 			for (int x = 0; x < _dimensions; x++) {
-				elevations += _elevations[x][y] + " ";
+				elevations += _elevationsMap.get(_dimensions)[x][y] + " ";
 			}
 			elevations += "]\n";
 		}
