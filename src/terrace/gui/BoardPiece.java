@@ -1,4 +1,4 @@
-package gui;
+package terrace.gui;
 
 import javax.media.opengl.GL2;
 import javax.vecmath.Vector2d;

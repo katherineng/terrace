@@ -1,4 +1,4 @@
-package gui;
+package terrace.gui;
 import java.awt.event.*;
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;

@@ -1,4 +1,4 @@
-package gui;
+package terrace.gui;
 
 import javax.media.opengl.*;
 
