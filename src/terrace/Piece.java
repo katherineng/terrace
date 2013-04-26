@@ -72,9 +72,9 @@ public class Piece implements Comparable<Piece> {
 	@Override
 	public String toString() {
 		if (_goalPosn.isPresent()) {
-			return "(" + _player.getColor().toString() + ", T, " + _goalPosn.toString() + ", " + _posn.toString() + ", " + _size + ")";
+			return "(" + _player.getColor().toString() + ", T)";
 		} else {
-			return "(" + _player.getColor().toString() + ", " + _goalPosn.toString() + ", " + _posn.toString() + ", " + _size + ")";
+			return "(" + _player.getColor().toString() + ", " + _size + ")";
 		}
 	}
 

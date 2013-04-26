@@ -61,4 +61,8 @@ public class Player {
 			return false;
 		return true;
 	}
+
+	public String getName() {
+		return _name;
+	}
 }
