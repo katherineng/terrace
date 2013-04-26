@@ -91,6 +91,7 @@ public class Game {
 					 _winner = Optional.of(_players.get(_currPlayer));
 				 }
 				 
+				 getCurrentPlayer().getPieces().remove(playerPiece);
 				 _board.setPiece(from.x, from.y, null);
 				 
 				 Piece captured = _board.getPieceAt(to);
@@ -106,6 +107,7 @@ public class Game {
 				 }
 					 
  				 playerPiece.setPosn(to);
+ 				 getCurrentPlayer().getPieces().add(playerPiece);
 				 _board.setPiece(to.x, to.y, playerPiece);
 				 
 				 changeTurn();

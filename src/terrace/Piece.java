@@ -34,7 +34,8 @@ public class Piece implements Comparable<Piece> {
 	}
 	
 	public void setPosn(Posn p) {
-		_posn = p;
+		_posn.x = p.x;
+		_posn.y = p.y;
 	}
 	
 	public boolean isTPiece() {

@@ -1,4 +1,4 @@
-package gui;
+package terrace.gui;
 import java.awt.event.*;
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
@@ -394,16 +394,4 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 	public void mouseEntered(MouseEvent e) {}
 	@Override
 	public void mouseExited(MouseEvent e) {}
-	/**
-	 * TESTING PURPOSES ONLY
-	 * TODO: delete later
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		JFrame frame = new JFrame();
-		frame.add(new GamePanel());
-		frame.setSize(1200, 1200);
-		frame.setVisible(true);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	}
 }
