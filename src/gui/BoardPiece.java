@@ -26,6 +26,9 @@ public class BoardPiece implements Drawable {
 	}
 	
 	
+	public Posn getPosn(){
+		return _pos;
+	}
 	@Override
 	public void draw(GL2 gl) {	
 		double dim = 1.0/_board.getDimensions();

@@ -19,6 +19,7 @@ import javax.vecmath.*;
 
 import terrace.Game;
 import terrace.Variant;
+import terrace.exception.IllegalMoveException;
 
 
 public class GamePanel extends GLCanvas implements MouseWheelListener, MouseListener, MouseMotionListener{
@@ -113,7 +114,7 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 			GL2 gl=arg0.getGL().getGL2();
 			switch (_mode){
 			case SELECTION: // if the user has selected something
-				setPieceSelection(gl);
+				if (!setPieceSelection(gl)) setMove(gl);
 				_mode = (_selection == null) ? Mode.NORMAL : Mode.HOVER;
 				break;
 			case HOVER:
@@ -145,7 +146,7 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 		/**
 		 * Gets the GamePiece the user has selected. Occurs on click
 		 * @param arg0
-		 * @return whether or not _selection has been updated
+		 * @return whether or not the user selected their own game piece
 		 */
 		boolean setPieceSelection(GL2 gl){
 		    SelectionRecorder recorder = new SelectionRecorder(gl);
@@ -163,40 +164,71 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 		    AtomicInteger index = new AtomicInteger(0);
 		    GamePiece newSelection = recorder.exitSelectionMode(index, _hit) ? pieces.get(index.get()) : null;
 		    _hit.w = 1;
+		    
+		    // act on newSelection if it might be a piece 
 		    if (newSelection != null){
-		    	if (newSelection._piece.getPlayer() == _game.getCurrentPlayer()){
-		    		if (_selection == newSelection){
+		    	//only act of user is the same
+		    	if (newSelection._piece.getPlayer() == _game.getCurrentPlayer()){ 
+		    		if (_selection == newSelection){ // if they are the same, that means user unselected
 		    			_selection.changeSelection();
-		    			if (_hover != null && _hover.isSelected()) {
-		    				_hover.changeSelection();
-		    				_hover = null;
-		    			}
+		    			if (_hover != null && _hover.isSelected()) _hover.changeSelection();
+		    			_hover = null;
 		    			_selection = null;
 		    			_mode = Mode.NORMAL;
-		    		} else {
+		    		} else { // set selection to something new
 				    	if (_selection != null) _selection.changeSelection();
 				    	_selection = newSelection;
 				    	_selection.changeSelection();
-				    	return true;
 		    		}
+			    	return true;
 		    	}
 		    }
+		    
+		    
 		    return false;
 		}
 		
-		/**
-		 * Gets the GamePiece the user has selected. Occurs on click
-		 * @param arg0
-		 * @return whether or not _selection has been updated
-		 */
+		
+		
+		boolean setMove(GL2 gl){
+			System.out.println("setting move");
+		    SelectionRecorder recorder = new SelectionRecorder(gl);
+
+		    // See if the (x, y) mouse position hits any primitives.
+		    List<BoardPiece> pieces = _board.getBoardPieces();
+		    recorder.enterSelectionMode((int) _selection_mouse.x, (int) _selection_mouse.y, pieces.size());
+		    for (int i = 0; i < pieces.size(); i++){
+		        recorder.setObjectIndex(i);
+		        pieces.get(i).draw(gl);
+		    }
+
+		    // Set or clear the selection, and set m_hit to be the intersection point.
+		    AtomicInteger index = new AtomicInteger(0);
+		    BoardPiece newSelection = recorder.exitSelectionMode(index, _hit) ? pieces.get(index.get()) : null;
+
+		    _hit.w = 1;
+		    if (newSelection != null){
+		    	try {
+					_game.movePiece(_selection.getPosn(), newSelection.getPosn());
+				} catch (IllegalMoveException e) {
+					System.out.println("illegal move");
+					return false;
+				}
+		    }
+		    if (_selection != null && _selection.isSelected()) _selection.changeSelection();
+		    if (_hover != null && _hover.isSelected()) _hover.changeSelection();
+		    _hover = null;
+		    _selection = null;
+		    _mode = Mode.NORMAL;
+		    return true;
+		}
+		
 		boolean setBoardSelection(GL2 gl){
 		    SelectionRecorder recorder = new SelectionRecorder(gl);
 
 		    // See if the (x, y) mouse position hits any primitives.
 		    List<BoardPiece> pieces = _board.getBoardPieces();
-		    recorder.enterSelectionMode((int) _hover_mouse.x, 
-		    		(int) _hover_mouse.y, 
-		    		pieces.size());
+		    recorder.enterSelectionMode((int) _hover_mouse.x, (int) _hover_mouse.y, pieces.size());
 		    for (int i = 0; i < pieces.size(); i++){
 		        recorder.setObjectIndex(i);
 		        pieces.get(i).draw(gl);

@@ -30,6 +30,13 @@ public class GamePiece implements Drawable {
 	    _piece = piece;
 	}
 	
+	public Posn getPosn(){
+		return _piece.getPosn();
+	}
+	public boolean isSelected(){
+		return _selected;
+	}
+	
 	/**
 	 * Sets the new elevation of the game piece. Useful for drawing
 	 * @param elevation - an integer representing the new elevation of the game piece
