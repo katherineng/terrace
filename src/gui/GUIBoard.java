@@ -1,42 +1,48 @@
 package gui;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import javax.media.opengl.*;
-import javax.media.opengl.glu.*;
 import javax.vecmath.*;
 
 
 import terrace.DefaultBoard;
 import terrace.Game;
 import terrace.Player;
+import terrace.Posn;
 
-public class NormalBoard extends Board {
+public class GUIBoard extends Board {
 
 	private RectPrism _foundation;
 	private BoardPiece[][] _boardPieces;
 	private ArrayList<GamePiece> _gamePieces;
 	protected DefaultBoard _board;
 	protected int _dimension;
-	private GLUquadric _gluQuadric;
-	private HashMap<Player, Vector3d> _playerColors;
+	HashMap<Player, Vector3d> _playerColors;
 	private Game _game;
 
-	public NormalBoard(GL2 gl, Game game){
+	public GUIBoard(GL2 gl, Game game){
 		_game = game;
-		GLU glu = new GLU();
 		_foundation = new RectPrism(1.,.01,1.);
 		_board = _game.getBoard();
 		_dimension = _board.getDimensions();
 		_boardPieces = new BoardPiece[_dimension][_dimension];
-		_gamePieces = new ArrayList<GamePiece>();//[_dimension][_dimension];
-		_gluQuadric = glu.gluNewQuadric();
+		_gamePieces = new ArrayList<GamePiece>();
 		setUpColors();
 		
 		setUpBoard(gl);
+	}
+	
+	public int getDimensions(){
+		return _board.getDimensions();
+	}
+	
+	public List<BoardPiece> getBoardPieces(){
+		LinkedList<BoardPiece> toRet = new LinkedList<BoardPiece>();
+		for (int i = 0; i < _boardPieces.length; i++)
+			for (int j = 0; j < _boardPieces[0].length; j++)
+				toRet.addLast(_boardPieces[i][j]);
+		return toRet;
 	}
 	
 	/**
@@ -66,26 +72,23 @@ public class NormalBoard extends Board {
 		}
 	}
 
+	public double getElevation(int row, int col){
+		return  _board.getElevation(row, col)/60.0;		
+	}
+	
 	private void setUpBoard(GL2 gl){
 		
 		//needed because translation is relative to center of shape, not the corner
-		double shiftFactor = 1.0/_board.getDimensions()/2;
-
 		for (int row = 0; row < _dimension; row++){
-			double rowShift = 1.0/_dimension*row;
 			for (int col = 0; col < _dimension; col++){
-				double colShift = 1.0/_dimension*col;
-
-				double height =  _board.getElevation(row, col)/60.0;
+				double height = getElevation(row, col);
 				// set up _boardPiece
-				BoardPiece piece = new BoardPiece(1.0/_dimension, height, 
-						new Vector2d(.5 - shiftFactor - rowShift, .5 - shiftFactor - colShift));
+				BoardPiece piece = new BoardPiece(this, height, new Posn(row, col));
 				_boardPieces[row][col] = piece;
 
 				// set up _gamePiece
-				if (_board.getPiece(row,  col) != null)  _gamePieces.add(new GamePiece(gl, _board.getPiece(row,  col), height,
-						new Vector2d(.5 - shiftFactor - rowShift, .5 - shiftFactor - colShift), _gluQuadric, _playerColors));
-
+				if (_board.getPiece(row,  col) != null) 
+					_gamePieces.add(new GamePiece(gl, this, _board.getPiece(row,  col), height));
 			}
 		}
 	}

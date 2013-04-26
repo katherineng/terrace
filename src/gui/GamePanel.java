@@ -24,7 +24,7 @@ import terrace.Variant;
 public class GamePanel extends GLCanvas implements MouseWheelListener, MouseListener, MouseMotionListener{
 	
 	/** Determines current drawing mode **/
-	private enum Mode {NORMAL, SELECTION};
+	private enum Mode {NORMAL, SELECTION, HOVER};
 
 	/*==== General Drawing ====*/
 	Camera _camera;
@@ -32,14 +32,17 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 	Vector2d _prevMousePos;
 	
 	/*==== For Gameplay ====*/
-	NormalBoard _board;
+	GUIBoard _board;
 	Game _game;
 	
-	/*==== For Selection ====*/
+	/*==== For Selection/Hoover ====*/
 	GamePiece _selection; 		/** The GamePiece that has currently been selected **/
+	BoardPiece _hover;
 	Vector4d _hit;
 	Vector2d _selection_mouse;
+	Vector2d _hover_mouse;
 	Mode _mode;
+	
 	
 	public GamePanel(){
 
@@ -57,13 +60,15 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 	    /*==== Camera setup ====*/
 	    Vector3d center = new Vector3d(0., 0., 0.);
 	    Vector3d up = new Vector3d(0.f, 1.f, 0.f);
-	    double theta = Math.PI * 1.5f, phi = 0.2, fovy = 60., zoom = 1;
+	    double theta = Math.PI * 1.5f, phi = -.6, fovy = 60., zoom = 1;
 	    _camera = new Camera(center, up, theta, phi, fovy, zoom);
 	    
 	    
 	    /*==== Selection ===*/
 	    _hit = new Vector4d(0,0,0,0);
 	    _selection = null;
+	    _hover = null;
+	    _hover_mouse = new Vector2d(0,0);
 	    
 	    
 	    /*==== Listeners ====*/
@@ -108,14 +113,23 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 			GL2 gl=arg0.getGL().getGL2();
 			switch (_mode){
 			case SELECTION: // if the user has selected something
-				setPieceSelection(arg0);
-				if (_selection != null) _selection.changeSelection();
-				_mode = Mode.NORMAL;
+				setPieceSelection(gl);
+				_mode = (_selection == null) ? Mode.NORMAL : Mode.HOVER;
+				break;
+			case HOVER:
+				setBoardSelection(gl);
+				applyCameraPerspective(gl);		
+				gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+
+				gl.glEnable(GL.GL_DEPTH_TEST);  
+				gl.glCullFace(GL.GL_FRONT);
+				gl.glEnable(GL.GL_CULL_FACE); 
+				gl.glFrontFace(GL.GL_CW); 
+				_board.draw(gl);
 				break;
 			case NORMAL: // regular drawing
 				applyCameraPerspective(gl);		
 				gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
-
 				gl.glEnable(GL.GL_DEPTH_TEST);  
 				gl.glCullFace(GL.GL_FRONT);
 				gl.glEnable(GL.GL_CULL_FACE); 
@@ -131,9 +145,9 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 		/**
 		 * Gets the GamePiece the user has selected. Occurs on click
 		 * @param arg0
+		 * @return whether or not _selection has been updated
 		 */
-		void setPieceSelection(GLAutoDrawable arg0){
-			GL2 gl=arg0.getGL().getGL2();
+		boolean setPieceSelection(GL2 gl){
 		    SelectionRecorder recorder = new SelectionRecorder(gl);
 
 		    // See if the (x, y) mouse position hits any primitives.
@@ -148,12 +162,57 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 		    // Set or clear the selection, and set m_hit to be the intersection point.
 		    AtomicInteger index = new AtomicInteger(0);
 		    GamePiece newSelection = recorder.exitSelectionMode(index, _hit) ? pieces.get(index.get()) : null;
-		    if (newSelection != null) System.out.println(newSelection._piece.getPlayer() + " " + _game.getCurrentPlayer());
-		    if (newSelection != null && newSelection._piece.getPlayer().equals(_game.getCurrentPlayer())){
-			    if (_selection != null) _selection.changeSelection();
-			    _selection = newSelection;
-		    }
 		    _hit.w = 1;
+		    if (newSelection != null){
+		    	if (newSelection._piece.getPlayer() == _game.getCurrentPlayer()){
+		    		if (_selection == newSelection){
+		    			_selection.changeSelection();
+		    			if (_hover != null && _hover.isSelected()) {
+		    				_hover.changeSelection();
+		    				_hover = null;
+		    			}
+		    			_selection = null;
+		    			_mode = Mode.NORMAL;
+		    		} else {
+				    	if (_selection != null) _selection.changeSelection();
+				    	_selection = newSelection;
+				    	_selection.changeSelection();
+				    	return true;
+		    		}
+		    	}
+		    }
+		    return false;
+		}
+		
+		/**
+		 * Gets the GamePiece the user has selected. Occurs on click
+		 * @param arg0
+		 * @return whether or not _selection has been updated
+		 */
+		boolean setBoardSelection(GL2 gl){
+		    SelectionRecorder recorder = new SelectionRecorder(gl);
+
+		    // See if the (x, y) mouse position hits any primitives.
+		    List<BoardPiece> pieces = _board.getBoardPieces();
+		    recorder.enterSelectionMode((int) _hover_mouse.x, 
+		    		(int) _hover_mouse.y, 
+		    		pieces.size());
+		    for (int i = 0; i < pieces.size(); i++){
+		        recorder.setObjectIndex(i);
+		        pieces.get(i).draw(gl);
+		    }
+
+		    // Set or clear the selection, and set m_hit to be the intersection point.
+		    AtomicInteger index = new AtomicInteger(0);
+		    BoardPiece newSelection = recorder.exitSelectionMode(index, _hit) ? pieces.get(index.get()) : null;
+
+		    _hit.w = 1;
+		    if (newSelection != null && newSelection != _hover){
+		    	if (_hover != null) _hover.changeSelection();
+		    	_hover = newSelection;
+		    	_hover.changeSelection();
+		    }
+		    return false;
 		}
 
 		public void displayChanged(GLAutoDrawable arg0, boolean arg1, boolean arg2) {}
@@ -207,7 +266,7 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 		    /*==== Gameplay ====*/ 
 		    Game game = new Game(2, 8, Variant.STANDARD);
 		    _game = game;
-		    _board = new NormalBoard(gl, game);
+		    _board = new GUIBoard(gl, game);
 			
 		}
 
@@ -252,7 +311,12 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 	}
 	
 	@Override
-	public void mouseMoved(MouseEvent e) {}
+	public void mouseMoved(MouseEvent e) {
+		if (_selection != null){
+			_hover_mouse = new Vector2d(e.getX(), e.getY());
+			_mode = Mode.HOVER;
+		}
+	}
 	@Override
 	public void mouseReleased(MouseEvent e) {}
 	@Override

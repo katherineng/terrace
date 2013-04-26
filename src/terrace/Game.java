@@ -26,7 +26,7 @@ public class Game {
 		_players = new ArrayList<Player>();
 		for (int i = 0; i < numPlayers; i++) {
 			_players.add(new Player(PlayerColor.values()[i]));
-		}
+		}		
 		
 		_currPlayer = 0;
 		

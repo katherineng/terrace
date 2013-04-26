@@ -30,14 +30,7 @@ public class Player {
 	public PlayerColor getColor() {
 		return _color;
 	}
-	
-	public String getName() {
-		return _name;
-	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
