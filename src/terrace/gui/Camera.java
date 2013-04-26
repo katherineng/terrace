@@ -39,7 +39,7 @@ class Camera {
 	 * @param delta - the amount by which the user wants to zoom
 	 */
 	void mouseWheel(float delta) {
-	    zoom *= Math.pow(0.999f, delta);
+	    zoom *= Math.pow(0.9f, delta);
 	}
 	
 	/**

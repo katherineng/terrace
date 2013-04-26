@@ -357,7 +357,7 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 	 */
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
-        _camera.mouseWheel(-e.getWheelRotation()*10);
+        _camera.mouseWheel(-e.getWheelRotation());
 	}
 
 	@Override
