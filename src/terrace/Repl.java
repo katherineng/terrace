@@ -52,7 +52,7 @@ public class Repl {
 					} catch (NumberFormatException e) {
 						System.err.println("ERROR: Position coordinates must be integers");
 					} catch (IllegalMoveException e) {
-						System.err.println("ERROR: Illegal move. Try again.");
+						System.err.println("ERROR: " + e.getMessage());
 					}
 						
 					line = br.readLine();

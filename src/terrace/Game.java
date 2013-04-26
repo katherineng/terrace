@@ -80,6 +80,10 @@ public class Game {
 	public Piece movePiece(Posn from, Posn to) throws IllegalMoveException {
 		Piece playerPiece = _board.getPieceAt(from);
 		if (playerPiece == null || !getCurrentPlayer().getPieces().contains(playerPiece)) {
+			Set<Piece> playerPieces = getCurrentPlayer().getPieces();
+			for (Piece p : playerPieces) {
+				System.out.println(p);
+			}
 			throw new IllegalMoveException("ERROR: " + _currPlayer + "\'s piece not found at " + from.toString());
 		} else {
 			 Set<Posn> possibleMoves = _board.getMoves(playerPiece);
