@@ -25,7 +25,7 @@ import terrace.exception.IllegalMoveException;
 public class GamePanel extends GLCanvas implements MouseWheelListener, MouseListener, MouseMotionListener{
 	
 	/** Determines current drawing mode **/
-	private enum Mode {NORMAL, SELECTION, HOVER};
+	private enum Mode {NORMAL, SELECTION, HOVER, MOVE};
 
 	/*==== General Drawing ====*/
 	Camera _camera;
@@ -114,7 +114,7 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 			GL2 gl=arg0.getGL().getGL2();
 			switch (_mode){
 			case SELECTION: // if the user has selected something
-				if (!setPieceSelection(gl)) setMove(gl);
+				setPieceSelection(gl);
 				_mode = (_selection == null) ? Mode.NORMAL : Mode.HOVER;
 				break;
 			case HOVER:
@@ -128,6 +128,8 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 				gl.glFrontFace(GL.GL_CW); 
 				_board.draw(gl);
 				break;
+			case MOVE:
+				setMove(gl);
 			case NORMAL: // regular drawing
 				applyCameraPerspective(gl);		
 				gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
@@ -191,7 +193,6 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 		
 		
 		boolean setMove(GL2 gl){
-			System.out.println("setting move");
 		    SelectionRecorder recorder = new SelectionRecorder(gl);
 
 		    // See if the (x, y) mouse position hits any primitives.
@@ -211,7 +212,7 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 		    	try {
 					_game.movePiece(_selection.getPosn(), newSelection.getPosn());
 				} catch (IllegalMoveException e) {
-					System.out.println("illegal move");
+					_mode = Mode.HOVER;
 					return false;
 				}
 		    }
@@ -329,7 +330,7 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		_selection_mouse = new Vector2d(e.getX(), e.getY());
-		_mode = Mode.SELECTION;
+		_mode = (_mode == Mode.HOVER) ? Mode.MOVE : Mode.SELECTION;
 		repaint();
 	}
 	
