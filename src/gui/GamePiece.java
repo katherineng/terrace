@@ -17,17 +17,19 @@ public class GamePiece implements Drawable {
 	private GLU glu;
 	GUIBoard _board;
 	Piece _piece;
+	GLUquadric _quadric;
 	
 	public GamePiece(GL2 gl, GUIBoard board, Piece piece, double d){
 
-	 //   glu.gluQuadricNormals(_quadric, GL2.GL_SMOOTH);
 	    
 		glu = new GLU();
+		_quadric = glu.gluNewQuadric();
 		_board = board;
 	    _elevation = d;
 	    _selected = false;
 	    _radius = (piece.getSize() + 1) * .01;
 	    _piece = piece;
+
 	}
 	
 	public Posn getPosn(){
@@ -47,15 +49,13 @@ public class GamePiece implements Drawable {
 	
 	@Override
 	public void draw(GL2 gl){
-
-		GLUquadric _quadric = glu.gluNewQuadric();
 	    gl.glPushMatrix();			
 		glu.gluQuadricNormals(_quadric, GL.GL_TRUE);
 		gl.glLoadIdentity();
 		Posn pos = _piece.getPosn();
 		double shiftFactor = 1.0/_board.getDimensions()/2;
-		double rowShift = 1.0/_board.getDimensions()*pos.x;
-		double colShift = 1.0/_board.getDimensions()*pos.y;
+		double rowShift = 1.0/_board.getDimensions()*pos.y;
+		double colShift = 1.0/_board.getDimensions()*pos.x;
 		gl.glTranslated(.5 - shiftFactor - rowShift, _elevation + _radius, .5 - shiftFactor - colShift);
 
 		double mult = (_piece.isTPiece()) ? .5 : 1;

@@ -72,8 +72,8 @@ public class GUIBoard extends Board {
 		}
 	}
 
-	public double getElevation(int row, int col){
-		return  _board.getElevation(row, col)/60.0;		
+	public double getElevation(int col, int row){
+		return  _board.getElevation(col, row)/60.0;		
 	}
 	
 	private void setUpBoard(GL2 gl){
@@ -81,16 +81,20 @@ public class GUIBoard extends Board {
 		//needed because translation is relative to center of shape, not the corner
 		for (int row = 0; row < _dimension; row++){
 			for (int col = 0; col < _dimension; col++){
-				double height = getElevation(row, col);
+				double height = getElevation(col, row);
 				// set up _boardPiece
-				BoardPiece piece = new BoardPiece(this, height, new Posn(row, col));
-				_boardPieces[row][col] = piece;
+				BoardPiece piece = new BoardPiece(this, height, new Posn(col, row));
+				_boardPieces[col][row] = piece;
 
 				// set up _gamePiece
-				if (_board.getPiece(row,  col) != null) 
-					_gamePieces.add(new GamePiece(gl, this, _board.getPiece(row,  col), height));
+				if (_board.getPiece(col,  row) != null) 
+					_gamePieces.add(new GamePiece(gl, this, _board.getPiece(col,  row), height));
 			}
 		}
+		
+		System.out.println(_board.elevationsToString());
+		System.out.println("===================");
+		System.out.println(_board.piecesToString());
 	}
 
 	public ArrayList<GamePiece> getGamePieces(){

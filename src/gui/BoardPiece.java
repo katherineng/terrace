@@ -34,8 +34,8 @@ public class BoardPiece implements Drawable {
 		double dim = 1.0/_board.getDimensions();
 		double shiftFactor = 1.0/_board.getDimensions()/2;
 
-		double rowShift = 1.0/_board.getDimensions()*_pos.x;
-		double colShift = 1.0/_board.getDimensions()*_pos.y;
+		double rowShift = 1.0/_board.getDimensions()*_pos.y;
+		double colShift = 1.0/_board.getDimensions()*_pos.x;
 		Vector2d pos = new Vector2d(.5 - shiftFactor - rowShift, .5 - shiftFactor - colShift);
 		gl.glPushMatrix();
 		gl.glTranslated(pos.x, _height/2, pos.y);
