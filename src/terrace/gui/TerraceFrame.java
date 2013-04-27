@@ -14,7 +14,7 @@ public class TerraceFrame extends JFrame {
 	CardLayout layout = new CardLayout();
 	
 	public TerraceFrame() {
-		setSize(1200, 1200);
+		setExtendedState(getExtendedState() | MAXIMIZED_BOTH);
 		setLayout(layout);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		add(new GamePanel(new Game(4, 8, Variant.STANDARD)), GAME);
