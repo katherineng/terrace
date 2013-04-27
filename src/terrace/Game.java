@@ -1,6 +1,8 @@
 package terrace;
 
 import java.util.*;
+
+import terrace.ai.AI;
 import terrace.exception.IllegalMoveException;
 import com.google.common.base.*;
 
@@ -15,8 +17,8 @@ public class Game {
 	private Optional<Player> _winner;
 	// private Variant _variant;
 	
-	public Game(int numPlayers, int dimensions, Variant variant) {
-		_numPlayers = numPlayers;
+	public Game(int numHuman, int numAI, int dimensions, Variant variant) throws IllegalMoveException {
+		_numPlayers = numHuman + numAI;
 		// _variant = variant;
 		_dimensions = dimensions;
 		_board = new DefaultBoard(dimensions, variant);
@@ -25,12 +27,15 @@ public class Game {
 		_winner = Optional.absent();
 		
 		_players = new ArrayList<Player>();
-		for (int i = 0; i < numPlayers; i++) {
+		for (int i = 0; i < numHuman; i++) 
 			_players.add(new Player(PlayerColor.values()[i]));
-		}		
+		for (int i = numHuman; i < _numPlayers; i++) 
+			_players.add(new AI(PlayerColor.values()[i], this));
 		
 		_playersAlive = _numPlayers;
 		_currPlayer = 0;
+		
+		_players.get(_currPlayer).makeMove();
 		
 		setUpPieces();
 	}
@@ -54,7 +59,7 @@ public class Game {
 	 * @param p A player
 	 * @return  All the live pieces owned by that player
 	 */
-	public Set<Piece> getPiecesOf(Player p) {
+	public List<Piece> getPiecesOf(Player p) {
 		return p.getPieces();
 	}
 	
@@ -66,9 +71,10 @@ public class Game {
 		return _winner.orNull();
 	}
 	
-	private void changeTurn() {
+	private void changeTurn() throws IllegalMoveException {
 		if (_currPlayer < _numPlayers - 1) _currPlayer++;
 		else _currPlayer = 0;
+		if (!_isGameOver) _players.get(_currPlayer).makeMove();
 	}
 	
 	
@@ -84,7 +90,7 @@ public class Game {
 		if (playerPiece == null || !getCurrentPlayer().getPieces().contains(playerPiece)) {
 			throw new IllegalMoveException("ERROR: " + _currPlayer + "\'s piece not found at " + from.toString());
 		} else {
-			 Set<Posn> possibleMoves = _board.getMoves(playerPiece);
+			 List<Posn> possibleMoves = _board.getMoves(playerPiece);
 			 
 			 if (!possibleMoves.contains(to)) {
 				 throw new IllegalMoveException("ERROR: Piece at " + from.toString() + " can't be moved to " + to.toString());

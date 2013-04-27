@@ -40,7 +40,7 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 	/*==== For Selection/Hoover ====*/
 	private GamePiece _selection; 		/** The GamePiece that has currently been selected **/
 	private BoardTile _hover;
-	private Set<Posn> _possibleMoves;
+	private List<Posn> _possibleMoves;
 	private Vector4d _hit;
 	private Vector2d _selection_mouse;
 	private Vector2d _hover_mouse;
@@ -108,6 +108,7 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 			gl.glMatrixMode(GL2.GL_MODELVIEW);
 			gl.glLoadIdentity();
 		}
+		
 		
 		/**
 		 * Does the actual drawing

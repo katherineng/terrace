@@ -2,15 +2,21 @@ package terrace;
 
 import java.util.*;
 
+import terrace.exception.IllegalMoveException;
+
 public class Player {
-	private Set<Piece> _pieces;
+	private List<Piece> _pieces;
 	PlayerColor _color;
 	String _name;
 	
 	public Player(PlayerColor color) {
-		_pieces = new HashSet<Piece>();
+		_pieces = new LinkedList<Piece>();
 		_color = color;
 		_name = "";
+	}
+	
+	public boolean makeMove() throws IllegalMoveException {
+		return false;
 	}
 	
 	public void removePiece(Piece piece) {
@@ -21,7 +27,7 @@ public class Player {
 		_pieces.add(piece);
 	}
 	
-	public Set<Piece> getPieces() {
+	public List<Piece> getPieces() {
 		return _pieces;
 	}
 	

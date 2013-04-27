@@ -6,6 +6,7 @@ import javax.swing.JFrame;
 
 import terrace.Game;
 import terrace.Variant;
+import terrace.exception.IllegalMoveException;
 
 public class TerraceFrame extends JFrame {
 	private static final String SETUP = "Setup";
@@ -13,10 +14,10 @@ public class TerraceFrame extends JFrame {
 	
 	CardLayout layout = new CardLayout();
 	
-	public TerraceFrame() {
+	public TerraceFrame(int numHuman, int numAI, int boardSize, Variant variant) throws IllegalMoveException {
 		setSize(1200, 1200);
 		setLayout(layout);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		add(new GamePanel(new Game(2, 8, Variant.STANDARD)), GAME);
+		add(new GamePanel(new Game(numHuman, numAI, boardSize, variant)), GAME);
 	}
 }

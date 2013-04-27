@@ -120,7 +120,7 @@ public class DefaultBoard implements Board<DefaultBoard> {
 	 * @param piece The piece for which to find possible moves
 	 * @param positions A reference to a set of positions to which the possible positions should be added
 	 */
-	private void getSameTerraceMoves(Piece piece, Set<Posn> positions) {
+	private void getSameTerraceMoves(Piece piece, List<Posn> positions) {
 		Posn currPosn = piece.getPosn();
 		
 		List<Posn> sameTerrace = getTerracePosns(currPosn);
@@ -157,7 +157,7 @@ public class DefaultBoard implements Board<DefaultBoard> {
 	 * @param piece The piece for which to find the possible positions
 	 * @param positions A reference to set of possible positions to which the positions should be added
 	 */
-	private void getUpDownMoves(Piece piece, Set<Posn> positions) {
+	private void getUpDownMoves(Piece piece, List<Posn> positions) {
 		Posn currPosn = piece.getPosn();
 		
 		List<Posn> neighbors = getNeighbors(currPosn);
@@ -205,7 +205,7 @@ public class DefaultBoard implements Board<DefaultBoard> {
 	 * @param piece The piece for which to find possible moves
 	 * @param positions A reference to the set of positions representing the possible moves
 	 */
-	private void getDownhillMoves(Posn start, Piece piece, Set<Posn> positions) {
+	private void getDownhillMoves(Posn start, Piece piece, List<Posn> positions) {
 		Posn currPosn = piece.getPosn();
 		
 		if (currPosn.x != start.x) {
@@ -232,8 +232,8 @@ public class DefaultBoard implements Board<DefaultBoard> {
 	}
 	
 	@Override
-	public Set<Posn> getMoves(Piece piece) {
-		Set<Posn> positions = new HashSet<Posn>();
+	public List<Posn> getMoves(Piece piece) {
+		List<Posn> positions = new LinkedList<Posn>();
 		
 		// same terrace, same quadrant, can't jump over opponent
 		getSameTerraceMoves(piece, positions);

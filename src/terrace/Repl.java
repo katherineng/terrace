@@ -7,7 +7,7 @@ import terrace.exception.IllegalMoveException;
 public class Repl {
 
 	// num players, board dims, rule variant, board shape
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IllegalMoveException {
 		if (args.length != 4) {
 			System.err.println("Usage: ./terrace <num players> <board dimensions> <rule variant> <board shape>");
 			System.exit(0);
@@ -29,7 +29,7 @@ public class Repl {
 				System.exit(0);
 			}
 			
-			Game game = new Game(numPlayers, dimensions, var);
+			Game game = new Game(numPlayers, 0, dimensions, var);
 			System.out.println(game.getBoard().piecesToString());
 			System.out.println(game.getCurrentPlayer().getColor() + "\'s turn");
 			

@@ -26,7 +26,7 @@ public class TriangleBoard implements Board<TriangleBoard> {
 	}
 
 	@Override
-	public Set<Posn> getMoves(Piece piece) {
+	public List<Posn> getMoves(Piece piece) {
 		// TODO Auto-generated method stub
 		return null;
 	}

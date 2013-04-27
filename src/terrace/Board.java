@@ -21,7 +21,7 @@ public interface Board<T extends Board<T>> {
 	 * @param A piece on the board
 	 * @return A set of all the positions
 	 */
-	Set<Posn> getMoves(Piece piece);
+	List<Posn> getMoves(Piece piece);
 	
 	/**
 	 * Returns the piece at the given position

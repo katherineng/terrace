@@ -12,10 +12,10 @@ public class GameTest {
 
 	@Test
 	public void test() throws IllegalMoveException {
-		Game twoPlayer = new Game(2, 8, Variant.STANDARD);
+		Game twoPlayer = new Game(2, 0, 8, Variant.STANDARD);
 		twoPlayer.setUpPieces();
 		
-		Game fourPlayer = new Game(4, 8, Variant.STANDARD);
+		Game fourPlayer = new Game(4, 0, 8, Variant.STANDARD);
 		fourPlayer.setUpPieces();
 		
 //		System.out.println(twoPlayer.getBoard().piecesToString());
@@ -39,7 +39,7 @@ public class GameTest {
 		Game downhill = new Game(2, 8, Variant.DOWNHILL);
 		downhill.setUpPieces();
 		
-		Set<Posn> moves = downhill.getBoard().getMoves(downhill.getBoard().getPiece(7,  1));
+		List<Posn> moves = downhill.getBoard().getMoves(downhill.getBoard().getPiece(7,  1));
 		for (Posn p : moves) {
 			System.out.println(p);
 		}
