@@ -4,15 +4,15 @@ import javax.vecmath.*;
 
 class Camera {
 	double zoom;
-	double fovy;
+	double fovx;
 	double theta;
 	double phi;
 	Vector3d center;
 	Vector3d up;
 	
-	Camera(Vector3d center, Vector3d up, double theta, double phi, double fovy, double zoom){
+	Camera(Vector3d center, Vector3d up, double theta, double phi, double fovx, double zoom){
 		this.zoom = zoom;
-		this.fovy = fovy;
+		this.fovx = fovx;
 		this.theta = theta;
 		this.phi = phi;
 		this.center = center;

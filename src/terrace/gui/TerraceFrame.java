@@ -16,6 +16,8 @@ public class TerraceFrame extends JFrame {
 	
 	public TerraceFrame(int numHuman, int numAI, int boardSize, Variant variant) throws IllegalMoveException {
 		setSize(1200, 1200);
+
+		setExtendedState(getExtendedState() | MAXIMIZED_BOTH);
 		setLayout(layout);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		add(new GamePanel(new Game(numHuman, numAI, boardSize, variant)), GAME);

@@ -36,7 +36,7 @@ public class GameTest {
 //			System.out.println(p);
 //		}
 		
-		Game downhill = new Game(2, 8, Variant.DOWNHILL);
+		Game downhill = new Game(2, 0, 8, Variant.DOWNHILL);
 		downhill.setUpPieces();
 		
 		List<Posn> moves = downhill.getBoard().getMoves(downhill.getBoard().getPiece(7,  1));
