@@ -45,7 +45,7 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 	Mode _mode;
 	
 	
-	public GamePanel(){
+	public GamePanel(Game game){
 
 		/*==== General Drawing ====*/
 		super(new GLCapabilities(GLProfile.getDefault()));
@@ -56,6 +56,7 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 	    Animator animator = new Animator(this);
 	    animator.start();
 	    this_gui = this;
+	    _game = game;
 	    _mode = Mode.NORMAL;
 	    
 	    /*==== Camera setup ====*/
@@ -177,7 +178,6 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 				} else { // set selection to something new. Remains in selection mode
 					if (_selection != null) _selection.changeSelection(); // unselect old thing
 					_selection = newSelection;
-					System.out.println("Selected piece at position: " + newSelection.getPosn());
 					_selection.changeSelection();
 				}
 				return true;
@@ -197,7 +197,13 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 
 			try {
 				_game.movePiece(_selection.getPosn(), newSelection.getPosn());
+				_board.resetPieces();
+				System.out.println(_game.getBoard().piecesToString());
+				System.out.println("================");
 			} catch (IllegalMoveException e) {
+				_hover.incorrect();
+				System.out.println(_game.getBoard().piecesToString());
+				System.out.println("================");
 				System.out.println(e.getMessage());
 				_mode = Mode.HOVER;
 				return false;
@@ -222,7 +228,6 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 		    if (newSelection != _hover){
 		    	if (_hover != null) _hover.changeSelection();
 		    	_hover = newSelection;
-				System.out.println("Hovering over: " + newSelection.getPosn());
 		    	_hover.changeSelection();
 		    	return true;
 		    }
@@ -335,9 +340,7 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 			
 
 		    /*==== Gameplay ====*/ 
-		    Game game = new Game(2, 8, Variant.STANDARD);
-		    _game = game;
-		    _board = new GUIBoard(gl, game);
+		    _board = new GUIBoard(gl, _game);
 			
 		}
 
