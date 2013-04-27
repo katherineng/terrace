@@ -18,6 +18,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.vecmath.*;
 
 import terrace.Game;
+import terrace.Posn;
 import terrace.Variant;
 import terrace.exception.IllegalMoveException;
 
@@ -39,6 +40,7 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 	/*==== For Selection/Hoover ====*/
 	GamePiece _selection; 		/** The GamePiece that has currently been selected **/
 	BoardTile _hover;
+	Set<Posn> _possibleMoves;
 	Vector4d _hit;
 	Vector2d _selection_mouse;
 	Vector2d _hover_mouse;
@@ -116,6 +118,7 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 			switch (_mode){
 			case SELECTION: // activated when the user has selected something
 				GamePiece pieceSelection = getGamePieceSelection(gl, _selection_mouse);
+
 				
 				// If the user has
 				if (pieceSelection != null) setPieceSelection(pieceSelection);
@@ -129,28 +132,38 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 			case HOVER: // the user has selected something and is moving over objects
 				BoardTile boardSelection = getBoardPieceSelection(gl, _hover_mouse);
 				if (boardSelection != null) setBoardSelection(boardSelection);
-				applyCameraPerspective(gl);		
-				gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
-
-				gl.glEnable(GL.GL_DEPTH_TEST);  
-				gl.glCullFace(GL.GL_FRONT);
-				gl.glEnable(GL.GL_CULL_FACE); 
-				gl.glFrontFace(GL.GL_CW); 
-				_board.draw(gl);
+				normalDraw(gl);
 				break;
 			case NORMAL: // regular drawing
-				applyCameraPerspective(gl);		
-				gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
-				gl.glEnable(GL.GL_DEPTH_TEST);  
-				gl.glCullFace(GL.GL_FRONT);
-				gl.glEnable(GL.GL_CULL_FACE); 
-				gl.glFrontFace(GL.GL_CW); 
-				_board.draw(gl);
+				normalDraw(gl);
 				break;
 			default:// should never get here
 				assert(false); 
 				break;
 			}
+		}
+		
+		private void clearPossible(){
+			//change board tile settings
+			if (_possibleMoves != null){
+				for (Posn p: _possibleMoves) _board._posnToTile.get(p).setMoveColor(null);
+				_possibleMoves.clear();
+			}
+		}
+		
+		/**
+		 * draws everything normally
+		 * @param gl
+		 */
+		private void normalDraw(GL2 gl){
+			applyCameraPerspective(gl);		
+			gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+
+			gl.glEnable(GL.GL_DEPTH_TEST);  
+			gl.glCullFace(GL.GL_FRONT);
+			gl.glEnable(GL.GL_CULL_FACE); 
+			gl.glFrontFace(GL.GL_CW); 
+			_board.draw(gl);
 		}
 
 		/**
@@ -163,7 +176,11 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 			
 			//only act of user is the same
 			if (newSelection._piece.getPlayer() == _game.getCurrentPlayer()){ 
+				
+				clearPossible();
+				
 				if (_selection == newSelection){ // if they are the same, that means user unselected
+					
 					
 					//change selection settings
 					_selection.changeSelection();
@@ -176,10 +193,15 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 					// change mode
 					_mode = Mode.NORMAL;
 				} else { // set selection to something new. Remains in selection mode
+					_possibleMoves = _game.getBoard().getMoves(newSelection._piece);
+					for (Posn p : _possibleMoves){
+						_board._posnToTile.get(p).setMoveColor(_board._playerColors.get(newSelection._piece.getPlayer()));
+					}
 					if (_selection != null) _selection.changeSelection(); // unselect old thing
 					_selection = newSelection;
 					_selection.changeSelection();
 				}
+				
 				return true;
 			}
 			return false;
@@ -197,13 +219,10 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 
 			try {
 				_game.movePiece(_selection.getPosn(), newSelection.getPosn());
+				clearPossible();
 				_board.resetPieces();
-				System.out.println(_game.getBoard().piecesToString());
-				System.out.println("================");
 			} catch (IllegalMoveException e) {
 				_hover.incorrect();
-				System.out.println(_game.getBoard().piecesToString());
-				System.out.println("================");
 				System.out.println(e.getMessage());
 				_mode = Mode.HOVER;
 				return false;
