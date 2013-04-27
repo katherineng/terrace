@@ -64,8 +64,8 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 	    /*==== Camera setup ====*/
 	    Vector3d center = new Vector3d(0., 0., 0.);
 	    Vector3d up = new Vector3d(0.f, 1.f, 0.f);
-	    double theta = Math.PI * 1.5f, phi = -.6, fovy = 60., zoom = 1.2;
-	    _camera = new Camera(center, up, theta, phi, fovy, zoom);
+	    double theta = Math.PI * 1.5f, phi = -.6, fovx = 60., zoom = 1.2;
+	    _camera = new Camera(center, up, theta, phi, fovx, zoom);
 	    
 	    
 	    /*==== Selection ===*/
@@ -102,12 +102,34 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 
 			gl.glMatrixMode(GL2.GL_PROJECTION);
 			gl.glLoadIdentity();
-			glu.gluPerspective(_camera.fovy, ratio, 0.1f, 21000.f);
+			perspectiveFovX(gl, _camera.fovx, ratio, 0.1, 21000.0);
 			glu.gluLookAt(eye.x, eye.y, eye.z,
 					eye.x + dir.x, eye.y + dir.y, eye.z + dir.z,
 					_camera.up.x, _camera.up.y, _camera.up.z);
 			gl.glMatrixMode(GL2.GL_MODELVIEW);
 			gl.glLoadIdentity();
+		}
+		
+		private void perspectiveFovX(GL2 gl, double fovx, double aspect, double znear, double zfar) {
+			double m[] = new double[16];
+			
+			double xmax = znear * Math.tan(fovx * Math.PI / 360.0);
+			double xmin = -xmax;
+			
+			double ymin = xmin / aspect;
+			double ymax = xmax / aspect;
+			
+			m[0 + 0*4] = (2.0 * znear) / (xmax - xmin);
+			m[1 + 1*4] = (2.0 * znear) / (ymax - ymin);
+			m[2 + 2*4] = -(zfar + znear) / (zfar - znear);
+			
+			m[0 + 2*4] = (xmax + xmin) / (xmax - xmin);
+			m[1 + 2*4] = (ymax + ymin) / (ymax - ymin);
+			m[3 + 2*4] = -1.0;
+			
+			m[2 + 3*4] = -(2.0 * zfar * znear) / (zfar - znear);
+			
+			gl.glMultMatrixd(m, 0);
 		}
 		
 		/**
