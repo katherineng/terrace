@@ -114,6 +114,12 @@ public class DefaultBoard implements Board<DefaultBoard> {
 		return positions;
 	}
 	
+	
+	/**
+	 * Helper method to find all the possible positions on the same terrace to which a given piece may move
+	 * @param piece The piece for which to find possible moves
+	 * @param positions A reference to a set of positions to which the possible positions should be added
+	 */
 	private void getSameTerraceMoves(Piece piece, Set<Posn> positions) {
 		Posn currPosn = piece.getPosn();
 		
@@ -146,6 +152,11 @@ public class DefaultBoard implements Board<DefaultBoard> {
 		}
 	}
 	
+	/**
+	 * Helper method that adds all the possible positions on another terrace that a given piece can make
+	 * @param piece The piece for which to find the possible positions
+	 * @param positions A reference to set of possible positions to which the positions should be added
+	 */
 	private void getUpDownMoves(Piece piece, Set<Posn> positions) {
 		Posn currPosn = piece.getPosn();
 		
@@ -179,11 +190,47 @@ public class DefaultBoard implements Board<DefaultBoard> {
 				
 				else if (p == null) {
 					positions.add(posn);
+					if (_variant == Variant.DOWNHILL) {
+						getDownhillMoves(posn, piece, positions);
+					}
 				}
 			}
 		}
 	}
 
+	/**
+	 * Helper method to get all the positions downhill from a given position to which the given piece
+	 * can move in the downhill rule variant of the game
+	 * @param start A position that is downhill and adjacent to the given piece to be moved
+	 * @param piece The piece for which to find possible moves
+	 * @param positions A reference to the set of positions representing the possible moves
+	 */
+	private void getDownhillMoves(Posn start, Piece piece, Set<Posn> positions) {
+		Posn currPosn = piece.getPosn();
+		
+		if (currPosn.x != start.x) {
+			int increment = start.x - currPosn.x;
+			for (int i = start.x + increment; i >= 0 && i < _dimensions; i += increment) {
+				Piece p = _board[i][start.y];
+				if (p != null) break;
+				else {
+					positions.add(new Posn(i, start.y));
+				}
+			}
+		}
+		
+		else if (currPosn.y != start.y) {
+			int increment = start.y - currPosn.y;
+			for (int i = start.y + increment; i >= 0 && i < _dimensions; i += increment) {
+				Piece p = _board[start.x][i];
+				if (p != null) break;
+				else {
+					positions.add(new Posn(start.x, i));
+				}
+			}
+		}
+	}
+	
 	@Override
 	public Set<Posn> getMoves(Piece piece) {
 		Set<Posn> positions = new HashSet<Posn>();

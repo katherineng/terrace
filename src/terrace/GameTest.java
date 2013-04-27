@@ -28,11 +28,19 @@ public class GameTest {
 //		}
 		
 		
-		twoPlayer.movePiece(new Posn(0, 1), new Posn(0, 2));
-		System.out.println(twoPlayer.getBoard().getPiece(0, 2));
+//		twoPlayer.movePiece(new Posn(0, 1), new Posn(0, 2));
+//		System.out.println(twoPlayer.getBoard().getPiece(0, 2));
+//		
+//		Set<Piece> pieces = twoPlayer.getPlayers().get(0).getPieces();
+//		for (Piece p : pieces) {
+//			System.out.println(p);
+//		}
 		
-		Set<Piece> pieces = twoPlayer.getPlayers().get(0).getPieces();
-		for (Piece p : pieces) {
+		Game downhill = new Game(2, 8, Variant.DOWNHILL);
+		downhill.setUpPieces();
+		
+		Set<Posn> moves = downhill.getBoard().getMoves(downhill.getBoard().getPiece(7,  1));
+		for (Posn p : moves) {
 			System.out.println(p);
 		}
 		

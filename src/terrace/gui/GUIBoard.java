@@ -31,14 +31,32 @@ public class GUIBoard extends Board {
 		_posnToTile = new HashMap<Posn, BoardTile>();
 		setUpBoard();
 	}
+
+
+	public double getElevation(Posn pos) {
+		BoardTile b = _boardPieces[pos.y][pos.x];
+		return b.getElevation();
+	}
+	
+	public double getElevation(int col, int row){
+		return  _game.getBoard().getElevation(col, row)/60.;		
+	}
 	
 	public int getDimensions(){
 		return _game.getBoard().getDimensions();
+	}
+
+	public ArrayList<GamePiece> getGamePieces(){
+		return _gamePieces;
 	}
 	
 	public BoardTile posToTile(Posn x){
 		assert(_posnToTile.containsKey(x));
 		return _posnToTile.get(x);
+	}
+	
+	public Vector3d getPlayerColors(Player p){
+		return _playerColors.get(p);
 	}
 	
 	public List<BoardTile> getBoardPieces(){
@@ -87,9 +105,6 @@ public class GUIBoard extends Board {
 		}
 	}
 
-	public double getElevation(int col, int row){
-		return  _game.getBoard().getElevation(col, row)/60.;		
-	}
 	
 	private void setUpBoard(){
 		
@@ -109,9 +124,6 @@ public class GUIBoard extends Board {
 		resetPieces();
 	}
 
-	public ArrayList<GamePiece> getGamePieces(){
-		return _gamePieces;
-	}
 
 	@Override
 	public void draw(GL2 gl) {
@@ -122,10 +134,5 @@ public class GUIBoard extends Board {
 
 		for (GamePiece piece: _gamePieces)
 			piece.draw(gl);
-	}
-
-	public double getElevation(Posn pos) {
-		BoardTile b = _boardPieces[pos.y][pos.x];
-		return b.getElevation();
 	}
 }

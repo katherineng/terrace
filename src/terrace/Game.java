@@ -10,6 +10,7 @@ public class Game {
 	private int _currPlayer;
 	private List<Player> _players;
 	private final int _numPlayers;
+	private int _playersAlive;		/** Number of players that are currently still playing **/
 	private boolean _isGameOver;
 	private Optional<Player> _winner;
 	// private Variant _variant;
@@ -28,6 +29,7 @@ public class Game {
 			_players.add(new Player(PlayerColor.values()[i]));
 		}		
 		
+		_playersAlive = _numPlayers;
 		_currPlayer = 0;
 		
 		setUpPieces();
@@ -98,8 +100,11 @@ public class Game {
 				 if (captured != null) {
 					 if (captured.isTPiece()) {
 						 _players.remove(captured.getPlayer());
+						 _playersAlive--;
+						 _currPlayer = (_currPlayer == 0) ?  _playersAlive-1 : _currPlayer-1;
 						 if (_players.size() == 1) {
 							 _winner = Optional.of(_players.get(_currPlayer));
+							 _isGameOver = true;
 						 }
 					 }
 					 
