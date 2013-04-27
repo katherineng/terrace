@@ -34,6 +34,9 @@ public class GamePiece implements Drawable {
 	public boolean isSelected(){
 		return _selected;
 	}
+	public Piece getPiece(){
+		return _piece;
+	}
 
 	@Override
 	public void draw(GL2 gl){

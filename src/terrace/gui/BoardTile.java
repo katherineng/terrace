@@ -13,7 +13,6 @@ import terrace.Posn;
 public class BoardTile implements Drawable {
 
 	private static final Vector3d HOVER_COLOR = new Vector3d(.2,.2,.2);
-	private static final Vector3d MOVES_COLOR = new Vector3d(1,.5,.5);
 	private int _incorrect_timing = 0;
 	private double _height;
 	private int _level;
@@ -46,9 +45,10 @@ public class BoardTile implements Drawable {
 		double rowShift = 1.0/_board.getDimensions()*_pos.y;
 		double colShift = 1.0/_board.getDimensions()*_pos.x;
 		Vector2d pos = new Vector2d(.5 - shiftFactor - rowShift, .5 - shiftFactor - colShift);
+		double mult = (_level % 2 == 0) ? .7 : 1; 
+		
 		gl.glPushMatrix();
 		gl.glTranslated(pos.x, _height/2, pos.y);
-		double mult = (_level % 2 == 0) ? .7 : 1; 
 		gl.glBegin(GL2.GL_QUADS);
 		for(int side = -1; side <= 1; side += 2){
 			gl.glNormal3d(-1 * side*dim, 0,0);
@@ -57,8 +57,12 @@ public class BoardTile implements Drawable {
 			gl.glVertex3d(-0.5 *dim* side, 0.5*_height, 0.5*dim);
 			gl.glVertex3d(-0.5 *dim* side, 0.5*_height * side, -0.5 *dim* side);
 
-			// top & bottom
+			/* ===== SPECIAL RENDERING FOR THE TOP OF THE BOARD =======*/
+			
+			// hover colors
 			Vector3d select = (side == -1 && _selected) ? HOVER_COLOR : new Vector3d(mult*.8,mult*.8,mult*.8);
+			
+			// invalid move colors
 			if (side == -1 && _selected && !_correct){
 				if (_incorrect_timing < 20){
 					select = new Vector3d(1.0, select.y, select.z);
@@ -68,15 +72,19 @@ public class BoardTile implements Drawable {
 					_correct = true;
 				}
 			} 
-			if (_moveColor != null)
-				select = new Vector3d(_moveColor.x *.5, _moveColor.y * .5, _moveColor.z * .5);				
+			
+			// possible move colors
+			if (_moveColor != null) select = new Vector3d(_moveColor.x *.5, _moveColor.y * .5, _moveColor.z * .5);				
 
+			// ACTUAL DRAWING
 			gl.glColor3d(select.x,select.y,select.z);
 			gl.glNormal3d(0, -1 * side*_height, 0);
 			gl.glVertex3d(-0.5*dim, -0.5 *_height* side, -0.5*dim);
 			gl.glVertex3d(0.5 *dim* side, -0.5 *_height* side, -0.5*dim * side);
 			gl.glVertex3d(0.5*dim, -0.5 *_height* side, 0.5*dim);
 			gl.glVertex3d(-0.5*dim * side, -0.5*_height * side, 0.5 *dim* side);
+			
+			/*============================================================*/
 
 			gl.glColor3f(1,1,1);
 			gl.glNormal3d(0, 0, -1 * side*dim);
@@ -91,7 +99,7 @@ public class BoardTile implements Drawable {
 		gl.glColor3f(0,0,0);
 		double side = -1;
 		
-		// antialiasing for the lines
+		// anti-aliasing for the lines
 		gl.glPushAttrib(GL2.GL_HINT_BIT | GL2.GL_CURRENT_BIT | GL2.GL_LINE_BIT | GL2.GL_COLOR_BUFFER_BIT);
 		gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
 		gl.glEnable(GL.GL_BLEND);

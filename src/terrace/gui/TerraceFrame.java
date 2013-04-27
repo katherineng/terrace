@@ -17,6 +17,6 @@ public class TerraceFrame extends JFrame {
 		setSize(1200, 1200);
 		setLayout(layout);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		add(new GamePanel(new Game(4, 8, Variant.STANDARD)), GAME);
+		add(new GamePanel(new Game(2, 8, Variant.STANDARD)), GAME);
 	}
 }
