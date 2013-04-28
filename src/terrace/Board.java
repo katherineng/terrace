@@ -1,9 +1,6 @@
 package terrace;
 
 import java.util.List;
-import java.util.Set;
-
-import com.google.common.base.Optional;
 
 public interface Board<T extends Board<T>> {
 	int getWidth();

@@ -308,8 +308,7 @@ public class DefaultBoard implements Board<DefaultBoard> {
 		Piece captured = _board[to.x][to.y];
 		_board[to.x][to.y] = toMove;
 		
-		return captured;
-		
+		return captured;	
 	}
 	
 	public String elevationsToString() {

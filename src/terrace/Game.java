@@ -95,10 +95,10 @@ public class Game {
 			 if (!possibleMoves.contains(to)) {
 				 throw new IllegalMoveException("ERROR: Piece at " + from.toString() + " can't be moved to " + to.toString());
 			 } else {
-				 if (playerPiece.isTPiece() && playerPiece.getGoalPosn().equals(to)) {
-					 _winner = Optional.of(_players.get(_currPlayer));
-				 }
-				 
+				 Posn goal = playerPiece.getGoalPosn().orNull();
+				 if (playerPiece.isTPiece() && goal != null && goal.equals(to)) 
+					 setWinner(_players.get(_currPlayer));
+
 				 getCurrentPlayer().getPieces().remove(playerPiece);
 				 _board.setPiece(from.x, from.y, null);
 				 
@@ -108,10 +108,8 @@ public class Game {
 						 _players.remove(captured.getPlayer());
 						 _playersAlive--;
 						 _currPlayer = (_currPlayer == 0) ?  _playersAlive-1 : _currPlayer-1;
-						 if (_players.size() == 1) {
-							 _winner = Optional.of(_players.get(_currPlayer));
-							 _isGameOver = true;
-						 }
+						 if (_players.size() == 1) 
+							 setWinner(_players.get(_currPlayer));
 					 }
 					 
 					 captured.getPlayer().getPieces().remove(captured);
@@ -126,6 +124,11 @@ public class Game {
 				 return captured;
 			 }
 		}
+	}
+	
+	protected void setWinner(Player winner){
+		 _winner = Optional.of(winner);
+		 _isGameOver = true;		
 	}
 	
 	/**
