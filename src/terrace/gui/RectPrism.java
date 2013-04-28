@@ -9,44 +9,48 @@ import javax.media.opengl.*;
  * @author ww15
  *
  */
-public class RectPrism implements Drawable{
-	double _x, _y, _z; /** constants by which to scale the rectangle **/
-
-	public RectPrism(double xscale, double yscale, double zscale){
-		this._x = xscale;
-		this._y = yscale;
-		this._z = zscale;
+public class RectPrism implements Drawable {
+	double _x, _y, _z;
+	double _xscale, _yscale, _zscale; /** constants by which to scale the rectangle **/
+	
+	public RectPrism(
+			double x, double y, double z,
+			double xscale, double yscale, double zscale
+	) {
+		this._x = x;
+		this._y = y;
+		this._z = z;
+		this._xscale = xscale;
+		this._yscale = yscale;
+		this._zscale = zscale;
 	}
-
 	//TODO: BUG! it changes color though it shouldn't. I think something isn't being cleared.
 	@Override
 	public void draw(GL2 gl) {
-
-		    gl.glPushMatrix();			
+		    gl.glPushMatrix();
+		    gl.glTranslated(_x, _y, _z);
 		    gl.glColor3f(0,0,0);
 		    gl.glBegin(GL2.GL_QUADS);
 		    for(int side = -1; side <= 1; side += 2){
-		    	gl.glNormal3d(-1 * side*_x, 0,0);
-		    	gl.glVertex3d(-0.5*_x * side, -0.5*_y, -0.5*_z);
-		    	gl.glVertex3d(-0.5 *_x* side, -0.5 *_y* side, 0.5 *_z* side);
-		    	gl.glVertex3d(-0.5 *_x* side, 0.5*_y, 0.5*_z);
-		    	gl.glVertex3d(-0.5 *_x* side, 0.5*_y * side, -0.5 *_z* side);
-
-		    	gl.glNormal3d(0, -1 * side*_y, 0);
-		    	gl.glVertex3d(-0.5*_x, -0.5 *_y* side, -0.5*_z);
-		    	gl.glVertex3d(0.5 *_x* side, -0.5 *_y* side, -0.5*_z * side);
-		    	gl.glVertex3d(0.5*_x, -0.5 *_y* side, 0.5*_z);
-		    	gl.glVertex3d(-0.5*_x * side, -0.5*_y * side, 0.5 *_z* side);
-
-		    	gl.glNormal3d(0, 0, -1 * side*_z);
-		    	gl.glVertex3d(-0.5*_x, -0.5*_y, -0.5 * side*_z);
-		    	gl.glVertex3d(-0.5 *_x* side, 0.5 *_y* side, -0.5 *_z* side);
-		    	gl.glVertex3d(0.5*_x, 0.5*_y, -0.5 * side*_z);
-		    	gl.glVertex3d(0.5 *_x* side, -0.5*_y * side, -0.5 *_z* side);
+		    	gl.glNormal3d(-1 * side*_xscale, 0,0);
+		    	gl.glVertex3d(-0.5*_xscale * side, -0.5*_yscale, -0.5*_zscale);
+		    	gl.glVertex3d(-0.5 *_xscale* side, -0.5 *_yscale* side, 0.5 *_zscale* side);
+		    	gl.glVertex3d(-0.5 *_xscale* side, 0.5*_yscale, 0.5*_zscale);
+		    	gl.glVertex3d(-0.5 *_xscale* side, 0.5*_yscale * side, -0.5 *_zscale* side);
+		    	
+		    	gl.glNormal3d(0, -1 * side*_yscale, 0);
+		    	gl.glVertex3d(-0.5*_xscale, -0.5 *_yscale* side, -0.5*_zscale);
+		    	gl.glVertex3d(0.5 *_xscale* side, -0.5 *_yscale* side, -0.5*_zscale * side);
+		    	gl.glVertex3d(0.5*_xscale, -0.5 *_yscale* side, 0.5*_zscale);
+		    	gl.glVertex3d(-0.5*_xscale * side, -0.5*_yscale * side, 0.5 *_zscale* side);
+		    	
+		    	gl.glNormal3d(0, 0, -1 * side*_zscale);
+		    	gl.glVertex3d(-0.5*_xscale, -0.5*_yscale, -0.5 * side*_zscale);
+		    	gl.glVertex3d(-0.5 *_xscale* side, 0.5 *_yscale* side, -0.5 *_zscale* side);
+		    	gl.glVertex3d(0.5*_xscale, 0.5*_yscale, -0.5 * side*_zscale);
+		    	gl.glVertex3d(0.5 *_xscale* side, -0.5*_yscale * side, -0.5 *_zscale* side);
 		    }
 		    gl.glEnd();
 		    gl.glPopMatrix();
-		
 	}
-
 }
