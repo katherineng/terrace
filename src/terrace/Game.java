@@ -19,6 +19,7 @@ public class Game {
 	
 	public Game(int numHuman, int numAI, int dimensions, Variant variant) throws IllegalMoveException {
 		_numPlayers = numHuman + numAI;
+		assert(_numPlayers == 2 || _numPlayers == 4);
 		// _variant = variant;
 		_dimensions = dimensions;
 		_board = new DefaultBoard(dimensions, variant);
@@ -29,15 +30,14 @@ public class Game {
 		_players = new ArrayList<Player>();
 		for (int i = 0; i < numHuman; i++) 
 			_players.add(new Player(PlayerColor.values()[i]));
-		for (int i = numHuman; i < _numPlayers; i++) 
+		for (int i = numHuman; i < _numPlayers; i++)
 			_players.add(new AI(PlayerColor.values()[i], this));
 		
 		_playersAlive = _numPlayers;
 		_currPlayer = 0;
 		
-		_players.get(_currPlayer).makeMove();
-		
 		setUpPieces();
+		_players.get(_currPlayer).makeMove();
 	}
 	
 	public DefaultBoard getBoard() {
@@ -125,14 +125,11 @@ public class Game {
 					 if (captured.isTPiece()) {
 						 _players.remove(captured.getPlayer());
 						 _playersAlive--;
-						 if (_players.size() == 1){
+						 if (_players.size() == 1) 
 							 setWinner(current);
-							 return captured;
-						 }
-						 else removePlayerPieces(captured.getPlayer());
-					 } else {					 
-						 captured.getPlayer().getPieces().remove(captured);
-					 }
+						 else 
+							 removePlayerPieces(captured.getPlayer());
+					 } else  captured.getPlayer().getPieces().remove(captured);
 				 }
 				
 				 if (!(captured != null && captured.isTPiece() && captured.getPlayer().equals(playerPiece.getPlayer()))){
@@ -141,7 +138,8 @@ public class Game {
 					 _board.setPiece(to.x, to.y, playerPiece);
 				 }
 				 
-				 if (captured != null && _currPlayer > getPlayerNumber(captured.getPlayer())) _currPlayer--;
+				 if (captured != null && captured.isTPiece() && _currPlayer < getPlayerNumber(captured.getPlayer())) 
+					 _currPlayer--;
 				 changeTurn();
 				 
 				 return captured;
@@ -149,6 +147,11 @@ public class Game {
 		}
 	}
 	
+	/**
+	 * Gets the number associated with a plyaer
+	 * @param player - a Player
+	 * @return - <player>'s index in _players
+	 */
 	protected int getPlayerNumber(Player player){
 		for (int i = 0; i < _players.size(); i++)
 			if (_players.get(i).equals(player)) return i;

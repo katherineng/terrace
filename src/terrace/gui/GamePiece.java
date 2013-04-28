@@ -51,8 +51,11 @@ public class GamePiece implements Drawable {
 
 		double mult = (_piece.isTPiece()) ? .5 : 1;
 		Vector3d vec = _board._playerColors.get(_piece.getPlayer()); // set color
-		if (_selected) gl.glColor3d(.2*vec.x, .2*vec.y, .2*vec.z);
-		else gl.glColor3d(mult*vec.x, mult*vec.y, vec.z);
+		if (_selected) 
+			gl.glColor3d(.2*vec.x, .2*vec.y, .2*vec.z);
+		else
+			gl.glColor3d(mult*vec.x, mult*vec.y, vec.z);
+		
 		
 		glu.gluSphere(_quadric, _radius, 25, 25);
 	    gl.glPopMatrix();
