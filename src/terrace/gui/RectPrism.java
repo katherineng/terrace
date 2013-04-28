@@ -24,7 +24,7 @@ public class RectPrism implements Drawable {
 		this._yscale = yscale;
 		this._zscale = zscale;
 	}
-	//TODO: BUG! it changes color though it shouldn't. I think something isn't being cleared.
+
 	@Override
 	public void draw(GL2 gl) {
 		    gl.glPushMatrix();

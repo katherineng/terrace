@@ -6,7 +6,7 @@ import terrace.exception.IllegalMoveException;
 public class Main {
 	public static void main(String[] args) {
 		try {
-			int numHuman = 2;
+			int numHuman = 4;
 			int numAI = 0;
 			TerraceFrame frame = new TerraceFrame(numHuman, numAI, 8, Variant.STANDARD);
 			frame.setVisible(true);

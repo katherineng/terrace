@@ -109,8 +109,13 @@ public class Game {
 				 throw new IllegalMoveException("ERROR: Piece at " + from.toString() + " can't be moved to " + to.toString());
 			 } else {
 				 Posn goal = playerPiece.getGoalPosn().orNull();
-				 if (playerPiece.isTPiece() && goal != null && goal.equals(to)) 
+				 if (playerPiece.isTPiece()){
+					 System.out.println(goal);
+					 System.out.println(to);
+				 }
+				 if (playerPiece.isTPiece() && goal != null && goal.equals(to))
 					 setWinner(current);
+				 
 
 				 current.getPieces().remove(playerPiece);
 				 _board.setPiece(from.x, from.y, null);
@@ -120,17 +125,23 @@ public class Game {
 					 if (captured.isTPiece()) {
 						 _players.remove(captured.getPlayer());
 						 _playersAlive--;
-						 if (_players.size() == 1) setWinner(current);
+						 if (_players.size() == 1){
+							 setWinner(current);
+							 return captured;
+						 }
 						 else removePlayerPieces(captured.getPlayer());
 					 } else {					 
 						 captured.getPlayer().getPieces().remove(captured);
 					 }
 				 }
-					 
- 				 playerPiece.setPosn(to);
- 				 current.getPieces().add(playerPiece);
-				 _board.setPiece(to.x, to.y, playerPiece);
+				
+				 if (!(captured != null && captured.isTPiece() && captured.getPlayer().equals(playerPiece.getPlayer()))){
+					 playerPiece.setPosn(to);
+					 current.getPieces().add(playerPiece);
+					 _board.setPiece(to.x, to.y, playerPiece);
+				 }
 				 
+				 if (captured != null && _currPlayer > getPlayerNumber(captured.getPlayer())) _currPlayer--;
 				 changeTurn();
 				 
 				 return captured;
@@ -138,11 +149,25 @@ public class Game {
 		}
 	}
 	
+	protected int getPlayerNumber(Player player){
+		for (int i = 0; i < _players.size(); i++)
+			if (_players.get(i).equals(player)) return i;
+		return -1;
+	}
+	
+	/**
+	 * Removes all the pieces of a certain player
+	 * @param p - a Player whose pieces you want to remove
+	 */
 	protected void removePlayerPieces(Player p){
 		getBoard().removePlayer(p);
 		p.getPieces().clear();
 	}
 	
+	/**
+	 * Sets the winner	
+	 * @param winner - the player that is the winner
+	 */
 	protected void setWinner(Player winner){
 		 _winner = Optional.of(winner);
 		 _isGameOver = true;		
