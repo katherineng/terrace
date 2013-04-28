@@ -14,11 +14,11 @@ public class AI extends Player {
 	}
 	
 	@Override
-	public boolean makeMove() throws IllegalMoveException {
+	public boolean makeMove() {
 		List<Piece> pieces = getPieces();
 		assert(pieces.size() > 0);
-		Piece pieceToMove = pieces.get(getRandom(pieces.size()));
 		
+		Piece pieceToMove = pieces.get(getRandom(pieces.size()));
 		List<Posn> moves = _game.getBoard().getMoves(pieceToMove);
 		
 		while(moves.isEmpty()){
@@ -27,10 +27,19 @@ public class AI extends Player {
 		}
 		
 		Posn posnToMove = moves.get(getRandom(moves.size()));
-		_game.movePiece(pieceToMove.getPosn(), posnToMove);
+		try {
+			_game.movePiece(pieceToMove.getPosn(), posnToMove);
+		} catch (IllegalMoveException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		}
 		return true;
 	}
 	
+	/**
+	 * @param size - integer
+	 * @return a number between [0, size)
+	 */
 	private int getRandom(int size){
 		return (int)(Math.random() * ((size-1) + 1));
 	}

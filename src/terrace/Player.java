@@ -2,7 +2,6 @@ package terrace;
 
 import java.util.*;
 
-import terrace.exception.IllegalMoveException;
 
 public class Player {
 	private List<Piece> _pieces;
@@ -15,7 +14,10 @@ public class Player {
 		_name = "";
 	}
 	
-	public boolean makeMove() throws IllegalMoveException {
+	/**
+	 * @return true if a move was made (AI), false otherwise
+	 */
+	public boolean makeMove() {
 		return false;
 	}
 	
@@ -31,7 +33,7 @@ public class Player {
 		return _pieces;
 	}
 	
-	void move(Piece piece, Posn to) {}
+	//void move(Piece piece, Posn to) {}
 	
 	public PlayerColor getColor() {
 		return _color;

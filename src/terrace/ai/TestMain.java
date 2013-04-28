@@ -6,7 +6,7 @@ import terrace.gui.TerraceFrame;
 public class TestMain {
 
 	public static void main(String[] args){
-		TerraceFrame frame = new TerraceFrame(2, 8, Variant.STANDARD);
+		TerraceFrame frame = new TerraceFrame(1, 1, 8, Variant.STANDARD);
 		frame.setVisible(true);
 	}
 }

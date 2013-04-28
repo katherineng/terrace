@@ -72,9 +72,21 @@ public class Game {
 	}
 	
 	private void changeTurn() throws IllegalMoveException {
-		if (_currPlayer < _numPlayers - 1) _currPlayer++;
+		if (_currPlayer < _playersAlive - 1) _currPlayer++;
 		else _currPlayer = 0;
-		if (!_isGameOver) _players.get(_currPlayer).makeMove();
+		if (!_isGameOver) {
+//			if (noPossibleMoves()){
+//				 _players.remove(_players.get(_currPlayer));
+//				 _playersAlive--;
+//				 _currPlayer = (_currPlayer == 0) ?  _playersAlive-1 : _currPlayer-1;
+//				 if (_players.size() == 1) setWinner(_players.get(_currPlayer));
+//			}
+			_players.get(_currPlayer).makeMove();
+		}
+	}
+	
+	protected boolean noPossibleMoves(){
+		return true;
 	}
 	
 	
@@ -86,8 +98,9 @@ public class Game {
 	 * @throws IllegalMoveException When a move from the given position to the given destination position is not legal
 	 */
 	public Piece movePiece(Posn from, Posn to) throws IllegalMoveException {
+		Player current = getCurrentPlayer();
 		Piece playerPiece = _board.getPieceAt(from);
-		if (playerPiece == null || !getCurrentPlayer().getPieces().contains(playerPiece)) {
+		if (playerPiece == null || !current.getPieces().contains(playerPiece)) {
 			throw new IllegalMoveException("ERROR: " + _currPlayer + "\'s piece not found at " + from.toString());
 		} else {
 			 List<Posn> possibleMoves = _board.getMoves(playerPiece);
@@ -97,9 +110,9 @@ public class Game {
 			 } else {
 				 Posn goal = playerPiece.getGoalPosn().orNull();
 				 if (playerPiece.isTPiece() && goal != null && goal.equals(to)) 
-					 setWinner(_players.get(_currPlayer));
+					 setWinner(current);
 
-				 getCurrentPlayer().getPieces().remove(playerPiece);
+				 current.getPieces().remove(playerPiece);
 				 _board.setPiece(from.x, from.y, null);
 				 
 				 Piece captured = _board.getPieceAt(to);
@@ -107,16 +120,15 @@ public class Game {
 					 if (captured.isTPiece()) {
 						 _players.remove(captured.getPlayer());
 						 _playersAlive--;
-						 _currPlayer = (_currPlayer == 0) ?  _playersAlive-1 : _currPlayer-1;
-						 if (_players.size() == 1) 
-							 setWinner(_players.get(_currPlayer));
+						 if (_players.size() == 1) setWinner(current);
+						 else removePlayerPieces(captured.getPlayer());
+					 } else {					 
+						 captured.getPlayer().getPieces().remove(captured);
 					 }
-					 
-					 captured.getPlayer().getPieces().remove(captured);
 				 }
 					 
  				 playerPiece.setPosn(to);
- 				 getCurrentPlayer().getPieces().add(playerPiece);
+ 				 current.getPieces().add(playerPiece);
 				 _board.setPiece(to.x, to.y, playerPiece);
 				 
 				 changeTurn();
@@ -124,6 +136,11 @@ public class Game {
 				 return captured;
 			 }
 		}
+	}
+	
+	protected void removePlayerPieces(Player p){
+		getBoard().removePlayer(p);
+		p.getPieces().clear();
 	}
 	
 	protected void setWinner(Player winner){
