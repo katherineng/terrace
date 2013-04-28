@@ -95,8 +95,9 @@ public class Game {
 			 if (!possibleMoves.contains(to)) {
 				 throw new IllegalMoveException("ERROR: Piece at " + from.toString() + " can't be moved to " + to.toString());
 			 } else {
-				 if (playerPiece.isTPiece() && playerPiece.getGoalPosn().equals(to)) {
+				 if (playerPiece.isTPiece() && playerPiece.getGoalPosn().get().equals(to)) {
 					 _winner = Optional.of(_players.get(_currPlayer));
+					 _isGameOver = true;
 				 }
 				 
 				 getCurrentPlayer().getPieces().remove(playerPiece);
