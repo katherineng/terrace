@@ -21,7 +21,7 @@ public class GUIBoard extends Board {
 
 	public GUIBoard(GL2 gl, Game game){
 		_game = game;
-		_foundation = new RectPrism(1.,.01,1.);
+		_foundation = new RectPrism(0.0, -0.01, 0.0, 1.0, 0.01, 1.0);
 		int dimension = _game.getBoard().getDimensions();
 		_boardPieces = new BoardTile[dimension][dimension];
 		_gamePieces = new ArrayList<GamePiece>();
