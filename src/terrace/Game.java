@@ -19,6 +19,7 @@ public class Game {
 	
 	public Game(int numHuman, int numAI, int dimensions, Variant variant) throws IllegalMoveException {
 		_numPlayers = numHuman + numAI;
+		assert(_numPlayers == 2 || _numPlayers == 4);
 		// _variant = variant;
 		_dimensions = dimensions;
 		_board = new DefaultBoard(dimensions, variant);
@@ -29,15 +30,14 @@ public class Game {
 		_players = new ArrayList<Player>();
 		for (int i = 0; i < numHuman; i++) 
 			_players.add(new Player(PlayerColor.values()[i]));
-		for (int i = numHuman; i < _numPlayers; i++) 
+		for (int i = numHuman; i < _numPlayers; i++)
 			_players.add(new AI(PlayerColor.values()[i], this));
 		
 		_playersAlive = _numPlayers;
 		_currPlayer = 0;
 		
-		_players.get(_currPlayer).makeMove();
-		
 		setUpPieces();
+		_players.get(_currPlayer).makeMove();
 	}
 	
 	public DefaultBoard getBoard() {
@@ -109,8 +109,13 @@ public class Game {
 				 throw new IllegalMoveException("ERROR: Piece at " + from.toString() + " can't be moved to " + to.toString());
 			 } else {
 				 Posn goal = playerPiece.getGoalPosn().orNull();
-				 if (playerPiece.isTPiece() && goal != null && goal.equals(to)) 
+				 if (playerPiece.isTPiece()){
+					 System.out.println(goal);
+					 System.out.println(to);
+				 }
+				 if (playerPiece.isTPiece() && goal != null && goal.equals(to))
 					 setWinner(current);
+				 
 
 				 current.getPieces().remove(playerPiece);
 				 _board.setPiece(from.x, from.y, null);
@@ -120,17 +125,21 @@ public class Game {
 					 if (captured.isTPiece()) {
 						 _players.remove(captured.getPlayer());
 						 _playersAlive--;
-						 if (_players.size() == 1) setWinner(current);
-						 else removePlayerPieces(captured.getPlayer());
-					 } else {					 
-						 captured.getPlayer().getPieces().remove(captured);
-					 }
+						 if (_players.size() == 1) 
+							 setWinner(current);
+						 else 
+							 removePlayerPieces(captured.getPlayer());
+					 } else  captured.getPlayer().getPieces().remove(captured);
 				 }
-					 
- 				 playerPiece.setPosn(to);
- 				 current.getPieces().add(playerPiece);
-				 _board.setPiece(to.x, to.y, playerPiece);
+				
+				 if (!(captured != null && captured.isTPiece() && captured.getPlayer().equals(playerPiece.getPlayer()))){
+					 playerPiece.setPosn(to);
+					 current.getPieces().add(playerPiece);
+					 _board.setPiece(to.x, to.y, playerPiece);
+				 }
 				 
+				 if (captured != null && captured.isTPiece() && _currPlayer < getPlayerNumber(captured.getPlayer())) 
+					 _currPlayer--;
 				 changeTurn();
 				 
 				 return captured;
@@ -138,11 +147,30 @@ public class Game {
 		}
 	}
 	
+	/**
+	 * Gets the number associated with a plyaer
+	 * @param player - a Player
+	 * @return - <player>'s index in _players
+	 */
+	protected int getPlayerNumber(Player player){
+		for (int i = 0; i < _players.size(); i++)
+			if (_players.get(i).equals(player)) return i;
+		return -1;
+	}
+	
+	/**
+	 * Removes all the pieces of a certain player
+	 * @param p - a Player whose pieces you want to remove
+	 */
 	protected void removePlayerPieces(Player p){
 		getBoard().removePlayer(p);
 		p.getPieces().clear();
 	}
 	
+	/**
+	 * Sets the winner	
+	 * @param winner - the player that is the winner
+	 */
 	protected void setWinner(Player winner){
 		 _winner = Optional.of(winner);
 		 _isGameOver = true;		

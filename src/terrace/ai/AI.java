@@ -18,6 +18,7 @@ public class AI extends Player {
 		List<Piece> pieces = getPieces();
 		assert(pieces.size() > 0);
 		
+		System.out.println(pieces);
 		Piece pieceToMove = pieces.get(getRandom(pieces.size()));
 		List<Posn> moves = _game.getBoard().getMoves(pieceToMove);
 		
