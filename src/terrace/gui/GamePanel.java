@@ -148,7 +148,9 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 				} else {
 					Optional<BoardTile> boardSelection = getSelection(gl, _selection_mouse, _board.getBoardPieces());
 					if (boardSelection.isPresent() && _selection != null) {
-						setMove(getSelection(gl, _hover_mouse, _board.getBoardPieces()).orNull());
+						Optional<BoardTile> hoverTile = getSelection(gl, _hover_mouse, _board.getBoardPieces());
+						
+						if(hoverTile.isPresent()) setMove(hoverTile.get());
 					}
 				}
 				_mode = (_selection == null) ? Mode.NORMAL : Mode.HOVER;
@@ -241,7 +243,7 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 		 */
 		private boolean setMove(BoardTile newSelection){
 			assert(newSelection != null);
-
+			
 			try {
 				_game.movePiece(_selection.getPosn(), newSelection.getPosn());
 				clearPossible();
