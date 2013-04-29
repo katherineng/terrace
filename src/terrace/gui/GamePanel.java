@@ -10,6 +10,8 @@ import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.glu.GLU;
 import javax.swing.*;
 
+import com.google.common.base.Function;
+import com.google.common.base.Optional;
 import com.jogamp.opengl.util.Animator;
 
 import java.util.*;
@@ -41,7 +43,6 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 	private GamePiece _selection; 		/** The GamePiece that has currently been selected **/
 	private BoardTile _hover;
 	private List<Posn> _possibleMoves;
-	private Vector4d _hit;
 	private Vector2d _selection_mouse;
 	private Vector2d _hover_mouse;
 	private Mode _mode;
@@ -69,7 +70,6 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 	    
 	    
 	    /*==== Selection ===*/
-	    _hit = new Vector4d(0,0,0,0);
 	    _selection = null;
 	    _hover = null;
 	    _hover_mouse = new Vector2d(0,0);
@@ -141,20 +141,21 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 			
 			switch (_mode){
 			case SELECTION: // activated when the user has selected something
-				GamePiece pieceSelection = getSelection(gl, _selection_mouse, _board.getGamePieces());
+				Optional<GamePiece> pieceSelection = getSelection(gl, _selection_mouse, _board.getGamePieces());
 				
-				// If the user has
-				if (pieceSelection != null) setPieceSelection(pieceSelection);
-				else {
-					BoardTile boardSelection = getSelection(gl, _selection_mouse, _board.getBoardPieces());
-					if (boardSelection != null && _selection != null)
-						setMove(getSelection(gl, _hover_mouse, _board.getBoardPieces()));
+				if (pieceSelection.isPresent()) {
+					setPieceSelection(pieceSelection.get());
+				} else {
+					Optional<BoardTile> boardSelection = getSelection(gl, _selection_mouse, _board.getBoardPieces());
+					if (boardSelection.isPresent() && _selection != null) {
+						setMove(getSelection(gl, _hover_mouse, _board.getBoardPieces()).orNull());
+					}
 				}
 				_mode = (_selection == null) ? Mode.NORMAL : Mode.HOVER;
 				break;
 			case HOVER: // the user has selected something and is moving over objects
-				BoardTile boardSelection = getSelection(gl, _hover_mouse, _board.getBoardPieces());
-				if (boardSelection != null) setBoardSelection(boardSelection);
+				Optional<BoardTile> boardSelection = getSelection(gl, _hover_mouse, _board.getBoardPieces());
+				if (boardSelection.isPresent()) setBoardSelection(boardSelection.get());
 				normalDraw(gl);
 				break;
 			case NORMAL: // regular drawing
@@ -303,7 +304,7 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 		 * @param objs        the objects to be tested for selection
 		 * @return - a BoardPiece intersecting with <mouse_coord>
 		 */
-		private <T extends Drawable> T getSelection(GL2 gl, Vector2d mouse_coord, List<T> objs) {
+		private <T extends Drawable> Optional<T> getSelection(GL2 gl, Vector2d mouse_coord, final List<T> objs) {
 			SelectionRecorder recorder = new SelectionRecorder(gl);
 		    
 		    // See if the (x, y) mouse position hits any primitives.
@@ -318,9 +319,13 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 		    
 		    // Set or clear the selection, and set m_hit to be the intersection point.
 		    AtomicInteger index = new AtomicInteger(0);
-		    T newSelection = recorder.exitSelectionMode(index, _hit) ? objs.get(index.get()) : null;
-		    _hit.w = 1;
-		    return newSelection;
+		    
+		    return recorder.exitSelectionMode().transform(new Function<Integer, T>() {
+		    	@Override
+		    	public T apply(Integer index) {
+		    		return objs.get(index);
+		    	}
+		    });
 		}
 		
 		public void displayChanged(GLAutoDrawable arg0, boolean arg1, boolean arg2) {}
