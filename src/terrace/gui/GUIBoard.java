@@ -10,16 +10,14 @@ import terrace.Player;
 import terrace.Posn;
 
 public class GUIBoard extends Board {
-
 	private RectPrism _foundation;				/** The foundation of the board **/
 	private BoardTile[][] _boardPieces;			/** A 2d Array of the Board tiles **/
-	private ArrayList<GamePiece> _gamePieces;	/** An array of the game pieces **/
-	HashMap<Player, Vector3d> _playerColors;	/** Maps players to their colors **/
-	HashMap<Posn, BoardTile> _posnToTile;		/** Maps positions to BoardTiles **/
+	private List<GamePiece> _gamePieces;	/** An array of the game pieces **/
+	Map<Player, Vector3d> _playerColors;	/** Maps players to their colors **/
 	private Game _game;							/** a Game instance **/
 	GL2 gl;
-
-	public GUIBoard(GL2 gl, Game game){
+	
+	public GUIBoard(GL2 gl, Game game) {
 		_game = game;
 		_foundation = new RectPrism(0.0, -0.01, 0.0, 1.0, 0.01, 1.0);
 		int dimension = _game.getBoard().getDimensions();
@@ -28,45 +26,42 @@ public class GUIBoard extends Board {
 		setUpColors();
 		this.gl = gl;
 		
-		_posnToTile = new HashMap<Posn, BoardTile>();
 		setUpBoard();
 	}
-
-
+	
 	public double getElevation(Posn pos) {
-		BoardTile b = _boardPieces[pos.y][pos.x];
+		BoardTile b = _boardPieces[pos.x][pos.y];
 		return b.getElevation();
 	}
 	
-	public double getElevation(int col, int row){
+	public double getElevation(int col, int row) {
 		return  _game.getBoard().getElevation(col, row)/60.;		
 	}
 	
-	public int getDimensions(){
+	public int getDimensions() {
 		return _game.getBoard().getDimensions();
 	}
-
-	public ArrayList<GamePiece> getGamePieces(){
+	
+	public List<GamePiece> getGamePieces() {
 		return _gamePieces;
 	}
 	
-	public BoardTile posToTile(Posn x){
-		assert(_posnToTile.containsKey(x));
-		return _posnToTile.get(x);
+	public BoardTile posToTile(Posn pos) {
+		return _boardPieces[pos.getX()][pos.getY()];
 	}
 	
-	public Vector3d getPlayerColors(Player p){
+	public Vector3d getPlayerColors(Player p) {
 		return _playerColors.get(p);
 	}
 	
-	public List<BoardTile> getBoardPieces(){
+	public List<BoardTile> getBoardPieces() {
 		LinkedList<BoardTile> toRet = new LinkedList<BoardTile>();
 		for (int i = 0; i < _boardPieces.length; i++)
 			for (int j = 0; j < _boardPieces[0].length; j++)
 				toRet.addLast(_boardPieces[i][j]);
 		return toRet;
 	}
-
+	
 	public void resetPieces() {	
 		int dimension = _game.getBoard().getDimensions();
 		_gamePieces.clear();
@@ -81,7 +76,7 @@ public class GUIBoard extends Board {
 	/**
 	 * Sets up colors for players
 	 */
-	private void setUpColors(){
+	private void setUpColors() {
 		_playerColors = new HashMap<Player, Vector3d>();
 		
 		List<Player> players =  _game.getPlayers();
@@ -104,10 +99,8 @@ public class GUIBoard extends Board {
 			}
 		}
 	}
-
 	
-	private void setUpBoard(){
-		
+	private void setUpBoard() {
 		int dimension = _game.getBoard().getDimensions();
 		//needed because translation is relative to center of shape, not the corner
 		for (int row = 0; row < dimension; row++){
@@ -117,21 +110,19 @@ public class GUIBoard extends Board {
 				Posn pos = new Posn(col, row);
 				BoardTile piece = new BoardTile(this, height, pos, _game.getBoard().getElevation(col, row));
 				_boardPieces[col][row] = piece;
-				_posnToTile.put(pos, piece);
 			}
 		}
 		
 		resetPieces();
 	}
-
-
+	
 	@Override
 	public void draw(GL2 gl) {
 		_foundation.draw(gl);	
 		for (BoardTile[] pieceArray: _boardPieces)
 			for (BoardTile piece: pieceArray)
 				piece.draw(gl);
-
+		
 		for (GamePiece piece: _gamePieces)
 			piece.draw(gl);
 	}
