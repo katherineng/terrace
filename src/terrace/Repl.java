@@ -9,13 +9,14 @@ public class Repl {
 	// num players, board dims, rule variant, board shape
 	public static void main(String[] args) throws IllegalMoveException {
 		if (args.length != 4) {
-			System.err.println("Usage: ./terrace <num players> <board dimensions> <rule variant> <board shape>");
+			System.err.println("Usage: ./terrace <num players> <num AI> <board dimensions> <rule variant> <board shape>");
 			System.exit(0);
 		} else {
-			int numPlayers = Integer.parseInt(args[0]);
-			int dimensions = Integer.parseInt(args[1]);
+			int numHuman = Integer.parseInt(args[0]);
+			int numAI = Integer.parseInt(args[1]);
+			int dimensions = Integer.parseInt(args[2]);
 			
-			String variant = args[2];
+			String variant = args[3];
 			Variant var = null;
 			
 			if (variant.equals("standard")) {
@@ -29,7 +30,7 @@ public class Repl {
 				System.exit(0);
 			}
 			
-			Game game = new Game(numPlayers, 0, dimensions, var);
+			Game game = new Game(numHuman, numAI, dimensions, var);
 			System.out.println(game.getBoard().piecesToString());
 			System.out.println(game.getCurrentPlayer().getColor() + "\'s turn");
 			

@@ -1,5 +1,6 @@
 package terrace.ai;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import terrace.*;
@@ -17,19 +18,19 @@ public class AI extends Player {
 	public boolean makeMove() {
 		List<Piece> pieces = getPieces();
 		assert(pieces.size() > 0);
+		LinkedList<Move> possibleMoves = new LinkedList<Move>();
 		
-		System.out.println(pieces);
-		Piece pieceToMove = pieces.get(getRandom(pieces.size()));
-		List<Posn> moves = _game.getBoard().getMoves(pieceToMove);
-		
-		while(moves.isEmpty()){
-			pieceToMove = pieces.get(getRandom(pieces.size())); 
-			moves = _game.getBoard().getMoves(pieceToMove);			
+		for (Piece piece: pieces){
+			for (Posn pos: _game.getBoard().getMoves(piece)){
+				Move newMove = new Move(piece, pos);
+				if (!possibleMoves.contains(newMove))
+						possibleMoves.addLast(newMove);
+			}
 		}
 		
-		Posn posnToMove = moves.get(getRandom(moves.size()));
+		Move toMove = possibleMoves.get(getRandom(possibleMoves.size()));
 		try {
-			_game.movePiece(pieceToMove.getPosn(), posnToMove);
+			_game.movePiece(toMove.getPiece().getPosn(), toMove.getTo());
 		} catch (IllegalMoveException e) {
 			System.out.println(e.getMessage());
 			e.printStackTrace();
