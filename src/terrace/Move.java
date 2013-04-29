@@ -1,52 +1,54 @@
 package terrace;
 
+import java.util.Objects;
+
 public class Move {
-	private final Piece piece;
-	private final Posn to;
+	private final Piece _piece;
+	private final Posn _to;
+	private final Piece _captured;
 	
 	public Move(Piece piece, Posn to) {
-		this.piece = piece;
-		this.to = to;
+		_piece = piece;
+		_to = to;
+		_captured = null;
 	}
 	
-	public Piece getPiece(){
-		return piece;
+	public Move(Piece piece, Posn to, Piece captured) {
+		_piece = piece;
+		_to = to;
+		_captured = captured;
 	}
 	
-	public Posn getTo(){
-		return to;
+	public Piece getPiece() {
+		return _piece;
+	}
+	
+	public Posn getTo() {
+		return _to;
 	}
 
+	public Piece getCapturedPiece() {
+		return _captured;
+	}
+	
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((piece == null) ? 0 : piece.hashCode());
-		result = prime * result + ((to == null) ? 0 : to.hashCode());
-		return result;
+		return Objects.hash(_piece, _to);
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Move other = (Move) obj;
-		if (piece == null) {
-			if (other.piece != null)
-				return false;
-		} else if (!piece.equals(other.piece))
-			return false;
-		if (to == null) {
-			if (other.to != null)
-				return false;
-		} else if (!to.equals(other.to))
-			return false;
-		return true;
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
+		Move move = (Move) obj;
+		
+		return _piece.equals(move._piece) && _to.equals(move._to);
 	}
 	
+	@Override
+	public String toString() {
+		return _piece + ", " + _to + ", " + _captured;
+	}
 	
 }
