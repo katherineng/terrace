@@ -141,20 +141,19 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 			
 			switch (_mode){
 			case SELECTION: // activated when the user has selected something
-				GamePiece pieceSelection = getGamePieceSelection(gl, _selection_mouse);
-
+				GamePiece pieceSelection = getSelection(gl, _selection_mouse, _board.getGamePieces());
 				
 				// If the user has
 				if (pieceSelection != null) setPieceSelection(pieceSelection);
 				else {
-					BoardTile boardSelection = getBoardPieceSelection(gl, _selection_mouse);
+					BoardTile boardSelection = getSelection(gl, _selection_mouse, _board.getBoardPieces());
 					if (boardSelection != null && _selection != null)
-						setMove(getBoardPieceSelection(gl, _hover_mouse));
+						setMove(getSelection(gl, _hover_mouse, _board.getBoardPieces()));
 				}
 				_mode = (_selection == null) ? Mode.NORMAL : Mode.HOVER;
 				break;
 			case HOVER: // the user has selected something and is moving over objects
-				BoardTile boardSelection = getBoardPieceSelection(gl, _hover_mouse);
+				BoardTile boardSelection = getSelection(gl, _hover_mouse, _board.getBoardPieces());
 				if (boardSelection != null) setBoardSelection(boardSelection);
 				normalDraw(gl);
 				break;
@@ -298,55 +297,31 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 		}
 		
 		/**
-		 * Gets the BoardPiece that is intersecting with the given mouse coordinate
-		 * @param gl - a GL2 object
-		 * @param mouse_coord - a Vector2d representing the mouse's position
+		 * Gets the object that is intersecting with the given mouse coordinate
+		 * @param gl          a GL2 object
+		 * @param mouse_coord a Vector2d representing the mouse's position
+		 * @param objs        the objects to be tested for selection
 		 * @return - a BoardPiece intersecting with <mouse_coord>
 		 */
-		private BoardTile getBoardPieceSelection(GL2 gl, Vector2d mouse_coord){
-		    SelectionRecorder recorder = new SelectionRecorder(gl);
-
-		    // See if the (x, y) mouse position hits any primitives.
-		    List<BoardTile> pieces = _board.getBoardPieces();
-		    recorder.enterSelectionMode((int) mouse_coord.x, (int) mouse_coord.y, pieces.size());
-		    for (int i = 0; i < pieces.size(); i++){
-		        recorder.setObjectIndex(i);
-		        pieces.get(i).draw(gl);
-		    }
-
-		    // Set or clear the selection, and set m_hit to be the intersection point.
-		    AtomicInteger index = new AtomicInteger(0);
-		    BoardTile newSelection = recorder.exitSelectionMode(index, _hit) ? pieces.get(index.get()) : null;
-		    _hit.w = 1;
-		    return newSelection;
-		}
-
-
-		/**
-		 * Gets the GamePiece that is intersecting with the given mouse coordinate
-		 * @param gl - a GL2 object
-		 * @param mouse_coord - a Vector2d representing the mouse's position
-		 * @return - a GamePiece intersecting with <mouse_coord>
-		 */
-		private GamePiece getGamePieceSelection(GL2 gl, Vector2d mouse_coord){
+		private <T extends Drawable> T getSelection(GL2 gl, Vector2d mouse_coord, List<T> objs) {
 			SelectionRecorder recorder = new SelectionRecorder(gl);
-
+		    
 		    // See if the (x, y) mouse position hits any primitives.
-		    ArrayList<GamePiece> pieces = _board.getGamePieces();
-
-		    recorder.enterSelectionMode((int) mouse_coord.x, (int) mouse_coord.y, pieces.size());
-		    for (int i = 0; i < pieces.size(); i++){
-		        recorder.setObjectIndex(i);
-		        pieces.get(i).draw(gl);
+		    recorder.enterSelectionMode((int) mouse_coord.x, (int) mouse_coord.y, objs.size());
+		    
+		    int i = 0;
+		    for (T obj : objs) {
+		    	recorder.setObjectIndex(i);
+		        obj.draw(gl);
+		        i++;
 		    }
-
+		    
 		    // Set or clear the selection, and set m_hit to be the intersection point.
 		    AtomicInteger index = new AtomicInteger(0);
-		    GamePiece newSelection = recorder.exitSelectionMode(index, _hit) ? pieces.get(index.get()) : null;
+		    T newSelection = recorder.exitSelectionMode(index, _hit) ? objs.get(index.get()) : null;
 		    _hit.w = 1;
 		    return newSelection;
 		}
-		
 		
 		public void displayChanged(GLAutoDrawable arg0, boolean arg1, boolean arg2) {}
 
