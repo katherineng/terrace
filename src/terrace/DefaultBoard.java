@@ -24,6 +24,20 @@ public class DefaultBoard implements Board<DefaultBoard> {
 		//_elevations = new int[_dimensions][_dimensions];
 	}
 	
+	public DefaultBoard clone() throws CloneNotSupportedException{
+		DefaultBoard toRet = (DefaultBoard) super.clone();
+		toRet._board = new Piece[_dimensions][_dimensions];
+		for (int i = 0; i < _dimensions; i++) {
+			for (int j = 0; j < _dimensions; j++) {
+				Piece p = _board[i][j];
+				if (p != null) {
+					toRet.setPiece(i, j, p.clone());
+				}
+			}
+		}
+		return toRet;
+	}
+	
 	/**
 	 * Fills in the elevations array with the appropriate elevations for each position
 	 * Should only be invoked when setting up the board for the first time

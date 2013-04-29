@@ -1,17 +1,17 @@
 package terrace;
 
 import java.util.*;
-
 import terrace.ai.AI;
 import terrace.exception.IllegalMoveException;
 import com.google.common.base.*;
 
-public class Game {
+public class Game implements Cloneable {
 	private DefaultBoard _board;
-	private int _dimensions;
 	private int _currPlayer;
 	private List<Player> _players;
 	private final int _numPlayers;
+	private final int _numHuman; // need for cloning
+	private final int _numAI;	// need for cloning
 	private int _playersAlive;		/** Number of players that are currently still playing **/
 	private boolean _isGameOver;
 	private Optional<Player> _winner;
@@ -19,9 +19,10 @@ public class Game {
 	
 	public Game(int numHuman, int numAI, int dimensions, Variant variant) throws IllegalMoveException {
 		_numPlayers = numHuman + numAI;
+		_numHuman = numHuman;
+		_numAI = numAI;
 		assert(_numPlayers == 2 || _numPlayers == 4);
 		// _variant = variant;
-		_dimensions = dimensions;
 		_board = new DefaultBoard(dimensions, variant);
 		_board.setUp();
 		_isGameOver = false;
@@ -38,6 +39,28 @@ public class Game {
 		
 		setUpPieces();
 		_players.get(_currPlayer).makeMove();
+	}
+	
+	public Game clone() throws CloneNotSupportedException{
+		Game toRet = (Game) super.clone();
+		toRet._board = _board.clone();
+		toRet._players = new LinkedList<Player>();
+		
+		// make new players
+		for (int i = 0; i < _numHuman; i++) 
+			toRet._players.add(new Player(PlayerColor.values()[i]));
+		for (int i = 0; i < _numAI; i++)
+			toRet._players.add(new AI(PlayerColor.values()[i], toRet));
+		
+		// set up player's pieces
+		for (int i = 0; i < _players.size(); i++){
+			Player newPlayer =  toRet._players.get(i);
+			for(Piece piece: _players.get(i).getPieces())
+				newPlayer.addPiece(piece.clone());
+			
+		}
+		
+		return toRet;
 	}
 	
 	public DefaultBoard getBoard() {
@@ -199,50 +222,55 @@ public class Game {
 		}
 	}
 	
+	public int getDimensions(){
+		return _board.getDimensions();
+	}
+	
 	/**
 	 * Places the pieces on the board for a 2 player game
 	 * @param p1 Player 1
 	 * @param p2 Player 2
 	 */
 	private void setUp2Player(Player p1, Player p2) {
-		int numTerraces = _dimensions / 2;
+		int dim = getDimensions();
+		int numTerraces = dim / 2;
 		
-		for (int i = 0; i < _dimensions; i++) {
+		for (int i = 0; i < dim; i++) {
 			
 			if (i == 0) {
-				Piece tPiece = new Piece(0, true, new Posn(0, 0), _dimensions, p1);
-				Piece p2Piece = new Piece(numTerraces - 1, false, new Posn(i, _dimensions - 1), _dimensions, p2);
+				Piece tPiece = new Piece(0, true, new Posn(0, 0), dim, p1);
+				Piece p2Piece = new Piece(numTerraces - 1, false, new Posn(i, dim - 1), dim, p2);
 				p1.addPiece(tPiece);
 				p2.addPiece(p2Piece);
 				
 				_board.setPiece(i, 0, tPiece);
-				_board.setPiece(i, _dimensions - 1, p2Piece);
+				_board.setPiece(i, dim - 1, p2Piece);
 			
-			} else if (i == _dimensions - 1) {
-				Piece tPiece = new Piece(0, true, new Posn(_dimensions - 1, _dimensions - 1), _dimensions, p2);
-				Piece p1Piece = new Piece(i / 2, false, new Posn(i, 0), _dimensions, p1);
+			} else if (i == dim - 1) {
+				Piece tPiece = new Piece(0, true, new Posn(dim - 1, dim - 1), dim, p2);
+				Piece p1Piece = new Piece(i / 2, false, new Posn(i, 0), dim, p1);
 				p1.addPiece(p1Piece);
 				p2.addPiece(tPiece);
 				
 				_board.setPiece(i, i, tPiece);
 				_board.setPiece(i, 0, p1Piece);
 			} else {
-				Piece p1Piece = new Piece(i / 2, false, new Posn(i, 0), _dimensions, p1);
-				Piece p2Piece = new Piece(numTerraces - (i / 2) - 1, false, new Posn(i, _dimensions - 1), _dimensions, p2);
+				Piece p1Piece = new Piece(i / 2, false, new Posn(i, 0),dim, p1);
+				Piece p2Piece = new Piece(numTerraces - (i / 2) - 1, false, new Posn(i, dim - 1), dim, p2);
 				p1.addPiece(p1Piece);
 				p2.addPiece(p2Piece);
 				
 				_board.setPiece(i, 0, p1Piece);
-				_board.setPiece(i, _dimensions - 1, p2Piece);
+				_board.setPiece(i, dim - 1, p2Piece);
 			}
 			
-			Piece p1Piece = new Piece(numTerraces - (i / 2) - 1, false, new Posn(i, 1), _dimensions, p1);
-			Piece p2Piece = new Piece(i / 2, false, new Posn(i, _dimensions  - 2), _dimensions, p2);
+			Piece p1Piece = new Piece(numTerraces - (i / 2) - 1, false, new Posn(i, 1), dim, p1);
+			Piece p2Piece = new Piece(i / 2, false, new Posn(i, dim  - 2), dim, p2);
 			p1.addPiece(p1Piece);
 			p2.addPiece(p2Piece);
 			
 			_board.setPiece(i, 1, p1Piece);
-			_board.setPiece(i, _dimensions - 2, p2Piece);
+			_board.setPiece(i, dim - 2, p2Piece);
 			
 		}
 	}
@@ -255,56 +283,56 @@ public class Game {
 	 * @param p4 Player 4
 	 */
 	private void setUp4Player(Player p1, Player p2, Player p3, Player p4) {
-		int dimensions = _board.getWidth();
-		int numTerraces = dimensions / 2;
+		int dim = _board.getDimensions();
+		int numTerraces = dim / 2;
 		
-		for (int i = 1; i < dimensions - 1; i++) {
+		for (int i = 1; i < dim - 1; i++) {
 			if (i == 1) {
-				Piece t1Piece = new Piece(0, true, new Posn(1, 0), _dimensions, p1);
-				Piece t2Piece = new Piece(0, true, new Posn(0, 1), _dimensions, p2);
-				Piece p3Piece = new Piece(numTerraces - (i / 2) - 1, false, new Posn(i, dimensions -1), _dimensions, p3);
-				Piece p4Piece = new Piece(numTerraces - (i / 2) - 1, false, new Posn(dimensions -1, i), _dimensions, p4);
+				Piece t1Piece = new Piece(0, true, new Posn(1, 0), dim, p1);
+				Piece t2Piece = new Piece(0, true, new Posn(0, 1), dim, p2);
+				Piece p3Piece = new Piece(numTerraces - (i / 2) - 1, false, new Posn(i, dim -1), dim, p3);
+				Piece p4Piece = new Piece(numTerraces - (i / 2) - 1, false, new Posn(dim -1, i), dim, p4);
 				p1.addPiece(t1Piece);
 				p2.addPiece(t2Piece);
 				p3.addPiece(p3Piece);
 				p4.addPiece(p4Piece);
 				
 				_board.setPiece(i, 0, t1Piece);
-				_board.setPiece(i, dimensions - 1, p3Piece);
+				_board.setPiece(i, dim - 1, p3Piece);
 				
 				_board.setPiece(0, i, t2Piece);
-				_board.setPiece(dimensions - 1, i, p4Piece);
+				_board.setPiece(dim - 1, i, p4Piece);
 				
-			} else if(i == dimensions - 2) {
-				Piece p1Piece = new Piece(i / 2, false, new Posn(i, 0), _dimensions, p1);
-				Piece p2Piece = new Piece(i / 2, false, new Posn(0, i), _dimensions, p2);
-				Piece t3Piece = new Piece(0, true, new Posn(i, dimensions - 1), _dimensions, p3);
-				Piece t4Piece = new Piece(0, true, new Posn(dimensions - 1, i), _dimensions, p4);
+			} else if(i == dim - 2) {
+				Piece p1Piece = new Piece(i / 2, false, new Posn(i, 0), dim, p1);
+				Piece p2Piece = new Piece(i / 2, false, new Posn(0, i), dim, p2);
+				Piece t3Piece = new Piece(0, true, new Posn(i, dim - 1), dim, p3);
+				Piece t4Piece = new Piece(0, true, new Posn(dim - 1, i), dim, p4);
 				p1.addPiece(p1Piece);
 				p2.addPiece(p2Piece);
 				p3.addPiece(t3Piece);
 				p4.addPiece(t4Piece);
 				
 				_board.setPiece(i, 0, p1Piece);
-				_board.setPiece(i, dimensions - 1, t3Piece);
+				_board.setPiece(i, dim - 1, t3Piece);
 				
 				_board.setPiece(0, i, p2Piece);
-				_board.setPiece(dimensions - 1, i, t4Piece);
+				_board.setPiece(dim - 1, i, t4Piece);
 			} else {
-				Piece p1Piece = new Piece(i / 2, false, new Posn(i, 0), _dimensions, p1);
-				Piece p2Piece = new Piece(i / 2, false, new Posn(0, i), _dimensions, p2);
-				Piece p3Piece = new Piece(numTerraces - (i / 2) - 1, false, new Posn(i, dimensions -1), _dimensions, p3);
-				Piece p4Piece = new Piece(numTerraces - (i / 2) - 1, false, new Posn(dimensions -1, i), _dimensions, p4);
+				Piece p1Piece = new Piece(i / 2, false, new Posn(i, 0), dim, p1);
+				Piece p2Piece = new Piece(i / 2, false, new Posn(0, i), dim, p2);
+				Piece p3Piece = new Piece(numTerraces - (i / 2) - 1, false, new Posn(i, dim -1), dim, p3);
+				Piece p4Piece = new Piece(numTerraces - (i / 2) - 1, false, new Posn(dim -1, i), dim, p4);
 				p1.addPiece(p1Piece);
 				p2.addPiece(p2Piece);
 				p3.addPiece(p3Piece);
 				p4.addPiece(p4Piece);
 				
 				_board.setPiece(i, 0, p1Piece);
-				_board.setPiece(i, dimensions - 1, p3Piece);
+				_board.setPiece(i, dim - 1, p3Piece);
 			
 				_board.setPiece(0, i, p2Piece);
-				_board.setPiece(dimensions - 1, i, p4Piece);
+				_board.setPiece(dim - 1, i, p4Piece);
 			}
 		}
 	}

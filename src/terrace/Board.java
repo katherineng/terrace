@@ -2,7 +2,7 @@ package terrace;
 
 import java.util.List;
 
-public interface Board<T extends Board<T>> {
+public interface Board<T extends Board<T>> extends Cloneable{
 	int getWidth();
 	int getHeight();
 	

@@ -14,6 +14,7 @@ public class Player {
 		_name = "";
 	}
 	
+	
 	/**
 	 * @return true if a move was made (AI), false otherwise
 	 */

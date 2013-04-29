@@ -2,7 +2,7 @@ package terrace;
 
 import com.google.common.base.*;
 
-public class Piece implements Comparable<Piece> {
+public class Piece implements Comparable<Piece>, Cloneable{
 	private final int _size;
 	private Optional<Posn> _goalPosn;
 	private Posn _posn;
@@ -19,6 +19,12 @@ public class Piece implements Comparable<Piece> {
 			_goalPosn = Optional.absent();
 		}
 		
+	}
+	
+	public Piece clone() throws CloneNotSupportedException{
+		Piece toRet = (Piece) super.clone();
+		toRet._posn = _posn.clone();
+		return toRet;
 	}
 	
 	public void updatePosn(Posn posn) {

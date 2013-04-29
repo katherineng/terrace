@@ -3,7 +3,7 @@ package terrace;
 import javax.vecmath.*;
 
 @SuppressWarnings("serial")
-public class Posn extends Point3i{
+public class Posn extends Point3i implements Cloneable{
 
 	public Posn(int x, int y) {
 		super(x, y, 0);
@@ -21,6 +21,11 @@ public class Posn extends Point3i{
 		result = prime * result + x;
 		result = prime * result + y;
 		return result;
+	}
+	
+	public Posn clone(){
+		Posn toRet = (Posn) super.clone();
+		return toRet;
 	}
 	
 	/* (non-Javadoc)

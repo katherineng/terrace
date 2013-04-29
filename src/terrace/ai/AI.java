@@ -13,6 +13,7 @@ public class AI extends Player {
 		super(color);
 		_game = game;
 	}
+
 	
 	@Override
 	public boolean makeMove() {
