@@ -41,28 +41,6 @@ public class Game implements Cloneable {
 		_players.get(_currPlayer).makeMove();
 	}
 	
-	public Game clone() throws CloneNotSupportedException{
-		Game toRet = (Game) super.clone();
-		toRet._board = _board.clone();
-		toRet._players = new LinkedList<Player>();
-		
-		// make new players
-		for (int i = 0; i < _numHuman; i++) 
-			toRet._players.add(new Player(PlayerColor.values()[i]));
-		for (int i = 0; i < _numAI; i++)
-			toRet._players.add(new AI(PlayerColor.values()[i], toRet));
-		
-		// set up player's pieces
-		for (int i = 0; i < _players.size(); i++){
-			Player newPlayer =  toRet._players.get(i);
-			for(Piece piece: _players.get(i).getPieces())
-				newPlayer.addPiece(piece.clone());
-			
-		}
-		
-		return toRet;
-	}
-	
 	public DefaultBoard getBoard() {
 		return _board;
 	}
@@ -335,5 +313,82 @@ public class Game implements Cloneable {
 				_board.setPiece(dim - 1, i, p4Piece);
 			}
 		}
+	}
+	
+	/* ===================
+	 * AI UTILITIES
+	 * ====================*/
+
+	
+	public Game clone() throws CloneNotSupportedException{
+		Game toRet = (Game) super.clone();
+		toRet._board = _board.clone();
+		toRet._players = new LinkedList<Player>();
+		
+		// make new players
+		for (int i = 0; i < _numHuman; i++) 
+			toRet._players.add(new Player(PlayerColor.values()[i]));
+		for (int i = 0; i < _numAI; i++)
+			toRet._players.add(new AI(PlayerColor.values()[i], toRet));
+		
+		// set up player's pieces
+		for (int i = 0; i < _players.size(); i++){
+			Player newPlayer =  toRet._players.get(i);
+			for(Piece piece: _players.get(i).getPieces())
+				newPlayer.addPiece(piece.clone());
+		}
+		
+		return toRet;
+	}
+	
+	/**
+	 * Estimates the value of this game for the current player
+	 * @return the value for this game for the current player
+	 */
+	public double estimateValue(){
+		Player currPlayer = _players.get(_currPlayer);
+		if (_isGameOver){
+			if(_winner.equals(currPlayer)) 
+				return Double.POSITIVE_INFINITY;
+			else return Double.NEGATIVE_INFINITY;
+		}
+		
+		double currentPlayerValue = estimatePlayerValue(currPlayer);
+		double othersAvgValue = 0;
+		for (Player other: _players)
+			if (!other.equals(currPlayer))
+				othersAvgValue += estimatePlayerValue(other);
+		othersAvgValue /= (_players.size() - 1);
+		
+		return currentPlayerValue - othersAvgValue;
+	}
+
+	/**
+	 * @param player - the Player whose value you're calculating
+	 * @return - a double indicating the value of this player's current position in the game.
+	 * Calculating the value of each piece by its size and its elevation.
+	 * The bigger the size/the higher the elevation, the better.
+	 * 
+	 * TODO: 
+	 * 
+	 * currently adding the two. maybe rethink that? Have 2 AIs play each other, one adding,
+	 * one not later on.
+	 * 
+	 * NEED TO REWRITE!
+	 * PROBLEM: big pieces in the beginning are encouraged to stay where they are if they are
+	 * at a higher elevation. In general, also need to take into account proximity to other pieces
+	 * + attack positions
+	 */
+	private double estimatePlayerValue(Player player){
+		double toRet = 0;
+		for (Piece p : player.getPieces()){
+			double pieceValue = (p.getSize() + 1) + getBoard().getElevation(p.getPosn());
+			List<Posn> possibleMoves = _board.getMoves(p);
+			for (Posn pos: possibleMoves){
+				
+			}
+			toRet += pieceValue;
+		}
+		return toRet;
 	}
 }
