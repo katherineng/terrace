@@ -30,7 +30,7 @@ public class GUIBoard extends Board {
 	}
 	
 	public double getElevation(Posn pos) {
-		BoardTile b = _boardPieces[pos.y][pos.x];
+		BoardTile b = _boardPieces[pos.x][pos.y];
 		return b.getElevation();
 	}
 	
