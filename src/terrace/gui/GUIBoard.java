@@ -13,9 +13,9 @@ public class GUIBoard extends Board {
 
 	private RectPrism _foundation;				/** The foundation of the board **/
 	private BoardTile[][] _boardPieces;			/** A 2d Array of the Board tiles **/
-	private ArrayList<GamePiece> _gamePieces;	/** An array of the game pieces **/
-	HashMap<Player, Vector3d> _playerColors;	/** Maps players to their colors **/
-	HashMap<Posn, BoardTile> _posnToTile;		/** Maps positions to BoardTiles **/
+	private List<GamePiece> _gamePieces;	/** An array of the game pieces **/
+	Map<Player, Vector3d> _playerColors;	/** Maps players to their colors **/
+	Map<Posn, BoardTile> _posnToTile;		/** Maps positions to BoardTiles **/
 	private Game _game;							/** a Game instance **/
 	GL2 gl;
 
@@ -46,7 +46,7 @@ public class GUIBoard extends Board {
 		return _game.getBoard().getDimensions();
 	}
 
-	public ArrayList<GamePiece> getGamePieces(){
+	public List<GamePiece> getGamePieces(){
 		return _gamePieces;
 	}
 	
