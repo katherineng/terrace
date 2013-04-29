@@ -1,5 +1,11 @@
 package terrace.gui;
-import java.awt.event.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
+import java.util.List;
+
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
@@ -8,22 +14,19 @@ import javax.media.opengl.GLEventListener;
 import javax.media.opengl.GLProfile;
 import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.glu.GLU;
-import javax.swing.*;
-
-import com.google.common.base.Function;
-import com.google.common.base.Optional;
-import com.jogamp.opengl.util.Animator;
-
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import javax.vecmath.*;
+import javax.swing.SwingUtilities;
+import javax.vecmath.Vector2d;
+import javax.vecmath.Vector3d;
 
 import terrace.Game;
 import terrace.Move;
 import terrace.Player;
 import terrace.Posn;
 import terrace.exception.IllegalMoveException;
+
+import com.google.common.base.Function;
+import com.google.common.base.Optional;
+import com.jogamp.opengl.util.Animator;
 
 
 public class GamePanel extends GLCanvas implements MouseWheelListener, MouseListener, MouseMotionListener{
@@ -149,7 +152,9 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 				} else {
 					Optional<BoardTile> boardSelection = getSelection(gl, _selection_mouse, _board.getBoardPieces());
 					if (boardSelection.isPresent() && _selection != null) {
-						setMove(getSelection(gl, _hover_mouse, _board.getBoardPieces()).orNull());
+						Optional<BoardTile> hoverTile = getSelection(gl, _hover_mouse, _board.getBoardPieces());
+						
+						if(hoverTile.isPresent()) setMove(hoverTile.get());
 					}
 				}
 				_mode = (_selection == null) ? Mode.NORMAL : Mode.HOVER;
@@ -242,7 +247,7 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 		 */
 		private boolean setMove(BoardTile newSelection){
 			assert(newSelection != null);
-
+			
 			try {
 				_game.movePiece(_selection.getPosn(), newSelection.getPosn());
 				clearPossible();
@@ -317,9 +322,6 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 		        obj.draw(gl);
 		        i++;
 		    }
-		    
-		    // Set or clear the selection, and set m_hit to be the intersection point.
-		    AtomicInteger index = new AtomicInteger(0);
 		    
 		    return recorder.exitSelectionMode().transform(new Function<Integer, T>() {
 		    	@Override
