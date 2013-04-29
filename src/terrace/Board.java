@@ -14,11 +14,11 @@ public interface Board<T extends Board<T>> extends Cloneable{
 	List<Posn> getNeighbors(Posn posn);
 	
 	/**
-	 * Given a piece on the board, finds all the possible positions to which the piece can move
+	 * Given a piece on the board, finds all the possible Moves to which the piece can make
 	 * @param A piece on the board
-	 * @return A set of all the positions
+	 * @return A set of all the Moves
 	 */
-	List<Posn> getMoves(Piece piece);
+	List<Move> getMoves(Piece piece);
 	
 	/**
 	 * Returns the piece at the given position
@@ -56,12 +56,6 @@ public interface Board<T extends Board<T>> extends Cloneable{
 	 */
 	int getElevation(Posn p);
 	
-	/**
-	 * Finds all the positions on the same terrace as the given position
-	 * @param p A position for which to find all the other positions on the same terrace
-	 * @return A list of positions on the same terrace
-	 */
-	List<Posn> getTerracePosns(Posn p);
 	
 	
 }
