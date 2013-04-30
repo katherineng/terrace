@@ -1,6 +1,11 @@
 package terrace;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 public class GameBuilder {
+	private ExecutorService es = Executors.newCachedThreadPool();
+	
 	private int totalPlayers;
 	private int localPlayers;
 	private int aiPlayers;
@@ -20,7 +25,9 @@ public class GameBuilder {
 	public void hostGame() {
 		
 	}
-	
+	public void startGame() {
+		
+	}
 	
 	private enum GameType {
 		Local, Host, Client
