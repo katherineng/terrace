@@ -377,7 +377,8 @@ public class Game implements Cloneable {
 	 * NEED TO REWRITE!
 	 * PROBLEM: big pieces in the beginning are encouraged to stay where they are if they are
 	 * at a higher elevation. In general, also need to take into account proximity to other pieces
-	 * + attack positions
+	 * + attack positions. But this might already be taken account for? Might have to search too deep
+	 * to get to this point though. grasd;flkjasd;lfkjasd;lfkj;
 	 */
 	private double estimatePlayerValue(Player player){
 		double toRet = 0;
