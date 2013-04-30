@@ -345,8 +345,7 @@ public class Game implements Cloneable {
 	 * Estimates the value of this game for the current player
 	 * @return the value for this game for the current player
 	 */
-	public double estimateValue(){
-		Player currPlayer = _players.get(_currPlayer);
+	public double estimateValue(Player currPlayer){
 		if (_isGameOver){
 			if(_winner.equals(currPlayer)) 
 				return Double.POSITIVE_INFINITY;
