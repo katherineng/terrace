@@ -3,6 +3,7 @@ package terrace;
 import java.io.*;
 
 import terrace.exception.IllegalMoveException;
+import terrace.util.Posn;
 
 public class Repl {
 

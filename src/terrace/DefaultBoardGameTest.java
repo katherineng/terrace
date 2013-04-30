@@ -5,6 +5,7 @@ import java.util.*;
 import org.junit.Test;
 
 import terrace.exception.IllegalMoveException;
+import terrace.util.Posn;
 
 public class DefaultBoardGameTest {
 

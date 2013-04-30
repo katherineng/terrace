@@ -1,4 +1,4 @@
-package terrace;
+package terrace.util;
 
 import javax.vecmath.*;
 

@@ -3,6 +3,8 @@ package terrace;
 import java.util.*;
 import terrace.ai.AI;
 import terrace.exception.IllegalMoveException;
+import terrace.util.Posn;
+
 import com.google.common.base.*;
 
 public class DefaultBoardGame implements Cloneable {

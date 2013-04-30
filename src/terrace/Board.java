@@ -3,6 +3,8 @@ package terrace;
 import java.util.LinkedList;
 import java.util.List;
 
+import terrace.util.Posn;
+
 public abstract class Board implements Cloneable {
 	protected Piece[][] _board;
 	
