@@ -49,34 +49,33 @@ public class TriangleBoard implements Board<TriangleBoard> {
 				}
 				currY += 2;
 			}
-			
 			//fill in the rest
 			diagonalMin ++;
-			
-			for(int offset = 1; offset < _dimensions; offset ++) {
+			int yOffset = 2;
+			for(int xOffset = 1; xOffset < _dimensions; xOffset ++) {
 				currY = 0;
 				diagonalMin += 2;
 				secondHalf = false;
 				diagonalMax ++;
-				for(int x = 0; x < _dimensions - offset; x ++) {
+				for(int x = 0; x < _dimensions - xOffset; x ++) {
 					if(secondHalf) {
-						elevations[x + offset][currY] = diagonalMin;
-						elevations[x + offset][currY + 1] = diagonalMin - 1;
+						elevations[x + xOffset][currY] = diagonalMin;
+						elevations[x + xOffset][currY + 1] = diagonalMin - 1;
 
-						elevations[x][currY + 2] = diagonalMin;
-						elevations[x][currY + 3] = diagonalMin -1;
+						elevations[x][currY + yOffset] = diagonalMin;
+						elevations[x][currY + yOffset + 1] = diagonalMin -1;
 
 						diagonalMin -= 2;
 
 					} else {
-						elevations[x + offset][currY] = diagonalMin;
+						elevations[x + xOffset][currY] = diagonalMin;
 
-						elevations[x][currY + 2] = diagonalMin;
+						elevations[x][currY + yOffset] = diagonalMin;
 
 						if(diagonalMin < diagonalMax) {
-							elevations[x + offset][currY + 1] = diagonalMin + 1;
+							elevations[x + xOffset][currY + 1] = diagonalMin + 1;
 
-							elevations[x][currY + 3] = diagonalMin + 1;
+							elevations[x][currY + yOffset + 1] = diagonalMin + 1;
 
 							if(diagonalMin + 1== diagonalMax) {
 								secondHalf = true;
@@ -85,15 +84,17 @@ public class TriangleBoard implements Board<TriangleBoard> {
 								diagonalMin +=2;
 							}
 						} else {
-							elevations[x + offset][currY + 1] = diagonalMin;
+							elevations[x + xOffset][currY + 1] = diagonalMin;
 
-							elevations[x][currY + 3] = diagonalMin;
+							elevations[x][currY + yOffset + 1] = diagonalMin;
 
 							secondHalf = true;
 							diagonalMin --;
 						}
 					}
+					currY +=2;
 				}
+				yOffset +=2;
 				diagonalMin ++;
 			}
 			_elevationsMap.put(_dimensions, elevations);
@@ -249,5 +250,37 @@ public class TriangleBoard implements Board<TriangleBoard> {
 	public int getElevation(Posn p) {
 		return _elevationsMap.get(_dimensions)[p.getX()][p.getY()];
 	}
-
+	
+	public String elevationsToString() {
+		String elevations = "";
+		
+		for (int y = 0; y < _dimensions*2; y++) {
+			elevations += "[ ";
+			for (int x = 0; x < _dimensions; x++) {
+				elevations += _elevationsMap.get(_dimensions)[x][y] + " ";
+			}
+			elevations += "]\n";
+		}
+		
+		return elevations;
+	}
+	
+	public String piecesToString() {
+		String pieces = "";
+		
+		for (int y = _dimensions - 1; y >= 0; y--) {
+			pieces += "[ ";
+			for (int x = 0; x < _dimensions; x++) {
+				Piece p = _board[x][y];
+				if (p != null) {
+					pieces += p.toString() + "\t";
+				} else {
+					pieces += "(..........)\t";
+				}
+			}
+			pieces += "]\n";
+		}
+		
+		return pieces;
+	}
 }
