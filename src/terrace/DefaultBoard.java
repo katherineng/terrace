@@ -9,7 +9,7 @@ import java.util.*;
  * @author kwng
  *
  */
-public class DefaultBoard implements Board<DefaultBoard> {
+public class DefaultBoard extends Board {
 	private final int _dimensions;
 	//private static int[][] _elevations;
 	private static HashMap<Integer, int[][]> _elevationsMap;

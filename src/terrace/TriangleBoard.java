@@ -8,7 +8,7 @@ import java.util.List;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 
-public class TriangleBoard implements Board<TriangleBoard> {
+public class TriangleBoard extends Board {
 	private final int _dimensions;
 	private static HashMap<Integer, int[][]> _elevationsMap;
 	private Piece[][] _board;
