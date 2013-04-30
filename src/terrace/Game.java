@@ -201,7 +201,7 @@ public class Game implements Cloneable {
 	}
 	
 	public int getDimensions(){
-		return _board.getDimensions();
+		return _board.getWidth();
 	}
 	
 	/**
@@ -261,7 +261,7 @@ public class Game implements Cloneable {
 	 * @param p4 Player 4
 	 */
 	private void setUp4Player(Player p1, Player p2, Player p3, Player p4) {
-		int dim = _board.getDimensions();
+		int dim = _board.getWidth();
 		int numTerraces = dim / 2;
 		
 		for (int i = 1; i < dim - 1; i++) {

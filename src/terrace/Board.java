@@ -3,6 +3,8 @@ package terrace;
 import java.util.List;
 
 public abstract class Board implements Cloneable {
+	protected Piece[][] _board;
+	
 	public abstract int getWidth();
 	public abstract int getHeight();
 	
@@ -25,21 +27,32 @@ public abstract class Board implements Cloneable {
 	 * @param posn A position
 	 * @return The piece at the position
 	 */
-	public abstract Piece getPieceAt(Posn posn);
+	public Piece getPieceAt(Posn posn) {
+		return _board[posn.x][posn.y];
+	}
 	
 	/**
 	 * Sets the board at position (x, y) to the given piece
 	 * @param posn  The position to set
 	 * @param piece The piece to which posn should be set
 	 */
-	public abstract void setPieceAt(Posn posn, Piece piece);
+	public void setPieceAt(Posn posn, Piece piece) {
+		_board[posn.getX()][posn.getY()] = piece;
+	}
 	
 	/**
 	 * Makes a move
 	 * 
 	 * @param move The move to make
 	 */
-	public abstract void makeMove(Move move);
+	public void makeMove(Move move) {
+		Posn from = move.getPiece().getPosn();
+		Posn to = move.getTo();
+		
+		_board[from.getX()][from.getY()] = null;
+		move.getPiece().updatePosn(move.getTo());
+		_board[to.getX()][to.getY()] = move.getPiece();
+	}
 	
 	/**
 	 * Creates a deep copy of the board for an AIPlayer to use to score future states

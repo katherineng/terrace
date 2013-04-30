@@ -13,7 +13,6 @@ public class DefaultBoard extends Board {
 	private final int _dimensions;
 	//private static int[][] _elevations;
 	private static HashMap<Integer, int[][]> _elevationsMap;
-	private Piece[][] _board;
 	private Variant _variant;
 
 	public DefaultBoard(int dimensions, Variant variant) {
@@ -84,10 +83,6 @@ public class DefaultBoard extends Board {
 		return _elevationsMap.get(_dimensions)[x][y];
 	}
 	
-	public Piece getPiece(int x, int y) {
-		return _board[x][y];
-	}
-	
 	protected void removePlayer(Player player){
 		for (int y = _dimensions - 1; y >= 0; y--) {
 			for (int x = 0; x < _dimensions; x++) {
@@ -96,11 +91,6 @@ public class DefaultBoard extends Board {
 					_board[x][y] = null;
 			}
 		}
-	}
-	
-
-	public int getDimensions(){
-		return _dimensions;
 	}
 	
 	public List<Posn> getTerracePosns(Posn p) {
@@ -270,16 +260,6 @@ public class DefaultBoard extends Board {
 		
 		return moves;
 	}
-
-	@Override
-	public Piece getPieceAt(Posn posn) {
-		return _board[posn.x][posn.y];
-	}
-	
-	@Override
-	public void setPieceAt(Posn posn, Piece piece) {
-		_board[posn.getX()][posn.getY()] = piece;
-	}
 	
 	@Override
 	public List<Posn> getNeighbors(Posn posn) {
@@ -331,16 +311,6 @@ public class DefaultBoard extends Board {
 			}
 		}
 		return null;
-	}
-	
-	@Override
-	public void makeMove(Move move) {
-		Posn from = move.getPiece().getPosn();
-		Posn to = move.getTo();
-		
-		_board[from.getX()][from.getY()] = null;
-		move.getPiece().updatePosn(move.getTo());
-		_board[to.getX()][to.getY()] = move.getPiece();
 	}
 	
 	public String elevationsToString() {

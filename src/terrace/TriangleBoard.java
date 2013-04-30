@@ -11,7 +11,6 @@ import com.google.common.collect.Collections2;
 public class TriangleBoard extends Board {
 	private final int _dimensions;
 	private static HashMap<Integer, int[][]> _elevationsMap;
-	private Piece[][] _board;
 	public TriangleBoard(int dimensions) {
 		_dimensions = dimensions;
 		_board = new Piece[_dimensions][_dimensions*2];
@@ -207,26 +206,6 @@ public class TriangleBoard extends Board {
 			}
 		}
 		return possibleMoves;			
-	}
-
-	@Override
-	public Piece getPieceAt(Posn posn) {
-		return _board[posn.x][posn.y];
-	}
-	
-	@Override
-	public void setPieceAt(Posn posn, Piece piece) {
-		_board[posn.getX()][posn.getY()] = piece;
-	}
-	
-	@Override
-	public void makeMove(Move move) {
-		Posn from = move.getPiece().getPosn();
-		Posn to = move.getTo();
-		
-		_board[from.getX()][from.getY()] = null;
-		move.getPiece().updatePosn(move.getTo());
-		_board[to.getX()][to.getY()] = move.getPiece();
 	}
 	
 	@Override
