@@ -119,7 +119,7 @@ public class Game implements Cloneable {
 				 
 
 				 current.getPieces().remove(playerPiece);
-				 _board.setPiece(from.x, from.y, null);
+				 _board.setPieceAt(from, null);
 				 
 				 Piece captured = _board.getPieceAt(to);
 				 if (captured != null) {
@@ -136,7 +136,7 @@ public class Game implements Cloneable {
 				 if (!(captured != null && captured.isTPiece() && captured.getPlayer().equals(playerPiece.getPlayer()))){
 					 playerPiece.setPosn(to);
 					 current.getPieces().add(playerPiece);
-					 _board.setPiece(to.x, to.y, playerPiece);
+					 _board.setPieceAt(to, playerPiece);
 				 }
 				 
 				 if (captured != null && captured.isTPiece() && _currPlayer < getPlayerNumber(captured.getPlayer())) 
@@ -221,8 +221,8 @@ public class Game implements Cloneable {
 				p1.addPiece(tPiece);
 				p2.addPiece(p2Piece);
 				
-				_board.setPiece(i, 0, tPiece);
-				_board.setPiece(i, dim - 1, p2Piece);
+				_board.setPieceAt(new Posn(i, 0), tPiece);
+				_board.setPieceAt(new Posn(i, dim - 1), p2Piece);
 			
 			} else if (i == dim - 1) {
 				Piece tPiece = new Piece(0, true, new Posn(dim - 1, dim - 1), dim, p2);
@@ -230,16 +230,16 @@ public class Game implements Cloneable {
 				p1.addPiece(p1Piece);
 				p2.addPiece(tPiece);
 				
-				_board.setPiece(i, i, tPiece);
-				_board.setPiece(i, 0, p1Piece);
+				_board.setPieceAt(new Posn(i, i), tPiece);
+				_board.setPieceAt(new Posn(i, 0), p1Piece);
 			} else {
 				Piece p1Piece = new Piece(i / 2, false, new Posn(i, 0),dim, p1);
 				Piece p2Piece = new Piece(numTerraces - (i / 2) - 1, false, new Posn(i, dim - 1), dim, p2);
 				p1.addPiece(p1Piece);
 				p2.addPiece(p2Piece);
 				
-				_board.setPiece(i, 0, p1Piece);
-				_board.setPiece(i, dim - 1, p2Piece);
+				_board.setPieceAt(new Posn(i, 0), p1Piece);
+				_board.setPieceAt(new Posn(i, dim - 1), p2Piece);
 			}
 			
 			Piece p1Piece = new Piece(numTerraces - (i / 2) - 1, false, new Posn(i, 1), dim, p1);
@@ -247,8 +247,8 @@ public class Game implements Cloneable {
 			p1.addPiece(p1Piece);
 			p2.addPiece(p2Piece);
 			
-			_board.setPiece(i, 1, p1Piece);
-			_board.setPiece(i, dim - 2, p2Piece);
+			_board.setPieceAt(new Posn(i, 1), p1Piece);
+			_board.setPieceAt(new Posn(i, dim - 2), p2Piece);
 			
 		}
 	}
@@ -275,11 +275,11 @@ public class Game implements Cloneable {
 				p3.addPiece(p3Piece);
 				p4.addPiece(p4Piece);
 				
-				_board.setPiece(i, 0, t1Piece);
-				_board.setPiece(i, dim - 1, p3Piece);
+				_board.setPieceAt(new Posn(i, 0), t1Piece);
+				_board.setPieceAt(new Posn(i, dim - 1), p3Piece);
 				
-				_board.setPiece(0, i, t2Piece);
-				_board.setPiece(dim - 1, i, p4Piece);
+				_board.setPieceAt(new Posn(0, i), t2Piece);
+				_board.setPieceAt(new Posn(dim - 1, i), p4Piece);
 				
 			} else if(i == dim - 2) {
 				Piece p1Piece = new Piece(i / 2, false, new Posn(i, 0), dim, p1);
@@ -291,11 +291,11 @@ public class Game implements Cloneable {
 				p3.addPiece(t3Piece);
 				p4.addPiece(t4Piece);
 				
-				_board.setPiece(i, 0, p1Piece);
-				_board.setPiece(i, dim - 1, t3Piece);
+				_board.setPieceAt(new Posn(i, 0), p1Piece);
+				_board.setPieceAt(new Posn(i, dim - 1), t3Piece);
 				
-				_board.setPiece(0, i, p2Piece);
-				_board.setPiece(dim - 1, i, t4Piece);
+				_board.setPieceAt(new Posn(0, i), p2Piece);
+				_board.setPieceAt(new Posn(dim - 1, i), t4Piece);
 			} else {
 				Piece p1Piece = new Piece(i / 2, false, new Posn(i, 0), dim, p1);
 				Piece p2Piece = new Piece(i / 2, false, new Posn(0, i), dim, p2);
@@ -306,11 +306,11 @@ public class Game implements Cloneable {
 				p3.addPiece(p3Piece);
 				p4.addPiece(p4Piece);
 				
-				_board.setPiece(i, 0, p1Piece);
-				_board.setPiece(i, dim - 1, p3Piece);
+				_board.setPieceAt(new Posn(i, 0), p1Piece);
+				_board.setPieceAt(new Posn(i, dim - 1), p3Piece);
 			
-				_board.setPiece(0, i, p2Piece);
-				_board.setPiece(dim - 1, i, p4Piece);
+				_board.setPieceAt(new Posn(0, i), p2Piece);
+				_board.setPieceAt(new Posn(dim - 1, i), p4Piece);
 			}
 		}
 	}

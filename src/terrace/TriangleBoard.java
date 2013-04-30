@@ -215,8 +215,8 @@ public class TriangleBoard extends Board {
 	}
 	
 	@Override
-	public void setPiece(int x, int y, Piece piece) {
-		_board[x][y] = piece;
+	public void setPieceAt(Posn posn, Piece piece) {
+		_board[posn.getX()][posn.getY()] = piece;
 	}
 	
 	@Override
@@ -236,7 +236,14 @@ public class TriangleBoard extends Board {
 			for (int j = 0; j < _dimensions*2; j++) {
 				Piece p = _board[i][j];
 				if (p != null) {
-					copy.setPiece(i, j, new Piece(p.getSize(), p.isTPiece(), p.getPosn(), _dimensions, p.getPlayer()));
+					copy.setPieceAt(new Posn(i, j),
+							new Piece(
+									p.getSize(),
+									p.isTPiece(),
+									p.getPosn(),
+									_dimensions, p.getPlayer()
+							)
+					);
 				}
 			}
 		}

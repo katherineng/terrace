@@ -29,11 +29,10 @@ public abstract class Board implements Cloneable {
 	
 	/**
 	 * Sets the board at position (x, y) to the given piece
-	 * @param x The x-coordinate
-	 * @param y The y-coordinate
-	 * @param piece The piece to which position (x, y) should be set
+	 * @param posn  The position to set
+	 * @param piece The piece to which posn should be set
 	 */
-	public abstract void setPiece(int x, int y, Piece piece);
+	public abstract void setPieceAt(Posn posn, Piece piece);
 	
 	/**
 	 * Makes a move

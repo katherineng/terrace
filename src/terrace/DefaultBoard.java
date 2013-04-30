@@ -31,7 +31,7 @@ public class DefaultBoard extends Board {
 			for (int j = 0; j < _dimensions; j++) {
 				Piece p = _board[i][j];
 				if (p != null) {
-					toRet.setPiece(i, j, p.clone());
+					toRet.setPieceAt(new Posn(i, j), p.clone());
 				}
 			}
 		}
@@ -277,8 +277,8 @@ public class DefaultBoard extends Board {
 	}
 	
 	@Override
-	public void setPiece(int x, int y, Piece piece) {
-		_board[x][y] = piece;
+	public void setPieceAt(Posn posn, Piece piece) {
+		_board[posn.getX()][posn.getY()] = piece;
 	}
 	
 	@Override
@@ -318,7 +318,15 @@ public class DefaultBoard extends Board {
 			for (int j = 0; j < _dimensions; j++) {
 				Piece p = _board[i][j];
 				if (p != null) {
-					copy.setPiece(i, j, new Piece(p.getSize(), p.isTPiece(), p.getPosn(), _dimensions, p.getPlayer()));
+					copy.setPieceAt(
+							new Posn(i, j),
+							new Piece(
+									p.getSize(),
+									p.isTPiece(),
+									p.getPosn(),
+									_dimensions, p.getPlayer()
+							)
+					);
 				}
 			}
 		}
