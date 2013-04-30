@@ -40,7 +40,7 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 	private Vector2d _prevMousePos;
 	
 	/*==== For Gameplay ====*/
-	private GUIBoard _board;
+	private GUISquareBoard _board;
 	private Game _game;
 	
 	/*==== For Selection/Hoover ====*/
@@ -375,7 +375,7 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 			
 
 		    /*==== Gameplay ====*/ 
-		    _board = new GUIBoard(gl, _game);
+		    _board = new GUISquareBoard(gl, _game);
 			
 		}
 
