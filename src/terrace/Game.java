@@ -104,9 +104,9 @@ public class Game implements Cloneable {
 		if (playerPiece == null || !current.getPieces().contains(playerPiece)) {
 			throw new IllegalMoveException("ERROR: " + _currPlayer + "\'s piece not found at " + from.toString());
 		} else {
-			 List<Posn> possibleMoves = _board.getMoves(playerPiece);
+			 List<Move> possibleMoves = _board.getMoves(playerPiece);
 			 
-			 if (!possibleMoves.contains(to)) {
+			 if (!possibleMoves.contains(new Move(playerPiece, to))) {
 				 throw new IllegalMoveException("ERROR: Piece at " + from.toString() + " can't be moved to " + to.toString());
 			 } else {
 				 Posn goal = playerPiece.getGoalPosn().orNull();
@@ -384,8 +384,8 @@ public class Game implements Cloneable {
 		double toRet = 0;
 		for (Piece p : player.getPieces()){
 			double pieceValue = (p.getSize() + 1) + getBoard().getElevation(p.getPosn());
-			List<Posn> possibleMoves = _board.getMoves(p);
-			for (Posn pos: possibleMoves){
+			List<Move> possibleMoves = _board.getMoves(p);
+			for (Move move : possibleMoves){
 				
 			}
 			toRet += pieceValue;

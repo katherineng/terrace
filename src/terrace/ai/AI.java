@@ -21,11 +21,10 @@ public class AI extends Player {
 		assert(pieces.size() > 0);
 		LinkedList<Move> possibleMoves = new LinkedList<Move>();
 		
-		for (Piece piece: pieces){
-			for (Posn pos: _game.getBoard().getMoves(piece)){
-				Move newMove = new Move(piece, pos);
-				if (!possibleMoves.contains(newMove))
-						possibleMoves.addLast(newMove);
+		for (Piece piece: pieces) {
+			for (Move move : _game.getBoard().getMoves(piece)){
+				if (!possibleMoves.contains(move))
+						possibleMoves.addLast(move);
 			}
 		}
 		

@@ -1,5 +1,6 @@
 package message;
 
+import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -17,7 +18,26 @@ public class Port<M> {
 		_queue = new LinkedBlockingQueue<>(capacity);
 	}
 	public Channel<M> newChannel() {
-		return new Channel<>(this);
+		return new Channel<M>() {
+			private boolean _closed = false;
+			
+			@Override
+			public void send(M msg) throws IOException, InterruptedException {
+				_queue.put(msg);
+			}
+			@Override
+			public boolean send(M msg, long timeout, TimeUnit unit) {
+				try {
+					return _queue.offer(msg, timeout, unit);
+				} catch (InterruptedException e) {
+					return false;
+				}
+			}
+			@Override
+			public void close() throws IOException {
+				_closed = true;
+			}
+		};
 	}
 	public M get() throws InterruptedException {
 		return _queue.take();
