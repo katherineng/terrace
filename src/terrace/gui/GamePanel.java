@@ -18,7 +18,7 @@ import javax.swing.SwingUtilities;
 import javax.vecmath.Vector2d;
 import javax.vecmath.Vector3d;
 
-import terrace.Game;
+import terrace.DefaultBoardGame;
 import terrace.Move;
 import terrace.Player;
 import terrace.Posn;
@@ -41,7 +41,7 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 	
 	/*==== For Gameplay ====*/
 	private GUISquareBoard _board;
-	private Game _game;
+	private DefaultBoardGame _game;
 	
 	/*==== For Selection/Hoover ====*/
 	private GamePiece _selection; 		/** The GamePiece that has currently been selected **/
@@ -51,7 +51,7 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 	private Vector2d _hover_mouse;
 	private Mode _mode;
 	
-	public GamePanel(Game game) {
+	public GamePanel(DefaultBoardGame game) {
 		/*==== General Drawing ====*/
 		super(new GLCapabilities(GLProfile.getDefault()));
 		setSize(600,600);

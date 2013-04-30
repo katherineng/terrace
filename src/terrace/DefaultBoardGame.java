@@ -5,7 +5,7 @@ import terrace.ai.AI;
 import terrace.exception.IllegalMoveException;
 import com.google.common.base.*;
 
-public class Game implements Cloneable {
+public class DefaultBoardGame implements Cloneable {
 	private DefaultBoard _board;
 	private int _currPlayer;
 	private List<Player> _players;
@@ -17,7 +17,7 @@ public class Game implements Cloneable {
 	private Optional<Player> _winner;
 	// private Variant _variant;
 	
-	public Game(int numHuman, int numAI, int dimensions, Variant variant) throws IllegalMoveException {
+	public DefaultBoardGame(int numHuman, int numAI, int dimensions, Variant variant) throws IllegalMoveException {
 		_numPlayers = numHuman + numAI;
 		_numHuman = numHuman;
 		_numAI = numAI;
@@ -200,17 +200,13 @@ public class Game implements Cloneable {
 		}
 	}
 	
-	public int getDimensions(){
-		return _board.getWidth();
-	}
-	
 	/**
 	 * Places the pieces on the board for a 2 player game
 	 * @param p1 Player 1
 	 * @param p2 Player 2
 	 */
 	private void setUp2Player(Player p1, Player p2) {
-		int dim = getDimensions();
+		int dim = _board.getWidth();
 		int numTerraces = dim / 2;
 		
 		for (int i = 0; i < dim; i++) {
@@ -320,8 +316,8 @@ public class Game implements Cloneable {
 	 * ====================*/
 
 	
-	public Game clone() throws CloneNotSupportedException{
-		Game toRet = (Game) super.clone();
+	public DefaultBoardGame clone() throws CloneNotSupportedException{
+		DefaultBoardGame toRet = (DefaultBoardGame) super.clone();
 		toRet._board = _board.clone();
 		toRet._players = new LinkedList<Player>();
 		

@@ -1,5 +1,6 @@
 package terrace;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public abstract class Board implements Cloneable {
@@ -66,4 +67,18 @@ public abstract class Board implements Cloneable {
 	 * @return The elevation of the position as an integer
 	 */
 	public abstract int getElevation(Posn p);
+	
+	/**
+	 * @return All the pieces on the board
+	 */
+	public List<Piece> getPieces() {
+		List<Piece> result = new LinkedList<>();
+		
+		for (Piece[] row : _board) {
+			for (Piece p : row) {
+				if (p != null) result.add(p);
+			}
+		}
+		return result;
+	}
 }

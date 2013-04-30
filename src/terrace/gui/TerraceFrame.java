@@ -6,7 +6,7 @@ import java.awt.Dimension;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import terrace.Game;
+import terrace.DefaultBoardGame;
 import terrace.Variant;
 import terrace.exception.IllegalMoveException;
 
@@ -29,7 +29,7 @@ public class TerraceFrame extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		cards.add(new StartScreen(this), START_SCREEN);
 		cards.add(new LocalGameSetup(this), LOCAL_SETUP);
-		cards.add(new GamePanel(new Game(numHuman, numAI, boardSize, variant)), GAME);
+		cards.add(new GamePanel(new DefaultBoardGame(numHuman, numAI, boardSize, variant)), GAME);
 		add(cards);
 	}
 	

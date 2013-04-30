@@ -7,9 +7,9 @@ import terrace.*;
 import terrace.exception.IllegalMoveException;
 
 public class AI extends Player {
-	Game _game;
+	DefaultBoardGame _game;
 		
-	public AI(PlayerColor color, Game game) {
+	public AI(PlayerColor color, DefaultBoardGame game) {
 		super(color);
 		_game = game;
 	}
@@ -63,7 +63,7 @@ public class AI extends Player {
 	
 	//TODO: player's equals method shouldn't depend on pieces. make only dependent on color
 	// minimax(0, 3, game.clone())
-	private SearchNode minimax(int currDepth, int maxDepth, Game gameState) throws CloneNotSupportedException, IllegalMoveException{
+	private SearchNode minimax(int currDepth, int maxDepth, DefaultBoardGame gameState) throws CloneNotSupportedException, IllegalMoveException{
 		assert(maxDepth % 2 == 0);
 		boolean maximizing = currDepth % 2 == 0;
 
@@ -76,7 +76,7 @@ public class AI extends Player {
 			SearchNode bestNode = null;
 			double bestValue = (maximizing) ? Double.NEGATIVE_INFINITY : Double.POSITIVE_INFINITY;
 			for (Move m: possibleMoves){
-				Game g = getGameState(m, gameState);
+				DefaultBoardGame g = getGameState(m, gameState);
 				SearchNode currNode = (currDepth == maxDepth) ? new SearchNode(m, g.estimateValue(this)) : minimax(currDepth + 1, maxDepth, g);
 				if (maximizing &&currNode.getValue() > bestValue || // trying to maximize
 				!maximizing && currNode.getValue() < bestValue){ // trying to minimize
@@ -89,14 +89,14 @@ public class AI extends Player {
 		
 	}
 
-	private Game getGameState(Move m, Game gameState) throws CloneNotSupportedException, IllegalMoveException{
-		Game copy = gameState.clone();
+	private DefaultBoardGame getGameState(Move m, DefaultBoardGame gameState) throws CloneNotSupportedException, IllegalMoveException{
+		DefaultBoardGame copy = gameState.clone();
 		copy.movePiece(m.getPiece().getPosn(), m.getTo());
 		return copy;
 	}
 	
 	
-	private List<Move> getPossibleMoves(Game gameState, Player player){
+	private List<Move> getPossibleMoves(DefaultBoardGame gameState, Player player){
 		List<Piece> pieces = player.getPieces();
 
 		LinkedList<Move> possibleMoves = new LinkedList<Move>();
