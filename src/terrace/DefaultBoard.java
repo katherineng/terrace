@@ -103,7 +103,6 @@ public class DefaultBoard implements Board<DefaultBoard> {
 		return _dimensions;
 	}
 	
-	@Override
 	public List<Posn> getTerracePosns(Posn p) {
 		int halfWidth = _dimensions / 2;
 		int elevation = getElevation(p);
@@ -142,9 +141,9 @@ public class DefaultBoard implements Board<DefaultBoard> {
 	/**
 	 * Helper method to find all the possible positions on the same terrace to which a given piece may move
 	 * @param piece The piece for which to find possible moves
-	 * @param positions A reference to a set of positions to which the possible positions should be added
+	 * @param moves A reference to a set of positions to which the possible positions should be added
 	 */
-	private void getSameTerraceMoves(Piece piece, List<Posn> positions) {
+	private void getSameTerraceMoves(Piece piece, List<Move> moves) {
 		Posn currPosn = piece.getPosn();
 		
 		List<Posn> sameTerrace = getTerracePosns(currPosn);
@@ -159,7 +158,7 @@ public class DefaultBoard implements Board<DefaultBoard> {
 			} else if (p != null) {
 				continue;
 			} else {
-				positions.add(posn);
+				moves.add(new Move(piece, posn));
 			}
 		}
 		
@@ -171,7 +170,7 @@ public class DefaultBoard implements Board<DefaultBoard> {
 			} else if (p != null) {
 				continue;
 			} else {
-				positions.add(posn);
+				moves.add(new Move(piece, posn));
 			}
 		}
 	}
@@ -179,25 +178,29 @@ public class DefaultBoard implements Board<DefaultBoard> {
 	/**
 	 * Helper method that adds all the possible positions on another terrace that a given piece can make
 	 * @param piece The piece for which to find the possible positions
-	 * @param positions A reference to set of possible positions to which the positions should be added
+	 * @param moves A reference to set of possible positions to which the positions should be added
 	 */
-	private void getUpDownMoves(Piece piece, List<Posn> positions) {
+	private void getUpDownMoves(Piece piece, List<Move> moves) {
 		Posn currPosn = piece.getPosn();
 		
 		List<Posn> neighbors = getNeighbors(currPosn);
 		for (Posn posn: neighbors) {
-			Piece p = _board[posn.x][posn.y];
+			Piece p = getPieceAt(posn);
 			int neighborElevation = _elevationsMap.get(_dimensions)[posn.x][posn.y];
 			int currElevation = _elevationsMap.get(_dimensions)[currPosn.x][currPosn.y];
 			
 			if (neighborElevation > currElevation) {  // up
 				if (posn.x != currPosn.x && posn.y != currPosn.y) { // diagonally up
-					if (_variant == Variant.AGGRESSIVE && p != null && p.compareTo(piece) < 0) positions.add(posn);
-					else if (p == null) positions.add(posn);
+					if (_variant == Variant.AGGRESSIVE && p != null && p.compareTo(piece) < 0) {
+						moves.add(new Move(piece, posn, p));
+					}
+					else if (p == null) {
+						moves.add(new Move(piece, posn));
+					}
 				} 
 				
 				else if (p == null) { // straight up
-					positions.add(posn);
+					moves.add(new Move(piece, posn));
 				}
 			} 
 			
@@ -205,17 +208,17 @@ public class DefaultBoard implements Board<DefaultBoard> {
 				if (posn.x != currPosn.x && posn.y != currPosn.y) { // diagonal down capture
 					if (p != null) {
 						if (_variant == Variant.AGGRESSIVE && p.compareTo(piece) <= 1) {
-							positions.add(posn);
+							moves.add(new Move(piece, posn, p));
 						} else if (p.compareTo(piece) <= 0) {
-							positions.add(posn);
+							moves.add(new Move(piece, posn, p));
 						}
 					}
 				}
 				
 				else if (p == null) {
-					positions.add(posn);
+					moves.add(new Move(piece, posn));
 					if (_variant == Variant.DOWNHILL) {
-						getDownhillMoves(posn, piece, positions);
+						getDownhillMoves(posn, piece, moves);
 					}
 				}
 			}
@@ -227,9 +230,9 @@ public class DefaultBoard implements Board<DefaultBoard> {
 	 * can move in the downhill rule variant of the game
 	 * @param start A position that is downhill and adjacent to the given piece to be moved
 	 * @param piece The piece for which to find possible moves
-	 * @param positions A reference to the set of positions representing the possible moves
+	 * @param moves A reference to the set of positions representing the possible moves
 	 */
-	private void getDownhillMoves(Posn start, Piece piece, List<Posn> positions) {
+	private void getDownhillMoves(Posn start, Piece piece, List<Move> moves) {
 		Posn currPosn = piece.getPosn();
 		
 		if (currPosn.x != start.x) {
@@ -238,7 +241,7 @@ public class DefaultBoard implements Board<DefaultBoard> {
 				Piece p = _board[i][start.y];
 				if (p != null) break;
 				else {
-					positions.add(new Posn(i, start.y));
+					moves.add(new Move(piece, new Posn(i, start.y), p));
 				}
 			}
 		}
@@ -249,23 +252,23 @@ public class DefaultBoard implements Board<DefaultBoard> {
 				Piece p = _board[start.x][i];
 				if (p != null) break;
 				else {
-					positions.add(new Posn(start.x, i));
+					moves.add(new Move(piece, new Posn(start.x, i), p));
 				}
 			}
 		}
 	}
 	
 	@Override
-	public List<Posn> getMoves(Piece piece) {
-		List<Posn> positions = new LinkedList<Posn>();
+	public List<Move> getMoves(Piece piece) {
+		List<Move> moves = new LinkedList<>();
 		
 		// same terrace, same quadrant, can't jump over opponent
-		getSameTerraceMoves(piece, positions);
+		getSameTerraceMoves(piece, moves);
 		
 		// up or down a terrace
-		getUpDownMoves(piece, positions);
+		getUpDownMoves(piece, moves);
 		
-		return positions;
+		return moves;
 	}
 
 	@Override

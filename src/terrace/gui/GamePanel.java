@@ -19,6 +19,7 @@ import javax.vecmath.Vector2d;
 import javax.vecmath.Vector3d;
 
 import terrace.Game;
+import terrace.Move;
 import terrace.Player;
 import terrace.Posn;
 import terrace.exception.IllegalMoveException;
@@ -45,7 +46,7 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 	/*==== For Selection/Hoover ====*/
 	private GamePiece _selection; 		/** The GamePiece that has currently been selected **/
 	private BoardTile _hover;
-	private List<Posn> _possibleMoves;
+	private List<Move> _possibleMoves;
 	private Vector2d _selection_mouse;
 	private Vector2d _hover_mouse;
 	private Mode _mode;
@@ -220,8 +221,8 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 					_mode = Mode.NORMAL;
 				} else { // set selection to something new. Remains in selection mode
 					_possibleMoves = _game.getBoard().getMoves(newSelection.getPiece());
-					for (Posn p : _possibleMoves){
-						_board.posToTile(p).setMoveColor(_board.getPlayerColors(newSelection.getPiece().getPlayer()));
+					for (Move move : _possibleMoves){
+						_board.posToTile(move.getTo()).setMoveColor(_board.getPlayerColors(newSelection.getPiece().getPlayer()));
 					}
 					if (_selection != null) _selection.changeSelection(); // unselect old thing
 					_selection = newSelection;
@@ -292,7 +293,7 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 		private void clearPossible() {
 			//change board tile settings
 			if (_possibleMoves != null){
-				for (Posn p: _possibleMoves) _board.posToTile(p).setMoveColor(null);
+				for (Move move : _possibleMoves) _board.posToTile(move.getTo()).setMoveColor(null);
 				_possibleMoves.clear();
 			}
 		}

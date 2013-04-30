@@ -37,9 +37,9 @@ public class GameTest {
 		Game downhill = new Game(2, 0, 8, Variant.DOWNHILL);
 		downhill.setUpPieces();
 		
-		List<Posn> moves = downhill.getBoard().getMoves(downhill.getBoard().getPiece(7,  1));
-		for (Posn p : moves) {
-			System.out.println(p);
+		List<Move> moves = downhill.getBoard().getMoves(downhill.getBoard().getPiece(7,  1));
+		for (Move m : moves) {
+			System.out.println(m);
 		}
 		
 	}

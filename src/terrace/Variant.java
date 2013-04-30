@@ -1,5 +1,5 @@
 package terrace;
 
 public enum Variant {
-	STANDARD, DOWNHILL, AGGRESSIVE
+	STANDARD, DOWNHILL, AGGRESSIVE, TRIANGLE
 }
