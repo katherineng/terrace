@@ -107,7 +107,7 @@ public class TriangleBoard extends Board {
 
 	@Override
 	public int getHeight() {
-		return _dimensions;
+		return _dimensions * 2;
 	}
 
 	@Override
