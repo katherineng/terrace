@@ -1,6 +1,7 @@
 package terrace.gui;
 
 import java.awt.CardLayout;
+import java.awt.Dimension;
 
 import javax.swing.JFrame;
 
@@ -15,8 +16,8 @@ public class TerraceFrame extends JFrame {
 	CardLayout layout = new CardLayout();
 	
 	public TerraceFrame(int numHuman, int numAI, int boardSize, Variant variant) throws IllegalMoveException {
-		setSize(1200, 1200);
-
+		setPreferredSize(new Dimension(1200, 1200));
+		
 		setExtendedState(getExtendedState() | MAXIMIZED_BOTH);
 		setLayout(layout);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
