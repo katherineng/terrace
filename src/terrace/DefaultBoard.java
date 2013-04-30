@@ -324,18 +324,15 @@ public class DefaultBoard implements Board<DefaultBoard> {
 		}
 		return null;
 	}
-
+	
 	@Override
-	public Piece movePiece(Posn from, Posn to) {
-		Piece toMove = _board[from.x][from.y];
+	public void makeMove(Move move) {
+		Posn from = move.getPiece().getPosn();
+		Posn to = move.getTo();
 		
-		_board[from.x][from.y] = null;
-		toMove.updatePosn(to);
-		
-		Piece captured = _board[to.x][to.y];
-		_board[to.x][to.y] = toMove;
-		
-		return captured;	
+		_board[from.getX()][from.getY()] = null;
+		move.getPiece().updatePosn(move.getTo());
+		_board[to.getX()][to.getY()] = move.getPiece();
 	}
 	
 	public String elevationsToString() {

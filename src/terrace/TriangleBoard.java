@@ -10,7 +10,6 @@ import com.google.common.collect.Collections2;
 
 public class TriangleBoard implements Board<TriangleBoard> {
 	private final int _dimensions;
-	//private static int[][] _elevations;
 	private static HashMap<Integer, int[][]> _elevationsMap;
 	private Piece[][] _board;
 	public TriangleBoard(int dimensions) {
@@ -219,19 +218,17 @@ public class TriangleBoard implements Board<TriangleBoard> {
 	public void setPiece(int x, int y, Piece piece) {
 		_board[x][y] = piece;
 	}
-
+	
 	@Override
-	public Piece movePiece(Posn from, Posn to) {
-		Piece toMove = _board[from.x][from.y];
+	public void makeMove(Move move) {
+		Posn from = move.getPiece().getPosn();
+		Posn to = move.getTo();
 		
-		_board[from.x][from.y] = null;
-		toMove.updatePosn(to);
-		
-		Piece captured = _board[to.x][to.y];
-		_board[to.x][to.y] = toMove;
-		return captured;
+		_board[from.getX()][from.getY()] = null;
+		move.getPiece().updatePosn(move.getTo());
+		_board[to.getX()][to.getY()] = move.getPiece();
 	}
-
+	
 	@Override
 	public TriangleBoard copyBoard() {
 		TriangleBoard copy = new TriangleBoard(_dimensions);

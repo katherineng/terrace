@@ -36,12 +36,11 @@ public interface Board<T extends Board<T>> extends Cloneable{
 	void setPiece(int x, int y, Piece piece);
 	
 	/**
-	 * Updates the board by moving a piece from one position to another
-	 * @param from The position from which to move the piece
-	 * @param to The position to which the piece is moved
-	 * @return The captured piece, if any; if no piece was captured, returns null
+	 * Makes a move
+	 * 
+	 * @param move The move to make
 	 */
-	Piece movePiece(Posn from, Posn to);
+	void makeMove(Move move);
 	
 	/**
 	 * Creates a deep copy of the board for an AIPlayer to use to score future states
@@ -55,7 +54,4 @@ public interface Board<T extends Board<T>> extends Cloneable{
 	 * @return The elevation of the position as an integer
 	 */
 	int getElevation(Posn p);
-	
-	
-	
 }

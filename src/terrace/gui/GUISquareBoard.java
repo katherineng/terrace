@@ -9,7 +9,7 @@ import terrace.Game;
 import terrace.Player;
 import terrace.Posn;
 
-public class GUIBoard extends Board {
+public class GUISquareBoard implements Drawable {
 	private RectPrism _foundation;				/** The foundation of the board **/
 	private BoardTile[][] _boardPieces;			/** A 2d Array of the Board tiles **/
 	private List<GamePiece> _gamePieces;	/** An array of the game pieces **/
@@ -17,7 +17,7 @@ public class GUIBoard extends Board {
 	private Game _game;							/** a Game instance **/
 	GL2 gl;
 	
-	public GUIBoard(GL2 gl, Game game) {
+	public GUISquareBoard(GL2 gl, Game game) {
 		_game = game;
 		_foundation = new RectPrism(0.0, -0.01, 0.0, 1.0, 0.01, 1.0);
 		int dimension = _game.getBoard().getDimensions();
