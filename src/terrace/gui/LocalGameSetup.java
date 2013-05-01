@@ -278,6 +278,7 @@ public class LocalGameSetup extends JPanel {
 		goConst.insets = new Insets(30, 0, 0,0);
 		
 		JButton backButton = new JButton("Back");
+		backButton.addActionListener(new BackListener());
 		GridBagConstraints backConst = new GridBagConstraints();
 		backConst.gridx = 0;
 		backConst.gridy = 2;
