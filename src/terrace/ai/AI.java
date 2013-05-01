@@ -2,6 +2,7 @@ package terrace.ai;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.PriorityQueue;
 
 import terrace.*;
 import terrace.exception.IllegalMoveException;
@@ -19,13 +20,19 @@ public class AI extends Player {
 	 * @author ww15
 	 *
 	 */
-	private static class SearchNode{
+	private static class SearchNode implements Comparable<SearchNode>{
 		private Move _move;		/** The move made **/
 		private double _value;	/** the value associated a certain game state **/
+		private double _heuristic; /** maybe store some value that makes AI more aggressive? **/
 		
-		private SearchNode(Move move, double value){
+		private SearchNode(Move move, double value, double heuristic){
 			_move = move;
 			_value = value;
+			_heuristic = heuristic;
+		}
+		
+		private double getHeuristic(){
+			return _heuristic;
 		}
 		
 		private Move getMove(){
@@ -35,6 +42,13 @@ public class AI extends Player {
 		private double getValue(){
 			return _value;
 		}
+
+		@Override
+		public int compareTo(SearchNode o) {
+			if (_heuristic > o.getHeuristic()) return 1;
+			if (_heuristic == o.getHeuristic()) return 0;
+			return -1;
+		}
 	}
 	
 	@Override
@@ -42,7 +56,6 @@ public class AI extends Player {
 		SearchNode node;
 		try {
 			node = minimax(0, 2, _game.clone());
-			assert(node != null);
 			_game.movePiece(node.getMove().getPiece().getPosn(), node.getMove().getTo());
 		} catch (CloneNotSupportedException | IllegalMoveException e1) {
 			// TODO Auto-generated catch block
@@ -53,7 +66,6 @@ public class AI extends Player {
 	}
 	
 	
-	//TODO: player's equals method shouldn't depend on pieces. make only dependent on color
 	// minimax(0, 3, game.clone())
 	private SearchNode minimax(int currDepth, int maxDepth, DefaultBoardGame gameState) throws CloneNotSupportedException, IllegalMoveException{
 		assert(maxDepth % 2 == 0);
@@ -62,25 +74,28 @@ public class AI extends Player {
 		//System.out.println(_game.getBoard().piecesToString());
 		List<Move> possibleMoves = getPossibleMoves(gameState, gameState.getCurrentPlayer());
 
-		SearchNode bestNode = null;
+		PriorityQueue<SearchNode> bestNode = new PriorityQueue<SearchNode>();
 		double bestValue = (maximizing) ? Double.NEGATIVE_INFINITY : Double.POSITIVE_INFINITY;
 		if (possibleMoves.size() <= 0){
 			System.out.println(gameState.getBoard().piecesToString());
 		}
-		assert(possibleMoves.size() > 0);
+		
 		for (Move m: possibleMoves){
 			DefaultBoardGame g = getGameState(m, gameState);
 			SearchNode currNode = (currDepth == maxDepth || g.isGameOver()) ? 
-					new SearchNode(m, estimateValue(g, getPlayer(g))) : 
-					new SearchNode(m, minimax(currDepth + 1, maxDepth, g).getValue());
-			if (maximizing && currNode.getValue() >= bestValue || // trying to maximize
-				!maximizing && currNode.getValue() <= bestValue){ // trying to minimize
+					new SearchNode(m, estimateValue(g, getPlayer(g)), 0) : 
+					new SearchNode(m, minimax(currDepth + 1, maxDepth, g).getValue(), 0);
+			if (currNode.getValue() == bestValue) {
+				
+			} else if (maximizing && currNode.getValue() > bestValue || // trying to maximize
+				!maximizing && currNode.getValue() < bestValue){ // trying to minimize
+				bestNode.clear();
 				bestValue = currNode.getValue();
-				bestNode = currNode;
+				bestNode.add(currNode);
 			}
 		}
-		assert(bestNode != null);
-		return bestNode;
+		assert(bestNode.peek() != null);
+		return bestNode.poll();
 
 	}
 
