@@ -27,10 +27,12 @@ import terrace.Variant;
 
 
 public class LocalGameSetup extends JPanel {
+	private static final long serialVersionUID = 1L;
 	private TerraceFrame _frame;
 	private static final Font headerFont = new Font("Verdana", Font.BOLD, 30);
 	private static final Font defaultFont = new Font("Verdana", Font.BOLD, 24);
 	private Integer numPlayers;
+	private Variant v = Variant.STANDARD;
 	private static final Color backgroundColor = Color.GRAY;
 	private static final Color headerColor = Color.BLACK;
 	private static final Color defaultColor = Color.WHITE;
@@ -43,7 +45,9 @@ public class LocalGameSetup extends JPanel {
 	private JTextField player2;
 	private JTextField player3;
 	private JTextField player4;
-	private Variant v = Variant.STANDARD;
+	private JRadioButton standard;
+	private JRadioButton onePlayer;
+	
 	public LocalGameSetup(TerraceFrame frame) {
 		_frame = frame;		
 		setBackground(backgroundColor);
@@ -71,7 +75,7 @@ public class LocalGameSetup extends JPanel {
 		triangle.setForeground(defaultColor);
 		triangle.setBackground(backgroundColor);
 		
-		JRadioButton standard = new JRadioButton("square - standard rules");
+		standard = new JRadioButton("square - standard rules");
 		standard.setActionCommand("STANDARD");
 		standard.setFont(defaultFont);
 		standard.setBackground(backgroundColor);
@@ -218,7 +222,7 @@ public class LocalGameSetup extends JPanel {
 		JPanel numPlayersOptions = new JPanel();
 		numPlayersOptions.setLayout(new GridBagLayout());
 
-		JRadioButton onePlayer = new JRadioButton("1");
+		onePlayer = new JRadioButton("1");
 		onePlayer.setActionCommand("1");
 		onePlayer.setBackground(Color.GRAY);
 		onePlayer.setFont(defaultFont);
@@ -272,13 +276,40 @@ public class LocalGameSetup extends JPanel {
 		goConst.gridx = 3;
 		goConst.gridy = 2;
 		goConst.insets = new Insets(30, 0, 0,0);
-
+		
+		JButton backButton = new JButton("Back");
+		GridBagConstraints backConst = new GridBagConstraints();
+		backConst.gridx = 0;
+		backConst.gridy = 2;
+		backConst.insets = new Insets(30, 0, 0,0);
+		
 		add(boardOptions, boardOptionsConst);
 		add(playerNames, playerNamesConst);
 		add(goButton, goConst);
 		add(numPlayersPanel, numPlayersConst);
+		add(backButton, backConst);
 	}
+	private void resetScreen() {
+		standard.setSelected(true);
+		onePlayer.setSelected(true);
+		p2.setText("CPU");
+		player2.setText("CPU");
+		player3.setEnabled(false);
+		player4.setEnabled(false);
+		p3.setVisible(false);
+		p4.setVisible(false);
+		player3.setVisible(false);
+		player4.setVisible(false);
+	}
+	class BackListener implements ActionListener {
 
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			resetScreen();//maybe switch these two lines?
+			_frame.changeCard("Setup");
+		}
+		
+	}
 	class GoListener implements ActionListener {
 
 		@Override
