@@ -247,7 +247,6 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 				_game.movePiece(_selection.getPosn(), newSelection.getPosn());
 				clearPossible();
 				_board.resetPieces();
-				System.out.println(_game.getBoard().piecesToString());
 			} catch (IllegalMoveException e) {
 				_hover.incorrect();
 				System.out.println(e.getMessage());

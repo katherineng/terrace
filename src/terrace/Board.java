@@ -3,7 +3,7 @@ package terrace;
 import java.util.LinkedList;
 import java.util.List;
 
-public abstract class Board implements Cloneable {
+public abstract class Board{
 	protected Piece[][] _board;
 	
 	public abstract int getWidth();
