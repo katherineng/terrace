@@ -45,7 +45,7 @@ public class StartScreen extends JPanel {
 		newNetGameButton.setActionCommand("networked game setup");
 		
 		JButton joinNetGameButton = new JButton("join networked game");
-		joinNetGameButton.setActionCommand("join networked game");
+		joinNetGameButton.setActionCommand("join game setup");
 		
 		localGameButton.addActionListener(new GameTypeListener());
 		newNetGameButton.addActionListener(new GameTypeListener());

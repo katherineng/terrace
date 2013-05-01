@@ -50,6 +50,7 @@ public class LocalGameSetup extends JPanel {
 	public LocalGameSetup(TerraceFrame frame, NetworkType networkType) {
 		_frame = frame;
 		_networkType = networkType;
+		System.out.println(networkType);
 		setBackground(backgroundColor);
 		addComponents();
 	}
@@ -266,16 +267,17 @@ public class LocalGameSetup extends JPanel {
 		backConst.gridy = 2;
 		backConst.insets = new Insets(30, 0, 0,0);
 		
+		add(playerNames, playerNamesConst);
+		add(goButton, goConst);
+		add(numPlayersPanel, numPlayersConst);
+		add(backButton, backConst);
+		
 		if(_networkType == NetworkType.LOCAL) {
 			player2.setEnabled(true);
 			player2.setVisible(true);
 			p2.setVisible(true);
 			p2.setText("CPU");
 			player2.setText("CPU");
-			
-			player3.setEnabled(true);
-			player3.setVisible(true);
-			p3.setVisible(true);
 			
 			player4 = new JTextField(10);
 			GridBagConstraints player4Const = new GridBagConstraints();
@@ -303,6 +305,9 @@ public class LocalGameSetup extends JPanel {
 			numPlayersPanel.add(fourPlayer, fourConst);
 			
 			goButton.setText("Start Game");
+			
+			
+			
 		} else if(_networkType == NetworkType.HOST) {
 			goButton.setText("Create Game");
 		} else {
@@ -313,10 +318,7 @@ public class LocalGameSetup extends JPanel {
 			add(boardOptions, boardOptionsConst);
 		}
 		
-		add(playerNames, playerNamesConst);
-		add(goButton, goConst);
-		add(numPlayersPanel, numPlayersConst);
-		add(backButton, backConst);
+		
 	}
 	private void resetScreen() {
 		switch (_networkType) {
