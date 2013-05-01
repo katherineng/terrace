@@ -69,16 +69,6 @@ public class DefaultBoard extends Board {
 		return _elevationsMap.get(_dimensions)[x][y];
 	}
 	
-	protected void removePlayer(Player player){
-		for (int y = _dimensions - 1; y >= 0; y--) {
-			for (int x = 0; x < _dimensions; x++) {
-				Piece p = _board[x][y];
-				if (p != null && p.getPlayer().equals(player)) 
-					_board[x][y] = null;
-			}
-		}
-	}
-	
 	public List<Posn> getTerracePosns(Posn p) {
 		int halfWidth = _dimensions / 2;
 		int elevation = getElevation(p);
