@@ -76,18 +76,16 @@ public class AI extends Player {
 
 		PriorityQueue<SearchNode> bestNode = new PriorityQueue<SearchNode>();
 		double bestValue = (maximizing) ? Double.NEGATIVE_INFINITY : Double.POSITIVE_INFINITY;
-		if (possibleMoves.size() <= 0){
-			System.out.println(gameState.getBoard().piecesToString());
-		}
-		
+
 		for (Move m: possibleMoves){
 			DefaultBoardGame g = getGameState(m, gameState);
 			SearchNode currNode = (currDepth == maxDepth || g.isGameOver()) ? 
 					new SearchNode(m, estimateValue(g, getPlayer(g)), 0) : 
 					new SearchNode(m, minimax(currDepth + 1, maxDepth, g).getValue(), 0);
-			if (currNode.getValue() == bestValue) {
+			if (currNode.getValue() == bestValue) 
+				bestNode.add(currNode);
 				
-			} else if (maximizing && currNode.getValue() > bestValue || // trying to maximize
+			else if (maximizing && currNode.getValue() > bestValue || // trying to maximize
 				!maximizing && currNode.getValue() < bestValue){ // trying to minimize
 				bestNode.clear();
 				bestValue = currNode.getValue();
