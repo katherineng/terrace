@@ -42,7 +42,7 @@ public class AI extends Player {
 		SearchNode node;
 		try {
 			node = minimax(0, 2, _game.clone());
-			System.out.println(node.getMove());
+			assert(node != null);
 			_game.movePiece(node.getMove().getPiece().getPosn(), node.getMove().getTo());
 		} catch (CloneNotSupportedException | IllegalMoveException e1) {
 			// TODO Auto-generated catch block
@@ -64,17 +64,22 @@ public class AI extends Player {
 
 		SearchNode bestNode = null;
 		double bestValue = (maximizing) ? Double.NEGATIVE_INFINITY : Double.POSITIVE_INFINITY;
+		if (possibleMoves.size() <= 0){
+			System.out.println(gameState.getBoard().piecesToString());
+		}
+		assert(possibleMoves.size() > 0);
 		for (Move m: possibleMoves){
 			DefaultBoardGame g = getGameState(m, gameState);
 			SearchNode currNode = (currDepth == maxDepth || g.isGameOver()) ? 
 					new SearchNode(m, estimateValue(g, getPlayer(g))) : 
 					new SearchNode(m, minimax(currDepth + 1, maxDepth, g).getValue());
-			if (maximizing && currNode.getValue() > bestValue || // trying to maximize
-				!maximizing && currNode.getValue() < bestValue){ // trying to minimize
+			if (maximizing && currNode.getValue() >= bestValue || // trying to maximize
+				!maximizing && currNode.getValue() <= bestValue){ // trying to minimize
 				bestValue = currNode.getValue();
 				bestNode = currNode;
 			}
 		}
+		assert(bestNode != null);
 		return bestNode;
 
 	}
@@ -103,7 +108,6 @@ public class AI extends Player {
 			if (p.getColor().equals(this.getColor()))
 				return p;
 		}
-		assert(false);
 		return null;
 	}
 	
