@@ -9,6 +9,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -46,6 +47,7 @@ public class LocalGameSetup extends JPanel {
 	private JTextField player4;
 	private JRadioButton standard;
 	private JRadioButton onePlayer;
+	private int boardSize = 1;// 0 if small 1 if large
 	
 	public LocalGameSetup(TerraceFrame frame, NetworkType networkType) {
 		_frame = frame;
@@ -56,15 +58,52 @@ public class LocalGameSetup extends JPanel {
 	}
 	private void addComponents() {
 		setLayout(new GridBagLayout());
-		JPanel boardOptions = new JPanel();
+		//board size panel
+		JPanel boardSize = new JPanel();
+		boardSize.setBackground(backgroundColor);
+		GridBagConstraints boardSizeConst = new GridBagConstraints();
+		boardSizeConst.gridx = 0;
+		boardSizeConst.gridy = 1;
+		boardSizeConst.insets = new Insets(0,0,0, 30);
+		boardSize.setLayout(new BoxLayout(boardSize, BoxLayout.PAGE_AXIS));
+		
+		JLabel sizeLabel = new JLabel("Board Size");
+		sizeLabel.setFont(headerFont);
+		sizeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+		JRadioButton small = new JRadioButton("small");
+		small.setActionCommand("0");
+		small.setFont(defaultFont);
+		small.setAlignmentX(CENTER_ALIGNMENT);
+		small.setForeground(defaultColor);
+		small.setBackground(backgroundColor);
+
+		JRadioButton large = new JRadioButton("large");
+		large.setActionCommand("1");
+		large.setFont(defaultFont);
+		large.setAlignmentX(CENTER_ALIGNMENT);
+		large.setForeground(defaultColor);
+		large.setBackground(backgroundColor);
+		large.setSelected(true);
+
+		ButtonGroup sizeGroup = new ButtonGroup();
+		sizeGroup.add(small);
+		sizeGroup.add(large);
+
+		boardSize.add(sizeLabel);
+		boardSize.add(small);
+		boardSize.add(large);
+
+		//board type panel
+		JPanel boardOptions = new JPanel();
 		boardOptions.setBackground(backgroundColor);
 		GridBagConstraints boardOptionsConst = new GridBagConstraints();
-		boardOptionsConst.gridx = 0;
+		boardOptionsConst.gridx = 1;
 		boardOptionsConst.gridy = 1;
 		boardOptionsConst.insets = new Insets(0,0,0, 30);
 		boardOptions.setLayout(new BoxLayout(boardOptions, BoxLayout.PAGE_AXIS));
-
+		
+		
 		JLabel boardType = new JLabel("Board Type");
 		boardType.setFont(headerFont);
 		boardType.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -109,11 +148,11 @@ public class LocalGameSetup extends JPanel {
 		boardOptions.add(aggressive);
 		boardOptions.add(triangle);
 
-
+		//player name panel
 		JPanel playerNames = new JPanel();
 		playerNames.setBackground(backgroundColor);
 		GridBagConstraints playerNamesConst = new GridBagConstraints();
-		playerNamesConst.gridx = 1;
+		playerNamesConst.gridx = 2;
 		playerNamesConst.gridy = 1;
 		playerNames.setLayout(new GridBagLayout());
 
@@ -122,7 +161,8 @@ public class LocalGameSetup extends JPanel {
 		headerConst.gridx = 1;
 		headerConst.gridy = 0;
 		header.setFont(headerFont);
-
+		
+		//lables for player textfields
 		p1 = new JLabel("Player 1");
 		GridBagConstraints p1Const = new GridBagConstraints();
 		p1Const.gridx = 0;
@@ -154,6 +194,7 @@ public class LocalGameSetup extends JPanel {
 		p4.setForeground(defaultColor);
 		p4.setVisible(false);
 		
+		//text fields for player names
 		player1 = new JTextField(10);
 		GridBagConstraints player1Const = new GridBagConstraints();
 		player1Const.gridx = 1;
@@ -197,7 +238,7 @@ public class LocalGameSetup extends JPanel {
 		playerNames.add(player2, player2Const);
 		playerNames.add(player3, player3Const);
 		
-		//Number of players card
+		//Number of players panel
 		JPanel numPlayersPanel = new JPanel();
 		numPlayersPanel.setBackground(Color.GRAY);
 		JLabel numPlayersLabel = new JLabel("Number of local players");
@@ -207,7 +248,7 @@ public class LocalGameSetup extends JPanel {
 		GridBagConstraints numPlayersConst = new GridBagConstraints();
 		numPlayersConst.gridx = 0;
 		numPlayersConst.gridy = 0;
-		numPlayersConst.gridwidth = 2;
+		numPlayersConst.gridwidth = 3;
 		numPlayersConst.insets = new Insets(0, 0, 0, 20);
 
 		JPanel numPlayersOptions = new JPanel();
@@ -316,6 +357,7 @@ public class LocalGameSetup extends JPanel {
 		
 		if (_networkType != NetworkType.JOIN) {
 			add(boardOptions, boardOptionsConst);
+			add(boardSize, boardSizeConst);
 		}
 		
 		
@@ -350,7 +392,7 @@ public class LocalGameSetup extends JPanel {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			_frame.changeCard("Setup");
-			resetScreen();//maybe switch these two lines?
+			resetScreen();
 		}
 		
 	}
@@ -360,18 +402,21 @@ public class LocalGameSetup extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			_frame.setNumPlayers(numPlayers);
 			List<String> playerNames = new ArrayList<>();
-			playerNames.add(player1.getText());
-			playerNames.add(player2.getText());
-			if (numPlayers > 2) {
-				playerNames.add(player3.getText());
-				playerNames.add(player4.getText());
+			switch (numPlayers) {
+			case 4: playerNames.add(player4.getText());
+			case 3: playerNames.add(player3.getText());
+			case 2: playerNames.add(player2.getText());
+			case 1: playerNames.add(player1.getText());
 			}
+			Collections.reverse(playerNames);
 			_frame.setPlayerNames(playerNames);
+			_frame.setBoardSize(boardSize);
 			_frame.setVariant(v);
 			_frame.changeCard("Game");
 		}
 
 	}
+	
 	class variantTypeListener implements ActionListener {
 
 		@Override
@@ -380,6 +425,16 @@ public class LocalGameSetup extends JPanel {
 		}
 		
 	}
+	
+	class boardTypeListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			boardSize = Integer.parseInt(e.getActionCommand());
+		}
+		
+	}
+	
 	class NumPlayerListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {

@@ -26,6 +26,7 @@ public class TerraceFrame extends JFrame {
 	private JPanel cards;
 	private Map<Integer, String> playerNames;
 	private Variant ruleType;
+	private int boardSize; // 0 if small 1 if large
 	
 	public TerraceFrame(int numHuman, int numAI, int boardSize, Variant variant) throws IllegalMoveException {
 		playerNames = new HashMap<>();
@@ -66,5 +67,7 @@ public class TerraceFrame extends JFrame {
 	void setVariant(Variant v) {
 		ruleType = v;
 	}
-	
+	void setBoardSize(int n) {
+		boardSize = n;
+	}
 }
