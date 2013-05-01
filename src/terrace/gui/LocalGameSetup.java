@@ -23,6 +23,7 @@ import javax.swing.JTextField;
 
 import terrace.NetworkType;
 import terrace.Variant;
+import terrace.exception.IllegalMoveException;
 
 
 public class LocalGameSetup extends JPanel {
@@ -391,7 +392,11 @@ public class LocalGameSetup extends JPanel {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			_frame.changeCard("Setup");
+			try {
+				_frame.changeCard("Setup");
+			} catch (IllegalMoveException e1) {
+				// TODO not sure what to do here, swallow for now
+			}
 			resetScreen();
 		}
 		
@@ -410,9 +415,25 @@ public class LocalGameSetup extends JPanel {
 			}
 			Collections.reverse(playerNames);
 			_frame.setPlayerNames(playerNames);
-			_frame.setBoardSize(boardSize);
+			if (v.equals(Variant.TRIANGLE)) {
+				if (boardSize == 0) {
+					_frame.setBoardSize(3);
+				} else {
+					_frame.setBoardSize(4);
+				}
+			} else {
+				if (boardSize == 0) {
+					_frame.setBoardSize(6);
+				} else {
+					_frame.setBoardSize(8);
+				}
+			}
 			_frame.setVariant(v);
-			_frame.changeCard("Game");
+			try {
+				_frame.changeCard("Game");
+			} catch (IllegalMoveException e1) {
+				// TODO not sure what to do here, swallow for now
+			}
 		}
 
 	}
