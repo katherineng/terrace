@@ -8,7 +8,7 @@ import javax.media.opengl.glu.GLUquadric;
 import javax.vecmath.*;
 
 import terrace.Piece;
-import terrace.Posn;
+import terrace.util.Posn;
 
 public class GamePiece implements Drawable {
 	boolean _selected;	/** Whether or not this object has been selected by the user **/

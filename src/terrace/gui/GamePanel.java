@@ -21,8 +21,8 @@ import javax.vecmath.Vector3d;
 import terrace.DefaultBoardGame;
 import terrace.Move;
 import terrace.Player;
-import terrace.Posn;
 import terrace.exception.IllegalMoveException;
+import terrace.util.Posn;
 
 import com.google.common.base.Function;
 import com.google.common.base.Optional;

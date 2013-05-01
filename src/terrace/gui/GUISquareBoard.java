@@ -7,7 +7,7 @@ import javax.vecmath.*;
 
 import terrace.DefaultBoardGame;
 import terrace.Player;
-import terrace.Posn;
+import terrace.util.Posn;
 
 public class GUISquareBoard implements Drawable {
 	private RectPrism _foundation;				/** The foundation of the board **/

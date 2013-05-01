@@ -8,6 +8,8 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import terrace.util.Posn;
+
 public class DefaultBoardTest {
 	private DefaultBoard _board;
 	

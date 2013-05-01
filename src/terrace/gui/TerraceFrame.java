@@ -2,6 +2,9 @@ package terrace.gui;
 
 import java.awt.CardLayout;
 import java.awt.Dimension;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -16,11 +19,16 @@ public class TerraceFrame extends JFrame {
 	private static final String LOCAL_SETUP = "local game setup";
 	private static final String NETWORK_SETUP = "networked game setup";
 	private static final String JOIN_NETWORK = "join networked game";
+	private int numPlayers;
 	private JPanel cards;
+	private Map<Integer, String> playerNames;
+	private Variant ruleType;
 	
 	public TerraceFrame(int numHuman, int numAI, int boardSize, Variant variant) throws IllegalMoveException {
-		setPreferredSize(new Dimension(1200, 1200));
+		playerNames = new HashMap<>();
 		
+		setPreferredSize(new Dimension(1200, 1200));
+		setMinimumSize(new Dimension(600, 600));
 		cards = new JPanel(new CardLayout());
 		
 		setExtendedState(getExtendedState() | MAXIMIZED_BOTH);
@@ -35,7 +43,23 @@ public class TerraceFrame extends JFrame {
 	
 	public void changeCard(String cardName) {
 		System.out.println(cardName);
+		System.out.println(ruleType);
+		System.out.println(numPlayers);
 		CardLayout layout = (CardLayout) cards.getLayout();
 		layout.show(cards, cardName);
 	}
+	void setPlayerNames(List<String> names) {
+		int i = 0;
+		for(String n : names) {
+			playerNames.put(i, n);
+			i++;
+		}
+	}
+	void setNumPlayers(int n) {
+		numPlayers = n;
+	}
+	void setVariant(Variant v) {
+		ruleType = v;
+	}
+	
 }

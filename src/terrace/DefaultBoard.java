@@ -2,6 +2,8 @@ package terrace;
 
 import java.util.*;
 
+import terrace.util.Posn;
+
 //import com.google.common.base.Optional;
 
 /**

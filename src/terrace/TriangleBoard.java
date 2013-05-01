@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import terrace.util.Posn;
+
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 

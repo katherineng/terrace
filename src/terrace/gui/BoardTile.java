@@ -3,7 +3,7 @@ package terrace.gui;
 import javax.media.opengl.*;
 import javax.vecmath.*;
 
-import terrace.Posn;
+import terrace.util.Posn;
 
 /**
  * The squares that lay atop the board w/ different elevations
