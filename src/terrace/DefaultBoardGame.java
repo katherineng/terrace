@@ -3,6 +3,7 @@ package terrace;
 import java.util.*;
 import terrace.ai.AI;
 import terrace.exception.IllegalMoveException;
+import terrace.gui.LocalPlayer;
 import terrace.util.Posn;
 
 import com.google.common.base.*;
@@ -32,7 +33,7 @@ public class DefaultBoardGame implements Cloneable {
 
 		_players = new ArrayList<Player>();
 		for (int i = 0; i < numHuman; i++) 
-			_players.add(new Player(PlayerColor.values()[i]));
+			_players.add(new LocalPlayer(PlayerColor.values()[i]));
 		for (int i = numHuman; i < _numPlayers; i++)
 			_players.add(new AI(PlayerColor.values()[i], this));
 
@@ -326,7 +327,7 @@ public class DefaultBoardGame implements Cloneable {
 
 		// make new players
 		for (int i = 0; i < _numHuman; i++) 
-			toRet._players.add(new Player(PlayerColor.values()[i]));
+			toRet._players.add(new LocalPlayer(PlayerColor.values()[i]));
 		for (int i = _numHuman; i < _numPlayers; i++)
 			toRet._players.add(new AI(PlayerColor.values()[i], toRet));
 

@@ -3,6 +3,8 @@ package terrace.ai;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.google.common.base.Optional;
+
 import terrace.*;
 import terrace.exception.IllegalMoveException;
 
@@ -35,6 +37,11 @@ public class AI extends Player {
 		private double getValue(){
 			return _value;
 		}
+	}
+	
+	@Override
+	public Optional<Move> getMove(int timeout) {
+		return Optional.absent();
 	}
 	
 	@Override
@@ -203,5 +210,4 @@ public class AI extends Player {
 		}
 		return toRet;
 	}
-	
 }
