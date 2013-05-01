@@ -343,5 +343,59 @@ public class DefaultBoardGame implements Cloneable {
 
 		return toRet;
 	}
+	
+	//TODO delete later
+	/**
+	 * Attempts to make a move from a given position to a given position and returns the captured piece, if any
+	 * @param from The position from which to move
+	 * @param to The destination position
+	 * @return The captured piece, if any; otherwise null
+	 * @throws IllegalMoveException When a move from the given position to the given destination position is not legal
+	 */
+	public Piece movePieceAI(Posn from, Posn to) throws IllegalMoveException {
+		Player current = getCurrentPlayer();
+		Piece playerPiece = _board.getPieceAt(from);
+		if (playerPiece == null || !current.getPieces().contains(playerPiece)) {
+			throw new IllegalMoveException("ERROR: " + _currPlayer + "\'s piece not found at " + from.toString());
+		} else {
+			List<Move> possibleMoves = _board.getMoves(playerPiece);
+
+			if (!possibleMoves.contains(new Move(playerPiece, to))) {
+				throw new IllegalMoveException("ERROR: Piece at " + from.toString() + " can't be moved to " + to.toString());
+			} else {
+				Posn goal = playerPiece.getGoalPosn().orNull();
+				if (playerPiece.isTPiece() && goal != null && goal.equals(to))
+					setWinner(current);
+
+
+				current.getPieces().remove(playerPiece);
+				_board.setPieceAt(from, null);
+
+				Piece captured = _board.getPieceAt(to);
+				if (captured != null) {
+					if (captured.isTPiece()) {
+						_players.remove(captured.getPlayer());
+						_playersAlive--;
+						if (_players.size() == 1) 
+							setWinner(current);
+						else 
+							removePlayerPieces(captured.getPlayer());
+					} else  captured.getPlayer().getPieces().remove(captured);
+				}
+
+				if (!(captured != null && captured.isTPiece() && captured.getPlayer().equals(playerPiece.getPlayer()))){
+					playerPiece.setPosn(to);
+					current.getPieces().add(playerPiece);
+					_board.setPieceAt(to, playerPiece);
+				}
+
+				if (captured != null && captured.isTPiece() && _currPlayer < getPlayerNumber(captured.getPlayer())) 
+					_currPlayer--;
+				if (_currPlayer < _playersAlive - 1) _currPlayer++;
+				else _currPlayer = 0;
+				return captured;
+			}
+		}
+	}
 
 }
