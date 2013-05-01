@@ -40,14 +40,14 @@ public class Player {
 		return _color;
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((_color == null) ? 0 : _color.hashCode());
-		result = prime * result + ((_name == null) ? 0 : _name.hashCode());
-		return result;
-	}
+//	@Override
+//	public int hashCode() {
+//		final int prime = 31;
+//		int result = 1;
+//		result = prime * result + ((_color == null) ? 0 : _color.hashCode());
+//		result = prime * result + ((_name == null) ? 0 : _name.hashCode());
+//		return result;
+//	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
@@ -73,5 +73,10 @@ public class Player {
 
 	public String getName() {
 		return _name;
+	}
+	
+	@Override
+	public String toString(){
+		return _color.toString();
 	}
 }
