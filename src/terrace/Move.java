@@ -2,12 +2,14 @@ package terrace;
 
 import java.util.Objects;
 
+import com.google.common.base.Optional;
+
 import terrace.util.Posn;
 
 public class Move {
 	private final Piece _piece;
 	private final Posn _to;
-	private final Piece _captured;
+	private final Optional<Piece> _captured;
 	
 	public Move(Piece piece, Posn to) {
 		_piece = piece;
@@ -18,7 +20,7 @@ public class Move {
 	public Move(Piece piece, Posn to, Piece captured) {
 		_piece = piece;
 		_to = to;
-		_captured = captured;
+		_captured = Optional.of(captured);
 	}
 	
 	public Piece getPiece() {
@@ -29,7 +31,7 @@ public class Move {
 		return _to;
 	}
 
-	public Piece getCapturedPiece() {
+	public Optional<Piece> getCapturedPiece() {
 		return _captured;
 	}
 	
