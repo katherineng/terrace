@@ -25,6 +25,27 @@ public abstract class Player {
 	public abstract Optional<Move> getMove(int timeout);
 	
 	/**
+	 * Notifies the player about an update to the board
+	 * 
+	 * @param board The new state of the board
+	 */
+	public abstract void updateBoard(Board board);
+	
+	/**
+	 * Notifies the player about a winner.
+	 * 
+	 * @param winner The winner of the game
+	 */
+	public void notifyWinner(Player winner) {}
+	
+	/**
+	 * Notifies the player about a loser. This doesn't mean the game is over.
+	 * 
+	 * @param loser The player who has lost
+	 */
+	public void notifyLoser(Player loser) {}
+	
+	/**
 	 * @return true if a move was made (AI), false otherwise
 	 */
 	public boolean makeMove() {

@@ -187,4 +187,9 @@ public class AI extends Player {
 		}
 		return toRet;
 	}
+
+	@Override
+	public void updateBoard(Board board) {
+		// TODO Auto-generated method stub
+	}
 }
