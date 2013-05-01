@@ -1,5 +1,7 @@
 package terrace;
 
+import terrace.util.Posn;
+
 import com.google.common.base.*;
 
 public class Piece implements Comparable<Piece>, Cloneable{

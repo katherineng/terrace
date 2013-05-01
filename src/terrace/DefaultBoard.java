@@ -2,6 +2,8 @@ package terrace;
 
 import java.util.*;
 
+import terrace.util.Posn;
+
 //import com.google.common.base.Optional;
 
 /**
@@ -9,11 +11,10 @@ import java.util.*;
  * @author kwng
  *
  */
-public class DefaultBoard implements Board<DefaultBoard> {
+public class DefaultBoard extends Board {
 	private final int _dimensions;
 	//private static int[][] _elevations;
 	private static HashMap<Integer, int[][]> _elevationsMap;
-	private Piece[][] _board;
 	private Variant _variant;
 
 	public DefaultBoard(int dimensions, Variant variant) {
@@ -31,7 +32,7 @@ public class DefaultBoard implements Board<DefaultBoard> {
 			for (int j = 0; j < _dimensions; j++) {
 				Piece p = _board[i][j];
 				if (p != null) {
-					toRet.setPiece(i, j, p.clone());
+					toRet.setPieceAt(new Posn(i, j), p.clone());
 				}
 			}
 		}
@@ -84,10 +85,6 @@ public class DefaultBoard implements Board<DefaultBoard> {
 		return _elevationsMap.get(_dimensions)[x][y];
 	}
 	
-	public Piece getPiece(int x, int y) {
-		return _board[x][y];
-	}
-	
 	protected void removePlayer(Player player){
 		for (int y = _dimensions - 1; y >= 0; y--) {
 			for (int x = 0; x < _dimensions; x++) {
@@ -96,11 +93,6 @@ public class DefaultBoard implements Board<DefaultBoard> {
 					_board[x][y] = null;
 			}
 		}
-	}
-	
-
-	public int getDimensions(){
-		return _dimensions;
 	}
 	
 	public List<Posn> getTerracePosns(Posn p) {
@@ -270,16 +262,6 @@ public class DefaultBoard implements Board<DefaultBoard> {
 		
 		return moves;
 	}
-
-	@Override
-	public Piece getPieceAt(Posn posn) {
-		return _board[posn.x][posn.y];
-	}
-	
-	@Override
-	public void setPiece(int x, int y, Piece piece) {
-		_board[x][y] = piece;
-	}
 	
 	@Override
 	public List<Posn> getNeighbors(Posn posn) {
@@ -318,24 +300,19 @@ public class DefaultBoard implements Board<DefaultBoard> {
 			for (int j = 0; j < _dimensions; j++) {
 				Piece p = _board[i][j];
 				if (p != null) {
-					copy.setPiece(i, j, new Piece(p.getSize(), p.isTPiece(), p.getPosn(), _dimensions, p.getPlayer()));
+					copy.setPieceAt(
+							new Posn(i, j),
+							new Piece(
+									p.getSize(),
+									p.isTPiece(),
+									p.getPosn(),
+									_dimensions, p.getPlayer()
+							)
+					);
 				}
 			}
 		}
 		return null;
-	}
-
-	@Override
-	public Piece movePiece(Posn from, Posn to) {
-		Piece toMove = _board[from.x][from.y];
-		
-		_board[from.x][from.y] = null;
-		toMove.updatePosn(to);
-		
-		Piece captured = _board[to.x][to.y];
-		_board[to.x][to.y] = toMove;
-		
-		return captured;	
 	}
 	
 	public String elevationsToString() {

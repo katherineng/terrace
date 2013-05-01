@@ -5,22 +5,22 @@ import java.util.*;
 import javax.media.opengl.*;
 import javax.vecmath.*;
 
-import terrace.Game;
+import terrace.DefaultBoardGame;
 import terrace.Player;
-import terrace.Posn;
+import terrace.util.Posn;
 
-public class GUIBoard extends Board {
+public class GUISquareBoard implements Drawable {
 	private RectPrism _foundation;				/** The foundation of the board **/
 	private BoardTile[][] _boardPieces;			/** A 2d Array of the Board tiles **/
 	private List<GamePiece> _gamePieces;	/** An array of the game pieces **/
 	Map<Player, Vector3d> _playerColors;	/** Maps players to their colors **/
-	private Game _game;							/** a Game instance **/
+	private DefaultBoardGame _game;							/** a Game instance **/
 	GL2 gl;
 	
-	public GUIBoard(GL2 gl, Game game) {
+	public GUISquareBoard(GL2 gl, DefaultBoardGame game) {
 		_game = game;
 		_foundation = new RectPrism(0.0, -0.01, 0.0, 1.0, 0.01, 1.0);
-		int dimension = _game.getBoard().getDimensions();
+		int dimension = _game.getBoard().getWidth();
 		_boardPieces = new BoardTile[dimension][dimension];
 		_gamePieces = new ArrayList<GamePiece>();
 		setUpColors();
@@ -39,7 +39,7 @@ public class GUIBoard extends Board {
 	}
 	
 	public int getDimensions() {
-		return _game.getBoard().getDimensions();
+		return _game.getBoard().getWidth();
 	}
 	
 	public List<GamePiece> getGamePieces() {
@@ -63,14 +63,14 @@ public class GUIBoard extends Board {
 	}
 	
 	public void resetPieces() {	
-		int dimension = _game.getBoard().getDimensions();
+		int dimension = _game.getBoard().getWidth();
 		_gamePieces.clear();
 		//needed because translation is relative to center of shape, not the corner
 		for (int row = 0; row < dimension; row++)
 			for (int col = 0; col < dimension; col++)
 				// set up _gamePiece
-				if (_game.getBoard().getPiece(col,  row) != null) 
-					_gamePieces.add(new GamePiece(gl, this, _game.getBoard().getPiece(col,  row)));
+				if (_game.getBoard().getPieceAt(new Posn(col,  row)) != null) 
+					_gamePieces.add(new GamePiece(gl, this, _game.getBoard().getPieceAt(new Posn(col,  row))));
 	}
 	
 	/**
@@ -101,7 +101,7 @@ public class GUIBoard extends Board {
 	}
 	
 	private void setUpBoard() {
-		int dimension = _game.getBoard().getDimensions();
+		int dimension = _game.getBoard().getWidth();
 		//needed because translation is relative to center of shape, not the corner
 		for (int row = 0; row < dimension; row++){
 			for (int col = 0; col < dimension; col++){

@@ -3,6 +3,7 @@ package terrace;
 import java.io.*;
 
 import terrace.exception.IllegalMoveException;
+import terrace.util.Posn;
 
 public class Repl {
 
@@ -30,7 +31,7 @@ public class Repl {
 				System.exit(0);
 			}
 			
-			Game game = new Game(numHuman, numAI, dimensions, var);
+			DefaultBoardGame game = new DefaultBoardGame(numHuman, numAI, dimensions, var);
 			System.out.println(game.getBoard().piecesToString());
 			System.out.println(game.getCurrentPlayer().getColor() + "\'s turn");
 			

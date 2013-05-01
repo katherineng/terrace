@@ -18,11 +18,11 @@ import javax.swing.SwingUtilities;
 import javax.vecmath.Vector2d;
 import javax.vecmath.Vector3d;
 
-import terrace.Game;
+import terrace.DefaultBoardGame;
 import terrace.Move;
 import terrace.Player;
-import terrace.Posn;
 import terrace.exception.IllegalMoveException;
+import terrace.util.Posn;
 
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
@@ -40,8 +40,8 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 	private Vector2d _prevMousePos;
 	
 	/*==== For Gameplay ====*/
-	private GUIBoard _board;
-	private Game _game;
+	private GUISquareBoard _board;
+	private DefaultBoardGame _game;
 	
 	/*==== For Selection/Hoover ====*/
 	private GamePiece _selection; 		/** The GamePiece that has currently been selected **/
@@ -51,9 +51,7 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 	private Vector2d _hover_mouse;
 	private Mode _mode;
 	
-	
-	public GamePanel(Game game){
-
+	public GamePanel(DefaultBoardGame game) {
 		/*==== General Drawing ====*/
 		super(new GLCapabilities(GLProfile.getDefault()));
 		setSize(600,600);
@@ -85,7 +83,6 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 	    this.addMouseMotionListener(this);
 	    
 	    setVisible(true);
-
 	}
 	
 
@@ -206,12 +203,11 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 			assert(newSelection != null);
 			
 			//only act of user is the same
-			if (newSelection.getPiece().getPlayer() == _game.getCurrentPlayer()){ 
+			if (newSelection.getPiece().getPlayer() == _game.getCurrentPlayer()) { 
 				
 				clearPossible();
 				
-				if (_selection == newSelection){ // if they are the same, that means user unselected
-					
+				if (_selection == newSelection) { // if they are the same, that means user unselected
 					
 					//change selection settings
 					_selection.changeSelection();
@@ -237,8 +233,7 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 			}
 			return false;
 		}
-
-
+		
 		/**
 		 * Makes a move
 		 * @param newSelection - the BoardTile where you want to move your selection to.
@@ -259,7 +254,7 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 				_mode = Mode.HOVER;
 				return false;
 			}
-
+			
 			if (_selection != null && _selection.isSelected()) _selection.changeSelection();
 			if (_hover != null && _hover.isSelected()) _hover.changeSelection();
 			_hover = null;
@@ -273,10 +268,10 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 		 * @param newSelection - a BoardPiece that is being hovered over
 		 * @return true if the selection has changed, false otherwise
 		 */
-		private boolean setBoardSelection(BoardTile newSelection){
+		private boolean setBoardSelection(BoardTile newSelection) {
 			assert(newSelection != null);
 			
-		    if (newSelection != _hover){
+		    if (newSelection != _hover) {
 		    	if (_hover != null) _hover.changeSelection();
 		    	_hover = newSelection;
 		    	_hover.changeSelection();
@@ -295,7 +290,7 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 		/**
 		 * clears the list of possible moves
 		 */
-		private void clearPossible(){
+		private void clearPossible() {
 			//change board tile settings
 			if (_possibleMoves != null){
 				for (Move move : _possibleMoves) _board.posToTile(move.getTo()).setMoveColor(null);
@@ -380,7 +375,7 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 			
 
 		    /*==== Gameplay ====*/ 
-		    _board = new GUIBoard(gl, _game);
+		    _board = new GUISquareBoard(gl, _game);
 			
 		}
 

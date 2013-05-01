@@ -2,6 +2,8 @@ package terrace;
 
 import java.util.Objects;
 
+import terrace.util.Posn;
+
 public class Move {
 	private final Piece _piece;
 	private final Posn _to;

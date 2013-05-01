@@ -5,15 +5,16 @@ import java.util.*;
 import org.junit.Test;
 
 import terrace.exception.IllegalMoveException;
+import terrace.util.Posn;
 
-public class GameTest {
+public class DefaultBoardGameTest {
 
 	@Test
 	public void test() throws IllegalMoveException {
-		Game twoPlayer = new Game(2, 0, 8, Variant.STANDARD);
+		DefaultBoardGame twoPlayer = new DefaultBoardGame(2, 0, 8, Variant.STANDARD);
 		twoPlayer.setUpPieces();
 		
-		Game fourPlayer = new Game(4, 0, 8, Variant.STANDARD);
+		DefaultBoardGame fourPlayer = new DefaultBoardGame(4, 0, 8, Variant.STANDARD);
 		fourPlayer.setUpPieces();
 		
 //		System.out.println(twoPlayer.getBoard().piecesToString());
@@ -34,10 +35,10 @@ public class GameTest {
 //			System.out.println(p);
 //		}
 		
-		Game downhill = new Game(2, 0, 8, Variant.DOWNHILL);
+		DefaultBoardGame downhill = new DefaultBoardGame(2, 0, 8, Variant.DOWNHILL);
 		downhill.setUpPieces();
 		
-		List<Move> moves = downhill.getBoard().getMoves(downhill.getBoard().getPiece(7,  1));
+		List<Move> moves = downhill.getBoard().getMoves(downhill.getBoard().getPieceAt(new Posn(7,  1)));
 		for (Move m : moves) {
 			System.out.println(m);
 		}
