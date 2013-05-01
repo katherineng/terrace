@@ -13,16 +13,14 @@ import terrace.util.Posn;
  */
 public class DefaultBoard extends Board {
 	private final int _dimensions;
-	//private static int[][] _elevations;
-	private static HashMap<Integer, int[][]> _elevationsMap;
+	private static HashMap<Integer, int[][]> _elevationsMap = new HashMap<Integer, int[][]>();;
 	private Variant _variant;
 
 	public DefaultBoard(int dimensions, Variant variant) {
 		_dimensions = dimensions;
 		_board = new Piece[_dimensions][_dimensions];
 		_variant = variant;
-		_elevationsMap = new HashMap<Integer, int[][]>();
-		//_elevations = new int[_dimensions][_dimensions];
+		setUp();
 	}
 	
 	/**
