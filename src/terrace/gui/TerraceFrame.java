@@ -11,6 +11,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import terrace.DefaultBoardGame;
+import terrace.NetworkType;
 import terrace.Variant;
 import terrace.exception.IllegalMoveException;
 
@@ -19,6 +20,8 @@ public class TerraceFrame extends JFrame {
 	private static final String GAME = "Game";
 	private static final String LOCAL_SETUP = "local game setup";
 	private static final String NETWORK_SETUP = "networked game setup";
+	private static final String JOIN_SETUP  = "join game setup";
+	private static final String HOST_GAME = "host networked game";
 	private static final String JOIN_NETWORK = "join networked game";
 	private int numPlayers;
 	private JPanel cards;
@@ -37,7 +40,9 @@ public class TerraceFrame extends JFrame {
 		setLayout(new CardLayout());
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		cards.add(new StartScreen(this), START_SCREEN);
-		cards.add(new LocalGameSetup(this), LOCAL_SETUP);
+		cards.add(new LocalGameSetup(this, NetworkType.LOCAL), LOCAL_SETUP);
+		cards.add(new LocalGameSetup(this, NetworkType.HOST), NETWORK_SETUP);
+		cards.add(new LocalGameSetup(this, NetworkType.JOIN), JOIN_SETUP);
 		cards.add(new GamePanel(new DefaultBoardGame(numHuman, numAI, boardSize, variant)), GAME);
 		add(cards);
 	}
