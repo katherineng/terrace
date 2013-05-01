@@ -41,7 +41,7 @@ public class AI extends Player {
 	public boolean makeMove() {
 		SearchNode node;
 		try {
-			node = minimax(0, 0, _game.clone());
+			node = minimax(0, 2, _game.clone());
 			System.out.println(node.getMove());
 			_game.movePiece(node.getMove().getPiece().getPosn(), node.getMove().getTo());
 		} catch (CloneNotSupportedException | IllegalMoveException e1) {
@@ -66,9 +66,11 @@ public class AI extends Player {
 		double bestValue = (maximizing) ? Double.NEGATIVE_INFINITY : Double.POSITIVE_INFINITY;
 		for (Move m: possibleMoves){
 			DefaultBoardGame g = getGameState(m, gameState);
-			SearchNode currNode = (currDepth == maxDepth || g.isGameOver()) ? new SearchNode(m, estimateValue(g, getPlayer(g))) : minimax(currDepth + 1, maxDepth, g);
-			if (maximizing &&currNode.getValue() > bestValue || // trying to maximize
-					!maximizing && currNode.getValue() < bestValue){ // trying to minimize
+			SearchNode currNode = (currDepth == maxDepth || g.isGameOver()) ? 
+					new SearchNode(m, estimateValue(g, getPlayer(g))) : 
+					new SearchNode(m, minimax(currDepth + 1, maxDepth, g).getValue());
+			if (maximizing && currNode.getValue() > bestValue || // trying to maximize
+				!maximizing && currNode.getValue() < bestValue){ // trying to minimize
 				bestValue = currNode.getValue();
 				bestNode = currNode;
 			}
@@ -101,6 +103,7 @@ public class AI extends Player {
 			if (p.getColor().equals(this.getColor()))
 				return p;
 		}
+		assert(false);
 		return null;
 	}
 	
@@ -132,8 +135,7 @@ public class AI extends Player {
 	 */
 	public double estimateValue(DefaultBoardGame gameState, Player currPlayer){
 		if (gameState.isGameOver()){
-			if(gameState.getWinner().equals(currPlayer)) 
-				return Double.POSITIVE_INFINITY;
+			if(gameState.getWinner().equals(currPlayer)) return Double.POSITIVE_INFINITY;
 			else return Double.NEGATIVE_INFINITY;
 		}
 
