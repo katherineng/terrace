@@ -1,10 +1,14 @@
 package terrace.gui;
 
 import java.awt.CardLayout;
+<<<<<<< HEAD
+import java.awt.FlowLayout;
+=======
 import java.awt.Dimension;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+>>>>>>> ae3414a15becb4041569f1934dab09b2db1fe9c9
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -49,6 +53,32 @@ public class TerraceFrame extends JFrame {
 		CardLayout layout = (CardLayout) cards.getLayout();
 		layout.show(cards, cardName);
 	}
+<<<<<<< HEAD
+	
+	private void createCards() {
+		JPanel mainMenu = new JPanel();
+		mainMenu.setLayout(new FlowLayout());
+		
+		mainMenu.add(new JButton("New Game"));
+		
+		mainMenu.add(new JButton("Create new game"));
+		mainMenu.add(new JButton("Join existing game"));
+		
+		JPanel players = new JPanel();
+		players.add(new JButton("1 Player"));
+		players.add(new JButton("2 Player"));
+		players.add(new JButton("3 Player"));
+		players.add(new JButton("4 Player"));
+		
+		JPanel newGame = new JPanel();
+		
+		JPanel networkCreate = new JPanel();
+		
+		JPanel networkJoin = new JPanel();
+		
+		JPanel local = new JPanel();
+	}
+=======
 	void setPlayerNames(List<String> names) {
 		int i = 0;
 		for(String n : names) {
@@ -63,4 +93,5 @@ public class TerraceFrame extends JFrame {
 		ruleType = v;
 	}
 	
+>>>>>>> ae3414a15becb4041569f1934dab09b2db1fe9c9
 }

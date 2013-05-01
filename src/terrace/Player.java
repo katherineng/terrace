@@ -2,8 +2,10 @@ package terrace;
 
 import java.util.*;
 
+import com.google.common.base.Optional;
 
-public class Player {
+
+public abstract class Player {
 	private List<Piece> _pieces;
 	PlayerColor _color;
 	String _name;
@@ -14,6 +16,13 @@ public class Player {
 		_name = "";
 	}
 	
+	/**
+	 * Gets a player's next move.
+	 * 
+	 * @param timeout The maximum number of seconds to block
+	 * @return        The player's desired move, if any
+	 */
+	public abstract Optional<Move> getMove(int timeout);
 	
 	/**
 	 * @return true if a move was made (AI), false otherwise
