@@ -4,7 +4,7 @@ import terrace.util.Posn;
 
 import com.google.common.base.*;
 
-public class Piece implements Comparable<Piece>, Cloneable{
+public class Piece implements Comparable<Piece>{
 	private final int _size;
 	private Optional<Posn> _goalPosn;
 	private Posn _posn;
@@ -21,12 +21,6 @@ public class Piece implements Comparable<Piece>, Cloneable{
 			_goalPosn = Optional.absent();
 		}
 		
-	}
-	
-	public Piece clone() throws CloneNotSupportedException{
-		Piece toRet = (Piece) super.clone();
-		toRet._posn = _posn.clone();
-		return toRet;
 	}
 	
 	public void updatePosn(Posn posn) {
@@ -89,17 +83,17 @@ public class Piece implements Comparable<Piece>, Cloneable{
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result
-				+ ((_goalPosn == null) ? 0 : _goalPosn.hashCode());
-		result = prime * result + ((_player == null) ? 0 : _player.hashCode());
-		result = prime * result + ((_posn == null) ? 0 : _posn.hashCode());
-		result = prime * result + _size;
-		return result;
-	}
+//	@Override
+//	public int hashCode() {
+//		final int prime = 31;
+//		int result = 1;
+//		result = prime * result
+//				+ ((_goalPosn == null) ? 0 : _goalPosn.hashCode());
+//		result = prime * result + ((_player == null) ? 0 : _player.hashCode());
+//		result = prime * result + ((_posn == null) ? 0 : _posn.hashCode());
+//		result = prime * result + _size;
+//		return result;
+//	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)

@@ -1,5 +1,5 @@
 package terrace;
 
 public enum PlayerColor {
-	RED, BLUE, BLACK, WHITE
+	BLUE, PINK, BLACK, WHITE
 }
