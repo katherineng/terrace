@@ -8,6 +8,7 @@ import javax.media.opengl.glu.GLUquadric;
 import javax.vecmath.*;
 
 import terrace.Piece;
+import terrace.TPiece;
 import terrace.util.Posn;
 
 public class GamePiece implements Drawable {
@@ -49,7 +50,7 @@ public class GamePiece implements Drawable {
 		double colShift = 1.0/_board.getDimensions()*pos.x;
 		gl.glTranslated(.5 - shiftFactor - rowShift, _board.getElevation(pos) + _radius, .5 - shiftFactor - colShift);
 
-		double mult = (_piece.isTPiece()) ? .5 : 1;
+		double mult = (_piece instanceof TPiece) ? .5 : 1;
 		Vector3d vec = _board._playerColors.get(_piece.getPlayer()); // set color
 		if (_selected) 
 			gl.glColor3d(.2*vec.x, .2*vec.y, .2*vec.z);

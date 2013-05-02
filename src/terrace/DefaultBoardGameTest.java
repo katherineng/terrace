@@ -12,10 +12,8 @@ public class DefaultBoardGameTest {
 	@Test
 	public void test() throws IllegalMoveException {
 		DefaultBoardGame twoPlayer = new DefaultBoardGame(2, 0, 8, Variant.STANDARD);
-		twoPlayer.setUpPieces();
 		
 		DefaultBoardGame fourPlayer = new DefaultBoardGame(4, 0, 8, Variant.STANDARD);
-		fourPlayer.setUpPieces();
 		
 //		System.out.println(twoPlayer.getBoard().piecesToString());
 //		System.out.println(fourPlayer.getBoard().piecesToString());
@@ -36,7 +34,6 @@ public class DefaultBoardGameTest {
 //		}
 		
 		DefaultBoardGame downhill = new DefaultBoardGame(2, 0, 8, Variant.DOWNHILL);
-		downhill.setUpPieces();
 		
 		List<Move> moves = downhill.getBoard().getMoves(downhill.getBoard().getPieceAt(new Posn(7,  1)));
 		for (Move m : moves) {

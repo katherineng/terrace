@@ -12,8 +12,8 @@ import terrace.util.Posn;
  *
  */
 public class DefaultBoard extends Board {
-	private final int _dimensions;
-	private static HashMap<Integer, int[][]> _elevationsMap = new HashMap<Integer, int[][]>();;
+	final int _dimensions;
+	static HashMap<Integer, int[][]> _elevationsMap = new HashMap<Integer, int[][]>();;
 	private Variant _variant;
 
 	public DefaultBoard(int dimensions, Variant variant) {
@@ -267,34 +267,31 @@ public class DefaultBoard extends Board {
 	}
 	
 	@Override
-	public DefaultBoard copyBoard() {
-		DefaultBoard copy = new DefaultBoard(_dimensions, _variant);
+	public Board copyBoard() {
+		Board copy = new DefaultBoard(_dimensions, _variant);
 		
 		for (int i = 0; i < _dimensions; i++) {
 			for (int j = 0; j < _dimensions; j++) {
 				Piece p = _board[i][j];
 				if (p != null) {
-					copy.setPieceAt(
-							new Posn(i, j),
-							new Piece(
-									p.getSize(),
-									p.isTPiece(),
-									p.getPosn(),
-									_dimensions, p.getPlayer()
-							)
-					);
+					copy.setPieceAt(p.getPosn(), p.copy());
 				}
 			}
 		}
 		return null;
 	}
 	
+	public int getDimensions() {
+		// TODO Auto-generated method stub
+		return _dimensions;
+	}
+	
 	public String elevationsToString() {
 		String elevations = "";
 		
-		for (int y = _dimensions - 1; y >= 0; y--) {
+		for (int y = getHeight() - 1; y >= 0; y--) {
 			elevations += "[ ";
-			for (int x = 0; x < _dimensions; x++) {
+			for (int x = 0; x < getWidth(); x++) {
 				elevations += _elevationsMap.get(_dimensions)[x][y] + " ";
 			}
 			elevations += "]\n";
@@ -302,29 +299,4 @@ public class DefaultBoard extends Board {
 		
 		return elevations;
 	}
-	
-	public String piecesToString() {
-		String pieces = "";
-		
-		for (int y = _dimensions - 1; y >= 0; y--) {
-			pieces += "[ ";
-			for (int x = 0; x < _dimensions; x++) {
-				Piece p = _board[x][y];
-				if (p != null) {
-					pieces += p.toString() + "\t";
-				} else {
-					pieces += "(..........)\t";
-				}
-			}
-			pieces += "]\n";
-		}
-		
-		return pieces;
-	}
-
-	public int getDimensions() {
-		// TODO Auto-generated method stub
-		return _dimensions;
-	}
-
 }
