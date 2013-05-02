@@ -12,11 +12,27 @@ public abstract class Player implements Cloneable{
 	private List<Piece> _pieces;
 	PlayerColor _color;
 	String _name;
+	boolean alive;
 	
 	public Player(PlayerColor color) {
 		_pieces = new LinkedList<Piece>();
 		_color = color;
 		_name = "";
+		alive = true;
+	}
+	
+	/**
+	 * @return true if the user is alive, false otherwise
+	 */
+	public boolean isAlive(){
+		return alive;
+	}
+	
+	/**
+	 * This method is depressing.
+	 */
+	public void died(){
+		alive = false;
 	}
 	
 	public Player clone() throws CloneNotSupportedException{

@@ -88,8 +88,16 @@ public class DefaultBoardGame {
 	}
 
 	private void changeTurn() throws IllegalMoveException {
-		if (!_isGameOver) 
-			_players.get(_currPlayer).makeMove();
+		if (!_isGameOver){
+			_currPlayer = (_currPlayer + 1) % _players.size();
+			System.out.println(_currPlayer + " " + _players.size());
+			Player player = _players.get(_currPlayer);
+			while(!player.isAlive()){
+				_currPlayer = (_currPlayer + 1) % _players.size();
+				player = _players.get(_currPlayer);
+			}
+			player.makeMove();
+		}
 	}
 
 	protected boolean noPossibleMoves() {
@@ -122,28 +130,26 @@ public class DefaultBoardGame {
 					current.getPieces().remove(playerPiece);
 					_game.getBoard().setPieceAt(from, null);
 					
+					boolean bool = true;
 					Piece captured = _game.getBoard().getPieceAt(to);
 					if (captured != null) {
 						if (captured instanceof TPiece) {
-							_players.remove(getPlayer(captured.getColor()));
+							getPlayer(captured.getColor()).died();
 							_playersAlive--;
-							if (_players.size() == 1) 
+							if (_playersAlive == 1) 
 								setWinner(current);
-							else 
+							else {
 								removePlayerPieces(_game.getPlayer(captured.getColor()));
+								bool = false;
+							}
 						} else  _game.getPlayer(captured.getColor()).getPieces().remove(captured);
 					}
 					
-					//if (!(captured != null && captured instanceof TPiece && captured.getColor().equals(playerPiece.getColor()))) {
-					playerPiece.setPosn(to);
-					current.getPieces().add(playerPiece);
-					_game.getBoard().setPieceAt(to, playerPiece);
-					//}
-					
-					if (captured != null && captured instanceof TPiece && _currPlayer < getPlayerNumber(_game.getPlayer(captured.getColor()))) 
-						_currPlayer--;
-					if (_currPlayer < _playersAlive - 1) _currPlayer++;
-					else _currPlayer = 0;
+					if (bool){
+						playerPiece.setPosn(to);
+						current.getPieces().add(playerPiece);
+						_game.getBoard().setPieceAt(to, playerPiece);
+					}
 					changeTurn();
 	
 					return captured;
