@@ -20,7 +20,7 @@ public class Move {
 	public Move(Piece piece, Posn to, Piece captured) {
 		_piece = piece;
 		_to = to;
-		_captured = Optional.of(captured);
+		_captured = Optional.fromNullable(captured);
 	}
 	
 	public Piece getPiece() {
