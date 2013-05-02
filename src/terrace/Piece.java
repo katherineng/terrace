@@ -64,6 +64,6 @@ public class Piece implements Comparable<Piece>, Copyable<Piece> {
 	
 	@Override
 	public Piece copy() {
-		return new Piece(_size, _posn, _color);
+		return new Piece(_size, _posn.clone(), _color);
 	}
 }

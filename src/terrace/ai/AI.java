@@ -62,7 +62,7 @@ public class AI extends Player {
 		SearchNode node;
 		try {
 			System.out.println(_game.getBoard().piecesToString());
-			node = minimax(0, 0, _game.copy());
+			node = minimax(0, 0, _game.clone());
 			_game.makeMove(node.getMove(), null, null);
 		} catch (CloneNotSupportedException | IllegalMoveException e1) {
 			// TODO Auto-generated catch block
@@ -111,8 +111,8 @@ public class AI extends Player {
 	 * @throws CloneNotSupportedException
 	 * @throws IllegalMoveException
 	 */
-	private GameState getGameState(Move m, GameState gameState) throws IllegalMoveException {
-		GameState copy = gameState.copy();
+	private GameState getGameState(Move m, GameState gameState) throws IllegalMoveException, CloneNotSupportedException {
+		GameState copy = gameState.clone();
 		copy.makeMove(m, null, null);
 		return copy;
 	}

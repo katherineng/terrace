@@ -1,8 +1,6 @@
 package terrace;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.google.common.base.Optional;
 
@@ -10,7 +8,7 @@ import terrace.exception.IllegalMoveException;
 import terrace.util.Callback;
 import terrace.util.Copyable;
 
-public class GameState implements Copyable<GameState> {
+public class GameState implements Cloneable {
 	private final Board _board;
 	private List<Player> _players;
 	private int _active = 0;
@@ -94,12 +92,17 @@ public class GameState implements Copyable<GameState> {
 	}
 	
 	@Override
-	public GameState copy() {
+	public GameState clone() throws CloneNotSupportedException {
 		Board newBoard = _board.copyBoard();
-		return new GameState(
-				newBoard,
-				new ArrayList<>(_players),
-				_active, _colorToPlayer
-		);
+		
+		LinkedList<Player> newPlayers = new LinkedList<Player>();
+		for (Player p: _players)
+			newPlayers.addLast(p.clone());
+		
+		HashMap<PlayerColor, Player> newMap = new HashMap<PlayerColor, Player>();
+		for (Player p: newPlayers)
+			newMap.put(p.getColor(), p);
+		
+		return new GameState(newBoard, newPlayers, _active, newMap);
 	}
 }

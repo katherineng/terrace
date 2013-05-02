@@ -2,10 +2,13 @@ package terrace;
 
 import java.util.*;
 
+import terrace.util.Copyable;
+import terrace.util.Posn;
+
 import com.google.common.base.Optional;
 
 
-public abstract class Player {
+public abstract class Player implements Cloneable{
 	private List<Piece> _pieces;
 	PlayerColor _color;
 	String _name;
@@ -14,6 +17,16 @@ public abstract class Player {
 		_pieces = new LinkedList<Piece>();
 		_color = color;
 		_name = "";
+	}
+	
+	public Player clone() throws CloneNotSupportedException{
+		Player toRet = (Player) super.clone();
+		LinkedList<Piece> newPieces = new LinkedList<Piece>();
+		for (Piece p: _pieces)
+			newPieces.addLast(new Piece(p.getSize(), p.getPosn().clone(), p.getColor()));
+		toRet._pieces = newPieces;
+		toRet._name = _name;
+		return toRet;
 	}
 	
 	/**

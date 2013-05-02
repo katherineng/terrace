@@ -274,7 +274,7 @@ public class DefaultBoard extends Board {
 			for (int j = 0; j < _dimensions; j++) {
 				Piece p = _board[i][j];
 				if (p != null) {
-					copy.setPieceAt(p.getPosn(), p.copy());
+					copy.setPieceAt(p.getPosn().clone(), p.copy());
 				}
 			}
 		}
