@@ -78,7 +78,6 @@ public class AI extends Player {
 		assert(maxDepth % 2 == 0);
 		boolean maximizing = currDepth % 2 == 0;
 		
-		//System.out.println(_game.getBoard().piecesToString());
 		List<Move> possibleMoves = getPossibleMoves(gameState, gameState.getActivePlayer());
 		
 		PriorityQueue<SearchNode> bestNode = new PriorityQueue<SearchNode>();

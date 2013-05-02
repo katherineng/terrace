@@ -51,6 +51,7 @@ public class GameState implements Cloneable {
 			Callback<Player> playerLost,
 			Callback<Player> playerWon
 	) throws IllegalMoveException {
+		System.out.println("game state move");
 		try {
 			if(isValid(m, getActivePlayer())) {
 				_board.makeMove(m);

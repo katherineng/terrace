@@ -88,7 +88,7 @@ public abstract class Board{
 		for (int y = getHeight() - 1; y >= 0; y--) {
 			for (int x = 0; x < getWidth(); x++) {
 				Piece p = _board[x][y];
-				if (p != null && p.getColor().equals(player)) 
+				if (p != null && p.getColor().equals(player.getColor())) 
 					_board[x][y] = null;
 			}
 		}

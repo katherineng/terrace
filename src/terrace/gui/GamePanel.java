@@ -169,7 +169,6 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 				break;
 			}
 			if (_game.isGameOver()){
-				System.out.println("GAME!");
 				displayWinner(_game.getWinner());
 			}
 		}
