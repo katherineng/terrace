@@ -83,7 +83,7 @@ public class AI extends Player {
 		PriorityQueue<SearchNode> bestNode = new PriorityQueue<SearchNode>();
 		double bestValue = (maximizing) ? Double.NEGATIVE_INFINITY : Double.POSITIVE_INFINITY;
 		if (possibleMoves.size() <= 0) {
-			System.out.println(_game.getBoard().piecesToString());
+			System.out.println(gameState.getBoard().piecesToString());
 		}
 		
 		for (Move m: possibleMoves) {
@@ -143,7 +143,7 @@ public class AI extends Player {
 
 		LinkedList<Move> possibleMoves = new LinkedList<Move>();
 		
-		for (Piece piece: pieces) {
+		for (Piece piece : pieces) {
 			for (Move move : gameState.getBoard().getMoves(piece)) {
 				if (!possibleMoves.contains(move))
 						possibleMoves.addLast(move);
