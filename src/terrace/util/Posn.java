@@ -1,5 +1,7 @@
 package terrace.util;
 
+import java.util.Objects;
+
 import javax.vecmath.*;
 
 @SuppressWarnings("serial")
@@ -7,8 +9,6 @@ public class Posn extends Point3i implements Cloneable{
 
 	public Posn(int x, int y) {
 		super(x, y, 0);
-//		this.x = x;
-//		this.y = y;
 	}
 	
 	/* (non-Javadoc)
@@ -16,11 +16,7 @@ public class Posn extends Point3i implements Cloneable{
 	 */
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + x;
-		result = prime * result + y;
-		return result;
+		return Objects.hash(x, y);
 	}
 	
 	public Posn clone(){
