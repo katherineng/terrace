@@ -26,14 +26,7 @@ public class DefaultBoardGame {
 		_winner = Optional.absent();
 
 		_players = new ArrayList<Player>();
-		HashMap<PlayerColor, Player> colorToPlayer = new HashMap<PlayerColor, Player>();
-		for (int i = 0; i < numHuman; i++){
-			PlayerColor color  = PlayerColor.values()[i];
-			Player newPlayer = new LocalPlayer(color);
-			_players.add(newPlayer);
-			colorToPlayer.put(color,  newPlayer);
-			
-		}
+
 			
 		for (int i = numHuman; i < _numPlayers; i++)
 			_players.add(new AI(PlayerColor.values()[i]));
@@ -41,7 +34,7 @@ public class DefaultBoardGame {
 		_game = new GameState(
 				BoardFactory.create(_players, dimensions, _variant),
 				_players,
-				0, colorToPlayer
+				0
 		);
 		
 		for (Player p : _players) p.updateState(_game);
@@ -52,10 +45,7 @@ public class DefaultBoardGame {
 		_players.get(_currPlayer).makeMove();
 	}
 
-	
-	public Player getPlayer(PlayerColor color){
-		return _game.getPlayer(color);
-	}
+
 	public Board getBoard() {
 		return _game.getBoard();
 	}
@@ -76,7 +66,7 @@ public class DefaultBoardGame {
 	 * @return  All the live pieces owned by that player
 	 */
 	public List<Piece> getPiecesOf(Player p) {
-		return p.getPieces();
+		return _game.getBoard().getPlayerPieces(p);
 	}
 
 	public boolean isGameOver() {
@@ -115,7 +105,7 @@ public class DefaultBoardGame {
 		if (!isGameOver()){
 			Player current = getCurrentPlayer();
 			Piece playerPiece = _game.getBoard().getPieceAt(from);
-			if (playerPiece == null || !current.getPieces().contains(playerPiece)) {
+			if (playerPiece == null || !getPiecesOf(current).contains(playerPiece)) {
 				throw new IllegalMoveException("ERROR: " + _currPlayer + "\'s piece not found at " + from.toString());
 			} else {
 				List<Move> possibleMoves = _game.getBoard().getMoves(playerPiece);
@@ -124,25 +114,23 @@ public class DefaultBoardGame {
 					throw new IllegalMoveException("ERROR: Piece at " + from.toString() + " can't be moved to " + to.toString());
 				} else {
 					
-					current.getPieces().remove(playerPiece);
 					_game.getBoard().setPieceAt(from, null);
 					
 					boolean bool = true;
 					Piece captured = _game.getBoard().getPieceAt(to);
 					if (captured != null) {
 						if (captured instanceof TPiece) {
-							getPlayer(captured.getColor()).died();
+							captured.getPlayer().died();
 							_playersAlive--;
 							if (_playersAlive != 1) {
-								removePlayerPieces(_game.getPlayer(captured.getColor()));
+								removePlayerPieces(captured.getPlayer());
 								bool = false;
 							}
-						} else  _game.getPlayer(captured.getColor()).getPieces().remove(captured);
+						}
 					}
 					
 					if (bool){
 						playerPiece.setPosn(to);
-						current.getPieces().add(playerPiece);
 						_game.getBoard().setPieceAt(to, playerPiece);
 					}
 
@@ -150,6 +138,7 @@ public class DefaultBoardGame {
 					else checkWinner(playerPiece, to);
 					changeTurn();
 
+					_game.endTurn();
 					return captured;
 				}
 			}
@@ -175,7 +164,6 @@ public class DefaultBoardGame {
 	protected void removePlayerPieces(Player p) {
 		System.out.println(p.getColor());
 		getBoard().removePlayer(p);
-		p.getPieces().clear();
 	}
 
 	/**
@@ -194,6 +182,6 @@ public class DefaultBoardGame {
 	 * ====================*/
 	private void checkWinner(Piece piece, Posn to) {
 		if (piece instanceof TPiece && ((TPiece)piece).isAtGoal())
-			setWinner(_game.getPlayer(piece.getColor()));
+			setWinner(piece.getPlayer());
 	}
 }

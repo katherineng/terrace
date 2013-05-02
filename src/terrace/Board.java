@@ -1,6 +1,6 @@
 package terrace;
 
-import java.util.LinkedList;
+import java.util.*;
 import java.util.List;
 import terrace.util.Posn;
 
@@ -82,6 +82,20 @@ public abstract class Board{
 			}
 		}
 		return result;
+	}
+	
+	public List<Piece> getPlayerPieces(Player player) {
+		
+		List<Piece> toRet = new LinkedList<Piece>();
+		for (int y = getHeight() - 1; y >= 0; y--) {
+			for (int x = 0; x < getWidth(); x++) {
+				Piece p = _board[x][y];
+				if (p != null && p.getPlayer().equals(player)) {
+					toRet.add(p);
+				}
+			}
+		}
+		return toRet;
 	}
 	
 	public void removePlayer(Player player) {
