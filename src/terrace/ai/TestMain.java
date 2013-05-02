@@ -13,7 +13,7 @@ public class TestMain {
 		try {
 			JFrame test = new JFrame();
 			test.setSize(800, 800);
-			GamePanel panel = new GamePanel(new DefaultBoardGame(4, 0, 8, Variant.STANDARD));
+			GamePanel panel = new GamePanel(new DefaultBoardGame(2, 0, 8, Variant.STANDARD));
 			test.add(panel);
 			test.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			test.setVisible(true);

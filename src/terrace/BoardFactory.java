@@ -65,12 +65,9 @@ public class BoardFactory {
 		int dim = board.getWidth();
 		int numTerraces = dim / 2;
 		
-		Posn smallCorner = new Posn(0, 0);
-		Posn largeCorner = new Posn(dim - 1, dim - 1);
-		
 		for (int i = 0; i < dim; i++) {
 			if (i == 0) {
-				Piece tPiece = new TPiece(smallCorner, p1.getColor(), largeCorner);
+				Piece tPiece = new TPiece(new Posn(0,0), p1.getColor(), new Posn(dim - 1, dim - 1));
 				Piece p2Piece = new Piece(numTerraces - 1, new Posn(i, dim - 1), p2.getColor());
 				p1.addPiece(tPiece);
 				p2.addPiece(p2Piece);
@@ -79,7 +76,7 @@ public class BoardFactory {
 				board.setPieceAt(new Posn(i, dim - 1), p2Piece);
 
 			} else if (i == dim - 1) {
-				Piece tPiece = new TPiece(largeCorner, p2.getColor(), smallCorner);
+				Piece tPiece = new TPiece(new Posn(dim - 1, dim - 1), p2.getColor(), new Posn(0, 0));
 				Piece p1Piece = new Piece(i / 2, new Posn(i, 0), p1.getColor());
 				p1.addPiece(p1Piece);
 				p2.addPiece(tPiece);
@@ -118,13 +115,10 @@ public class BoardFactory {
 		int dim = board.getWidth();
 		int numTerraces = dim / 2;
 		
-		Posn smallCorner = new Posn(0, 0);
-		Posn largeCorner = new Posn(dim - 1, dim - 1);
-		
 		for (int i = 1; i < dim - 1; i++) {
 			if (i == 1) {
-				Piece t1Piece = new TPiece(new Posn(1, 0), p1.getColor(), largeCorner);
-				Piece t2Piece = new TPiece(new Posn(0, 1), p2.getColor(), largeCorner);
+				Piece t1Piece = new TPiece(new Posn(1, 0), p1.getColor(), new Posn(dim - 1, dim - 1));
+				Piece t2Piece = new TPiece(new Posn(0, 1), p2.getColor(), new Posn(dim - 1, dim - 1));
 				Piece p3Piece = new Piece(numTerraces - (i / 2) - 1, new Posn(i, dim -1), p3.getColor());
 				Piece p4Piece = new Piece(numTerraces - (i / 2) - 1, new Posn(dim -1, i), p4.getColor());
 				p1.addPiece(t1Piece);
@@ -141,8 +135,8 @@ public class BoardFactory {
 			} else if(i == dim - 2) {
 				Piece p1Piece = new Piece(i / 2, new Posn(i, 0), p1.getColor());
 				Piece p2Piece = new Piece(i / 2, new Posn(0, i), p2.getColor());
-				Piece t3Piece = new TPiece(new Posn(i, dim - 1), p3.getColor(), smallCorner);
-				Piece t4Piece = new TPiece(new Posn(dim - 1, i), p4.getColor(), smallCorner);
+				Piece t3Piece = new TPiece(new Posn(i, dim - 1), p3.getColor(), new Posn(0, 0));
+				Piece t4Piece = new TPiece(new Posn(dim - 1, i), p4.getColor(), new Posn(0, 0));
 				p1.addPiece(p1Piece);
 				p2.addPiece(p2Piece);
 				p3.addPiece(t3Piece);
