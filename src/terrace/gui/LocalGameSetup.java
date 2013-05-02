@@ -2,8 +2,6 @@ package terrace.gui;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -11,27 +9,30 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
+import terrace.NetworkType;
 import terrace.Variant;
+import terrace.exception.IllegalMoveException;
 
 
 public class LocalGameSetup extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private TerraceFrame _frame;
+	private NetworkType _networkType;
 	private static final Font headerFont = new Font("Verdana", Font.BOLD, 30);
 	private static final Font defaultFont = new Font("Verdana", Font.BOLD, 24);
-	private Integer numPlayers;
+	private Integer numPlayers = 1;
 	private Variant v = Variant.STANDARD;
 	private static final Color backgroundColor = Color.GRAY;
 	private static final Color headerColor = Color.BLACK;
@@ -47,23 +48,63 @@ public class LocalGameSetup extends JPanel {
 	private JTextField player4;
 	private JRadioButton standard;
 	private JRadioButton onePlayer;
+	private int boardSize = 1;// 0 if small 1 if large
 	
-	public LocalGameSetup(TerraceFrame frame) {
-		_frame = frame;		
+	public LocalGameSetup(TerraceFrame frame, NetworkType networkType) {
+		_frame = frame;
+		_networkType = networkType;
+		System.out.println(networkType);
 		setBackground(backgroundColor);
 		addComponents();
 	}
 	private void addComponents() {
 		setLayout(new GridBagLayout());
-		JPanel boardOptions = new JPanel();
+		//board size panel
+		JPanel boardSize = new JPanel();
+		boardSize.setBackground(backgroundColor);
+		GridBagConstraints boardSizeConst = new GridBagConstraints();
+		boardSizeConst.gridx = 0;
+		boardSizeConst.gridy = 1;
+		boardSizeConst.insets = new Insets(0,0,0, 30);
+		boardSize.setLayout(new BoxLayout(boardSize, BoxLayout.PAGE_AXIS));
+		
+		JLabel sizeLabel = new JLabel("Board Size");
+		sizeLabel.setFont(headerFont);
+		sizeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+		JRadioButton small = new JRadioButton("small");
+		small.setActionCommand("0");
+		small.setFont(defaultFont);
+		small.setAlignmentX(CENTER_ALIGNMENT);
+		small.setForeground(defaultColor);
+		small.setBackground(backgroundColor);
+
+		JRadioButton large = new JRadioButton("large");
+		large.setActionCommand("1");
+		large.setFont(defaultFont);
+		large.setAlignmentX(CENTER_ALIGNMENT);
+		large.setForeground(defaultColor);
+		large.setBackground(backgroundColor);
+		large.setSelected(true);
+
+		ButtonGroup sizeGroup = new ButtonGroup();
+		sizeGroup.add(small);
+		sizeGroup.add(large);
+
+		boardSize.add(sizeLabel);
+		boardSize.add(small);
+		boardSize.add(large);
+
+		//board type panel
+		JPanel boardOptions = new JPanel();
 		boardOptions.setBackground(backgroundColor);
 		GridBagConstraints boardOptionsConst = new GridBagConstraints();
-		boardOptionsConst.gridx = 0;
+		boardOptionsConst.gridx = 1;
 		boardOptionsConst.gridy = 1;
 		boardOptionsConst.insets = new Insets(0,0,0, 30);
 		boardOptions.setLayout(new BoxLayout(boardOptions, BoxLayout.PAGE_AXIS));
-
+		
+		
 		JLabel boardType = new JLabel("Board Type");
 		boardType.setFont(headerFont);
 		boardType.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -108,11 +149,11 @@ public class LocalGameSetup extends JPanel {
 		boardOptions.add(aggressive);
 		boardOptions.add(triangle);
 
-
+		//player name panel
 		JPanel playerNames = new JPanel();
 		playerNames.setBackground(backgroundColor);
 		GridBagConstraints playerNamesConst = new GridBagConstraints();
-		playerNamesConst.gridx = 1;
+		playerNamesConst.gridx = 2;
 		playerNamesConst.gridy = 1;
 		playerNames.setLayout(new GridBagLayout());
 
@@ -121,20 +162,22 @@ public class LocalGameSetup extends JPanel {
 		headerConst.gridx = 1;
 		headerConst.gridy = 0;
 		header.setFont(headerFont);
-
+		
+		//lables for player textfields
 		p1 = new JLabel("Player 1");
 		GridBagConstraints p1Const = new GridBagConstraints();
 		p1Const.gridx = 0;
 		p1Const.gridy = 1;
 		p1.setForeground(defaultColor);
 		p1.setFont(defaultFont);
-
-		p2 = new JLabel("CPU");
+		
+		p2 = new JLabel("Player 2");
 		GridBagConstraints p2Const = new GridBagConstraints();
 		p2Const.gridx = 0;
 		p2Const.gridy = 2;
 		p2.setFont(defaultFont);
 		p2.setForeground(defaultColor);
+		p2.setVisible(false);
 		
 		p3 = new JLabel("Player 3");
 		GridBagConstraints p3Const = new GridBagConstraints();
@@ -152,6 +195,7 @@ public class LocalGameSetup extends JPanel {
 		p4.setForeground(defaultColor);
 		p4.setVisible(false);
 		
+		//text fields for player names
 		player1 = new JTextField(10);
 		GridBagConstraints player1Const = new GridBagConstraints();
 		player1Const.gridx = 1;
@@ -170,7 +214,9 @@ public class LocalGameSetup extends JPanel {
 		player2.setBackground(backgroundColor);
 		player2.setForeground(fadedColor);
 		player2.setFont(defaultFont);
-		player2.setText("CPU");
+		player2.setText("Player 2");
+		player2.setEnabled(false);
+		player2.setVisible(false);
 		
 		player3 = new JTextField(10);
 		GridBagConstraints player3Const = new GridBagConstraints();
@@ -184,18 +230,6 @@ public class LocalGameSetup extends JPanel {
 		player3.setEnabled(false);
 		player3.setVisible(false);
 		
-		player4 = new JTextField(10);
-		GridBagConstraints player4Const = new GridBagConstraints();
-		player4Const.gridx = 1;
-		player4Const.gridy = 4;
-		player4Const.insets = new Insets(0, 4, 0, 0);
-		player4.setBackground(backgroundColor);
-		player4.setForeground(fadedColor);
-		player4.setFont(defaultFont);
-		player4.setText("Player 4");
-		player4.setEnabled(false);
-		player4.setVisible(false);
-		
 		playerNames.add(header, headerConst);
 		playerNames.add(p1, p1Const);
 		playerNames.add(p2, p2Const);
@@ -204,9 +238,8 @@ public class LocalGameSetup extends JPanel {
 		playerNames.add(player1, player1Const);
 		playerNames.add(player2, player2Const);
 		playerNames.add(player3, player3Const);
-		playerNames.add(player4, player4Const);
 		
-		//Number of players card
+		//Number of players panel
 		JPanel numPlayersPanel = new JPanel();
 		numPlayersPanel.setBackground(Color.GRAY);
 		JLabel numPlayersLabel = new JLabel("Number of local players");
@@ -216,7 +249,7 @@ public class LocalGameSetup extends JPanel {
 		GridBagConstraints numPlayersConst = new GridBagConstraints();
 		numPlayersConst.gridx = 0;
 		numPlayersConst.gridy = 0;
-		numPlayersConst.gridwidth = 2;
+		numPlayersConst.gridwidth = 3;
 		numPlayersConst.insets = new Insets(0, 0, 0, 20);
 
 		JPanel numPlayersOptions = new JPanel();
@@ -224,7 +257,8 @@ public class LocalGameSetup extends JPanel {
 
 		onePlayer = new JRadioButton("1");
 		onePlayer.setActionCommand("1");
-		onePlayer.setBackground(Color.GRAY);
+		onePlayer.setBackground(backgroundColor);
+		onePlayer.setForeground(defaultColor);
 		onePlayer.setFont(defaultFont);
 		onePlayer.setSelected(true);
 		onePlayer.addActionListener(new NumPlayerListener());
@@ -234,43 +268,34 @@ public class LocalGameSetup extends JPanel {
 
 		JRadioButton twoPlayer = new JRadioButton("2");
 		twoPlayer.setActionCommand("2");
-		twoPlayer.setBackground(Color.GRAY);
+		twoPlayer.setBackground(backgroundColor);
+		twoPlayer.setForeground(defaultColor);
 		twoPlayer.setFont(defaultFont);
 		twoPlayer.addActionListener(new NumPlayerListener());
 		GridBagConstraints twoConst = new GridBagConstraints();
 		twoConst.gridx = 1;
 		twoConst.gridy = 0;
-
+		
 		JRadioButton threePlayer = new JRadioButton("3");
 		threePlayer.setActionCommand("3");
-		threePlayer.setBackground(Color.GRAY);
+		threePlayer.setBackground(backgroundColor);
+		threePlayer.setForeground(defaultColor);
 		threePlayer.setFont(defaultFont);
 		threePlayer.addActionListener(new NumPlayerListener());
 		GridBagConstraints threeConst = new GridBagConstraints();
 		threeConst.gridx = 0;
 		threeConst.gridy = 1;
-
-		JRadioButton fourPlayer = new JRadioButton("4");
-		fourPlayer.setActionCommand("4");
-		fourPlayer.setBackground(Color.GRAY);
-		fourPlayer.setFont(defaultFont);
-		fourPlayer.addActionListener(new NumPlayerListener());
-		GridBagConstraints fourConst = new GridBagConstraints();
-		fourConst.gridx = 1;
-		fourConst.gridy = 1;
-
+		
 		ButtonGroup numPlayersButtons = new ButtonGroup();
 		numPlayersButtons.add(onePlayer);
 		numPlayersButtons.add(twoPlayer);
 		numPlayersButtons.add(threePlayer);
-		numPlayersButtons.add(fourPlayer);
-
+		
 		numPlayersPanel.add(onePlayer, oneConst);
 		numPlayersPanel.add(twoPlayer, twoConst);
 		numPlayersPanel.add(threePlayer, threeConst);
-		numPlayersPanel.add(fourPlayer, fourConst);
 		
-		JButton goButton = new JButton("GO");
+		JButton goButton = new JButton();
 		GridBagConstraints goConst = new GridBagConstraints();
 		goButton.addActionListener(new GoListener());
 		goConst.gridx = 3;
@@ -278,35 +303,101 @@ public class LocalGameSetup extends JPanel {
 		goConst.insets = new Insets(30, 0, 0,0);
 		
 		JButton backButton = new JButton("Back");
+		backButton.addActionListener(new BackListener());
 		GridBagConstraints backConst = new GridBagConstraints();
 		backConst.gridx = 0;
 		backConst.gridy = 2;
 		backConst.insets = new Insets(30, 0, 0,0);
 		
-		add(boardOptions, boardOptionsConst);
 		add(playerNames, playerNamesConst);
 		add(goButton, goConst);
 		add(numPlayersPanel, numPlayersConst);
 		add(backButton, backConst);
+		
+		if(_networkType == NetworkType.LOCAL) {
+			player2.setEnabled(true);
+			player2.setVisible(true);
+			p2.setVisible(true);
+			p2.setText("CPU");
+			player2.setText("CPU");
+			
+			player4 = new JTextField(10);
+			GridBagConstraints player4Const = new GridBagConstraints();
+			player4Const.gridx = 1;
+			player4Const.gridy = 4;
+			player4Const.insets = new Insets(0, 4, 0, 0);
+			player4.setBackground(backgroundColor);
+			player4.setForeground(fadedColor);
+			player4.setFont(defaultFont);
+			player4.setText("Player 4");
+			player4.setEnabled(false);
+			player4.setVisible(false);
+			playerNames.add(player4, player4Const);
+			
+			JRadioButton fourPlayer = new JRadioButton("4");
+			fourPlayer.setActionCommand("4");
+			fourPlayer.setBackground(backgroundColor);
+			fourPlayer.setForeground(defaultColor);
+			fourPlayer.setFont(defaultFont);
+			fourPlayer.addActionListener(new NumPlayerListener());
+			GridBagConstraints fourConst = new GridBagConstraints();
+			fourConst.gridx = 1;
+			fourConst.gridy = 1;
+			numPlayersButtons.add(fourPlayer);
+			numPlayersPanel.add(fourPlayer, fourConst);
+			
+			goButton.setText("Start Game");
+			
+			
+			
+		} else if(_networkType == NetworkType.HOST) {
+			goButton.setText("Create Game");
+		} else {
+			goButton.setText("Join Game");
+		}
+		
+		if (_networkType != NetworkType.JOIN) {
+			add(boardOptions, boardOptionsConst);
+			add(boardSize, boardSizeConst);
+		}
+		
+		
 	}
 	private void resetScreen() {
-		standard.setSelected(true);
-		onePlayer.setSelected(true);
-		p2.setText("CPU");
-		player2.setText("CPU");
-		player3.setEnabled(false);
-		player4.setEnabled(false);
-		p3.setVisible(false);
-		p4.setVisible(false);
-		player3.setVisible(false);
-		player4.setVisible(false);
+		switch (_networkType) {
+		case LOCAL: standard.setSelected(true);
+					onePlayer.setSelected(true);
+					p2.setText("CPU");
+					player2.setText("CPU");
+					player3.setEnabled(false);
+					player4.setEnabled(false);
+					p3.setVisible(false);
+					p4.setVisible(false);
+					player3.setVisible(false);
+					player4.setVisible(false);
+					break;
+		default :	standard.setSelected(true);
+					onePlayer.setSelected(true);
+					player2.setVisible(false);
+					player2.setEnabled(false);
+					p2.setVisible(false);
+					player3.setEnabled(false);
+					p3.setVisible(false);
+					player3.setVisible(false);
+					break;
+		}
+		
 	}
 	class BackListener implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			resetScreen();//maybe switch these two lines?
-			_frame.changeCard("Setup");
+			try {
+				_frame.changeCard("Setup");
+			} catch (IllegalMoveException e1) {
+				// TODO not sure what to do here, swallow for now
+			}
+			resetScreen();
 		}
 		
 	}
@@ -316,18 +407,37 @@ public class LocalGameSetup extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			_frame.setNumPlayers(numPlayers);
 			List<String> playerNames = new ArrayList<>();
-			playerNames.add(player1.getText());
-			playerNames.add(player2.getText());
-			if (numPlayers > 2) {
-				playerNames.add(player3.getText());
-				playerNames.add(player4.getText());
+			switch (numPlayers) {
+			case 4: playerNames.add(player4.getText());
+			case 3: playerNames.add(player3.getText());
+			case 2: playerNames.add(player2.getText());
+			case 1: playerNames.add(player1.getText());
 			}
+			Collections.reverse(playerNames);
 			_frame.setPlayerNames(playerNames);
+			if (v.equals(Variant.TRIANGLE)) {
+				if (boardSize == 0) {
+					_frame.setBoardSize(3);
+				} else {
+					_frame.setBoardSize(4);
+				}
+			} else {
+				if (boardSize == 0) {
+					_frame.setBoardSize(6);
+				} else {
+					_frame.setBoardSize(8);
+				}
+			}
 			_frame.setVariant(v);
-			_frame.changeCard("Game");
+			try {
+				_frame.changeCard("Game");
+			} catch (IllegalMoveException e1) {
+				// TODO not sure what to do here, swallow for now
+			}
 		}
 
 	}
+	
 	class variantTypeListener implements ActionListener {
 
 		@Override
@@ -336,56 +446,95 @@ public class LocalGameSetup extends JPanel {
 		}
 		
 	}
+	
+	class boardTypeListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			boardSize = Integer.parseInt(e.getActionCommand());
+		}
+		
+	}
+	
 	class NumPlayerListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			numPlayers = Integer.parseInt(e.getActionCommand());
-			switch (numPlayers) {
-			case 1: p2.setText("CPU");
-					player2.setText("CPU");
-					player3.setEnabled(false);
-					player4.setEnabled(false);
-					p3.setVisible(false);
-					p4.setVisible(false);
-					player3.setVisible(false);
-					player4.setVisible(false);
-					break;
-			case 2: p2.setText("Player2");
-					player2.setText("Player2");
-					player3.setEnabled(false);
-					player4.setEnabled(false);
-					player3.setVisible(false);
-					player4.setVisible(false);
-					p3.setVisible(false);
-					p4.setVisible(false);
-					break;
-			case 3: p2.setText("Player2");
-					player2.setText("Player2");
-					p3.setText("Player3");
-					player3.setText("Player3");
-					player3.setEnabled(true);
-					p4.setText("CPU");
-					player4.setText("CPU");
-					player4.setEnabled(true);
-					player3.setVisible(true);
-					player4.setVisible(true);
-					p3.setVisible(true);
-					p4.setVisible(true);
-					break;
-			case 4: p2.setText("Player2");
-					player2.setText("Player2");
-					p3.setText("Player3");
-					player3.setText("Player3");
-					player3.setEnabled(true);
-					p4.setText("Player4");
-					player4.setText("Player4");
-					player4.setEnabled(true);
-					player4.setEnabled(true);
-					player3.setVisible(true);
-					player4.setVisible(true);
-					p3.setVisible(true);
-					p4.setVisible(true);
-					break;
+			switch (_networkType) {
+			case LOCAL: 
+				switch (numPlayers) {
+				case 1: p2.setText("CPU");
+						player2.setText("CPU");
+						player3.setEnabled(false);
+						player4.setEnabled(false);
+						p3.setVisible(false);
+						p4.setVisible(false);
+						player3.setVisible(false);
+						player4.setVisible(false);
+						break;
+				case 2: p2.setText("Player2");
+						player2.setText("Player2");
+						player3.setEnabled(false);
+						player4.setEnabled(false);
+						player3.setVisible(false);
+						player4.setVisible(false);
+						p3.setVisible(false);
+						p4.setVisible(false);
+						break;
+				case 3: p2.setText("Player2");
+						player2.setText("Player2");
+						p3.setText("Player3");
+						player3.setText("Player3");
+						player3.setEnabled(true);
+						p4.setText("CPU");
+						player4.setText("CPU");
+						player4.setEnabled(true);
+						player3.setVisible(true);
+						player4.setVisible(true);
+						p3.setVisible(true);
+						p4.setVisible(true);
+						break;
+				case 4: p2.setText("Player2");
+						player2.setText("Player2");
+						p3.setText("Player3");
+						player3.setText("Player3");
+						player3.setEnabled(true);
+						p4.setText("Player4");
+						player4.setText("Player4");
+						player4.setEnabled(true);
+						player4.setEnabled(true);
+						player3.setVisible(true);
+						player4.setVisible(true);
+						p3.setVisible(true);
+						p4.setVisible(true);
+						break;
+				}
+				break;
+			default:
+				System.out.println("sd;kfjdas");
+				switch (numPlayers) {
+				case 1: player2.setEnabled(false);
+						player2.setVisible(false);
+						player3.setEnabled(false);
+						p2.setVisible(false);
+						p3.setVisible(false);
+						player3.setVisible(false);
+						break;
+				case 2: player2.setEnabled(true);
+						player2.setVisible(true);
+						player3.setEnabled(false);
+						p2.setVisible(true);
+						p3.setVisible(false);
+						player3.setVisible(false);
+						break;
+				case 3: player2.setEnabled(true);
+						player2.setVisible(true);
+						player3.setEnabled(true);
+						p2.setVisible(true);
+						p3.setVisible(true);
+						player3.setVisible(true);
+						break;
+				}
 			}
 		}
 	}

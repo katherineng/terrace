@@ -83,4 +83,35 @@ public abstract class Board{
 		}
 		return result;
 	}
+	
+	public void removePlayer(Player player) {
+		for (int y = getHeight() - 1; y >= 0; y--) {
+			for (int x = 0; x < getWidth(); x++) {
+				Piece p = _board[x][y];
+				if (p != null && p.getPlayer().equals(player)) 
+					_board[x][y] = null;
+			}
+		}
+	}
+	
+	public abstract String elevationsToString();
+	
+	public String piecesToString() {
+		String pieces = "";
+		
+		for (int y = getHeight() - 1; y >= 0; y--) {
+			pieces += "[ ";
+			for (int x = 0; x < getWidth(); x++) {
+				Piece p = _board[x][y];
+				if (p != null) {
+					pieces += p.toString() + "\t";
+				} else {
+					pieces += "(..........)\t";
+				}
+			}
+			pieces += "]\n";
+		}
+		
+		return pieces;
+	}
 }

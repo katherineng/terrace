@@ -1,25 +1,20 @@
 package terrace.gui;
 
-import java.awt.BorderLayout;
-import java.awt.CardLayout;
+
 import java.awt.Color;
 import java.awt.Container;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
 
-import javax.swing.ButtonGroup;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JTextField;
+
+import terrace.exception.IllegalMoveException;
 
 public class StartScreen extends JPanel {
 	private TerraceFrame _frame;
@@ -52,7 +47,7 @@ public class StartScreen extends JPanel {
 		newNetGameButton.setActionCommand("networked game setup");
 		
 		JButton joinNetGameButton = new JButton("join networked game");
-		joinNetGameButton.setActionCommand("join networked game");
+		joinNetGameButton.setActionCommand("join game setup");
 		
 		localGameButton.addActionListener(new GameTypeListener());
 		newNetGameButton.addActionListener(new GameTypeListener());
@@ -79,7 +74,11 @@ public class StartScreen extends JPanel {
 		
 		@Override
 		public void actionPerformed(ActionEvent e) {
-				_frame.changeCard(e.getActionCommand());
+				try {
+					_frame.changeCard(e.getActionCommand());
+				} catch (IllegalMoveException e1) {
+					// TODO not sure what to do here, swallow for now
+				}
 		}
 		
 	}

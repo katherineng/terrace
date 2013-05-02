@@ -217,14 +217,7 @@ public class TriangleBoard extends Board {
 			for (int j = 0; j < _dimensions*2; j++) {
 				Piece p = _board[i][j];
 				if (p != null) {
-					copy.setPieceAt(new Posn(i, j),
-							new Piece(
-									p.getSize(),
-									p.isTPiece(),
-									p.getPosn(),
-									_dimensions, p.getPlayer()
-							)
-					);
+					copy.setPieceAt(p.getPosn(), p.copy());
 				}
 			}
 		}
@@ -239,33 +232,14 @@ public class TriangleBoard extends Board {
 	public String elevationsToString() {
 		String elevations = "";
 		
-		for (int y = 0; y < _dimensions*2; y++) {
+		for (int y = getHeight() - 1; y >= 0; y--) {
 			elevations += "[ ";
-			for (int x = 0; x < _dimensions; x++) {
+			for (int x = 0; x < getWidth(); x++) {
 				elevations += _elevationsMap.get(_dimensions)[x][y] + " ";
 			}
 			elevations += "]\n";
 		}
 		
 		return elevations;
-	}
-	
-	public String piecesToString() {
-		String pieces = "";
-		
-		for (int y = _dimensions - 1; y >= 0; y--) {
-			pieces += "[ ";
-			for (int x = 0; x < _dimensions; x++) {
-				Piece p = _board[x][y];
-				if (p != null) {
-					pieces += p.toString() + "\t";
-				} else {
-					pieces += "(..........)\t";
-				}
-			}
-			pieces += "]\n";
-		}
-		
-		return pieces;
 	}
 }

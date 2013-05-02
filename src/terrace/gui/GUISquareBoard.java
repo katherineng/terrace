@@ -35,7 +35,7 @@ public class GUISquareBoard implements Drawable {
 	}
 	
 	public double getElevation(int col, int row) {
-		return  _game.getBoard().getElevation(col, row)/60.;		
+		return  _game.getBoard().getElevation(new Posn(col, row))/60.;		
 	}
 	
 	public int getDimensions() {
@@ -108,7 +108,12 @@ public class GUISquareBoard implements Drawable {
 				double height = getElevation(col, row);
 				// set up _boardPiece
 				Posn pos = new Posn(col, row);
-				BoardTile piece = new BoardTile(this, height, pos, _game.getBoard().getElevation(col, row));
+				BoardTile piece = new BoardTile(
+						this,
+						height,
+						pos,
+						_game.getBoard().getElevation(new Posn(col, row))
+				);
 				_boardPieces[col][row] = piece;
 			}
 		}
