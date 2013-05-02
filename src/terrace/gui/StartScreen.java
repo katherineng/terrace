@@ -14,6 +14,8 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import terrace.exception.IllegalMoveException;
+
 public class StartScreen extends JPanel {
 	private TerraceFrame _frame;
 	Font headerFont;
@@ -45,7 +47,7 @@ public class StartScreen extends JPanel {
 		newNetGameButton.setActionCommand("networked game setup");
 		
 		JButton joinNetGameButton = new JButton("join networked game");
-		joinNetGameButton.setActionCommand("join networked game");
+		joinNetGameButton.setActionCommand("join game setup");
 		
 		localGameButton.addActionListener(new GameTypeListener());
 		newNetGameButton.addActionListener(new GameTypeListener());
@@ -72,7 +74,11 @@ public class StartScreen extends JPanel {
 		
 		@Override
 		public void actionPerformed(ActionEvent e) {
-				_frame.changeCard(e.getActionCommand());
+				try {
+					_frame.changeCard(e.getActionCommand());
+				} catch (IllegalMoveException e1) {
+					// TODO not sure what to do here, swallow for now
+				}
 		}
 		
 	}

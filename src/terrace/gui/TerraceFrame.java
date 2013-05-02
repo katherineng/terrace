@@ -22,12 +22,14 @@ public class TerraceFrame extends JFrame {
 	private static final String JOIN_SETUP  = "join game setup";
 	private static final String HOST_GAME = "host networked game";
 	private static final String JOIN_NETWORK = "join networked game";
-	private int numPlayers;
+	private int numHuman;
 	private JPanel cards;
 	private Map<Integer, String> playerNames;
 	private Variant ruleType;
+	private int boardSize; // 0 if small 1 if large
+	private GamePanel currentGame;
 	
-	public TerraceFrame(int numHuman, int numAI, int boardSize, Variant variant) throws IllegalMoveException {
+	public TerraceFrame() {
 		playerNames = new HashMap<>();
 		
 		setPreferredSize(new Dimension(1200, 1200));
@@ -42,14 +44,29 @@ public class TerraceFrame extends JFrame {
 		cards.add(new LocalGameSetup(this, NetworkType.LOCAL), LOCAL_SETUP);
 		cards.add(new LocalGameSetup(this, NetworkType.HOST), NETWORK_SETUP);
 		cards.add(new LocalGameSetup(this, NetworkType.JOIN), JOIN_SETUP);
-		cards.add(new GamePanel(new DefaultBoardGame(numHuman, numAI, boardSize, variant)), GAME);
+	
 		add(cards);
 	}
 	
-	public void changeCard(String cardName) {
-		System.out.println(cardName);
-		System.out.println(ruleType);
-		System.out.println(numPlayers);
+	public void changeCard(String cardName) throws IllegalMoveException {
+		int numAI;
+		if(numHuman > 2){
+			numAI = 4 - numHuman;
+		} else {
+			numAI = 2 - numHuman;
+		}
+		if(cardName.equals(GAME) && currentGame != null){
+			cards.remove(currentGame);
+			currentGame = new GamePanel(new DefaultBoardGame(numHuman, numAI, boardSize, ruleType));
+			cards.add(currentGame, GAME);
+		} else if (cardName.equals(GAME)) {
+			System.out.println(numHuman);
+			System.out.println(numAI);
+			System.out.println(boardSize);
+			System.out.println(ruleType);
+			currentGame = new GamePanel(new DefaultBoardGame(numHuman, numAI, boardSize, ruleType));//TODO change to game builder
+			cards.add(currentGame, GAME);
+		}
 		CardLayout layout = (CardLayout) cards.getLayout();
 		layout.show(cards, cardName);
 	}
@@ -61,10 +78,12 @@ public class TerraceFrame extends JFrame {
 		}
 	}
 	void setNumPlayers(int n) {
-		numPlayers = n;
+		numHuman = n;
 	}
 	void setVariant(Variant v) {
 		ruleType = v;
 	}
-	
+	void setBoardSize(int n) {
+		boardSize = n;
+	}
 }
