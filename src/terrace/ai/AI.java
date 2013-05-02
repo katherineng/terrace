@@ -59,17 +59,51 @@ public class AI extends Player {
 	
 	@Override
 	public boolean makeMove() {
-		SearchNode node;
-		try {
-			System.out.println(_game.getBoard().piecesToString());
-			node = minimax(0, 0, _game.clone());
-			_game.makeMove(node.getMove(), null, null);
-		} catch (CloneNotSupportedException | IllegalMoveException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+//		SearchNode node;
+//		try {
+//			node = minimax(0, 0, _game.clone());
+//			System.out.println(node.getMove());
+//			_game.makeMove(node.getMove(), null, null);
+//		} catch (CloneNotSupportedException | IllegalMoveException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
+		naiveMakeMove();
+		return true;
+	}
+	
+	/**
+	 * The AI naively makes a move. For testing purposes only
+	 * @return
+	 */
+	private boolean naiveMakeMove(){
+		List<Piece> pieces = getPieces();
+		assert(pieces.size() > 0);
+		LinkedList<Move> possibleMoves = new LinkedList<Move>();
+		
+		for (Piece piece: pieces) {
+			for (Move move : _game.getBoard().getMoves(piece)){
+				if (!possibleMoves.contains(move))
+						possibleMoves.addLast(move);
+			}
 		}
 		
+		Move toMove = possibleMoves.get(getRandom(possibleMoves.size()));
+		try {
+			_game.makeMove(toMove, null, null);
+		} catch (IllegalMoveException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		}
 		return true;
+	}	
+	
+	/**
+	 * @param size - integer
+	 * @return a number between [0, size)
+	 */
+	private int getRandom(int size){
+		return (int)(Math.random() * ((size-1) + 1));
 	}
 	
 	
@@ -77,7 +111,6 @@ public class AI extends Player {
 	private SearchNode minimax(int currDepth, int maxDepth, GameState gameState) throws CloneNotSupportedException, IllegalMoveException{
 		assert(maxDepth % 2 == 0);
 		boolean maximizing = currDepth % 2 == 0;
-		
 		List<Move> possibleMoves = getPossibleMoves(gameState, gameState.getActivePlayer());
 		
 		PriorityQueue<SearchNode> bestNode = new PriorityQueue<SearchNode>();

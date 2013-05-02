@@ -8,12 +8,13 @@ import com.google.common.base.*;
 public class Piece implements Comparable<Piece>, Copyable<Piece> {
 	protected final int _size;
 	protected Posn _posn;
-	protected PlayerColor _color;
+	protected Player _player;
 	
-	public Piece(int size, Posn posn, PlayerColor color) {
+	public Piece(int size, Posn posn, Player player) {
+		assert(player != null);
 		_size = size;
 		_posn = posn;
-		_color = color;
+		_player = player;
 	}
 	
 	public void updatePosn(Posn posn) {
@@ -34,7 +35,7 @@ public class Piece implements Comparable<Piece>, Copyable<Piece> {
 	}
 	
 	public PlayerColor getColor() {
-		return _color;
+		return _player.getColor();
 	}
 	
 	@Override
@@ -44,12 +45,12 @@ public class Piece implements Comparable<Piece>, Copyable<Piece> {
 	
 	@Override
 	public String toString() {
-		return "(" + _color.toString() + ", " + _size + ")";
+		return "(" + getColor().toString() + ", " + _size + ")";
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(_size, _posn, _color);
+		return Objects.hashCode(_size, _posn, getColor());
 	}
 	
 	@Override
@@ -59,11 +60,15 @@ public class Piece implements Comparable<Piece>, Copyable<Piece> {
 		if (o.getClass() != getClass()) return false;
 		
 		Piece p = (Piece)o;
-		return p._size == _size && p._color == _color && p._posn.equals(_posn);
+		return p._size == _size && p.getColor().equals(getColor()) && p._posn.equals(_posn);
 	}
 	
 	@Override
 	public Piece copy() {
-		return new Piece(_size, _posn.clone(), _color);
+		return new Piece(_size, _posn.clone(), _player);
+	}
+
+	public Player getPlayer() {
+		return _player;
 	}
 }

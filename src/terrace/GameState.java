@@ -1,6 +1,7 @@
 package terrace;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.google.common.base.Optional;
 
@@ -8,26 +9,20 @@ import terrace.exception.IllegalMoveException;
 import terrace.util.Callback;
 import terrace.util.Copyable;
 
-public class GameState implements Cloneable {
+public class GameState implements Copyable<GameState> {
 	private final Board _board;
 	private List<Player> _players;
 	private int _active = 0;
 	private Player _winner = null;
-	private Map<PlayerColor, Player> _colorToPlayer;
 	
-	public GameState(Board board, List<Player> players, int active, Map<PlayerColor, Player> map) {
+	public GameState(Board board, List<Player> players, int active) {
 		_board = board;
 		_players = players;
 		_active = active;
-		_colorToPlayer = map;
 	}
 	
 	public Board getBoard() {
 		return _board;
-	}
-	
-	public Player getPlayer(PlayerColor color){
-		return _colorToPlayer.get(color);
 	}
 	
 	public Optional<Player> getWinner() {
@@ -51,31 +46,30 @@ public class GameState implements Cloneable {
 			Callback<Player> playerLost,
 			Callback<Player> playerWon
 	) throws IllegalMoveException {
-		System.out.println("game state move");
 		try {
 			if(isValid(m, getActivePlayer())) {
 				_board.makeMove(m);
 				
 				Piece piece = m.getPiece();
 				if (piece instanceof TPiece && ((TPiece)piece).isAtGoal()) {
-					_winner = _colorToPlayer.get(piece.getColor());
+					_winner = piece.getPlayer();
 					if (playerWon != null) playerWon.call(_winner);
 					return;
 				}
 				
 				Optional<Piece> captured = m.getCapturedPiece();
-				if (captured != null && captured.isPresent()) {
+				if (captured.isPresent()) {
 					Piece p = captured.get();
 					
 					if (p instanceof TPiece) {
-						if (_players.indexOf(p.getColor()) >= _active) _active--;
-						_players.remove(p.getColor());
-						_board.removePlayer(_colorToPlayer.get(p.getColor()));
+						if (_players.indexOf(p.getPlayer()) >= _active) _active--;
+						_players.remove(p.getPlayer());
+						_board.removePlayer(p.getPlayer());
 						
 						if (_players.size() == 1 && playerWon != null) {
-							playerWon.call(_colorToPlayer.get(p.getColor()));
+							playerWon.call(p.getPlayer());
 						} else if (playerLost != null) {
-							playerLost.call(_colorToPlayer.get(p.getColor()));
+							playerLost.call(p.getPlayer());
 						}
 					}
 				}
@@ -93,17 +87,11 @@ public class GameState implements Cloneable {
 	}
 	
 	@Override
-	public GameState clone() throws CloneNotSupportedException {
-		Board newBoard = _board.copyBoard();
-		
-		LinkedList<Player> newPlayers = new LinkedList<Player>();
-		for (Player p: _players)
-			newPlayers.addLast(p.clone());
-		
-		HashMap<PlayerColor, Player> newMap = new HashMap<PlayerColor, Player>();
-		for (Player p: newPlayers)
-			newMap.put(p.getColor(), p);
-		
-		return new GameState(newBoard, newPlayers, _active, newMap);
+	public GameState copy() {
+		return new GameState(
+				_board.copyBoard(),
+				new ArrayList<>(_players),
+				_active
+		);
 	}
 }
