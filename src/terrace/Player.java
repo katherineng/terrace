@@ -27,9 +27,9 @@ public abstract class Player {
 	/**
 	 * Notifies the player about an update to the board
 	 * 
-	 * @param board The new state of the board
+	 * @param game The new state of the board
 	 */
-	public abstract void updateBoard(Board board);
+	public abstract void updateState(GameState game);
 	
 	/**
 	 * Notifies the player about a winner.

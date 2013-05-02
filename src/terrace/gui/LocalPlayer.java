@@ -3,6 +3,7 @@ package terrace.gui;
 import com.google.common.base.Optional;
 
 import terrace.Board;
+import terrace.GameState;
 import terrace.Move;
 import terrace.Player;
 import terrace.PlayerColor;
@@ -20,7 +21,7 @@ public class LocalPlayer extends Player {
 	}
 	
 	@Override
-	public void updateBoard(Board board) {
+	public void updateState(GameState game) {
 		// TODO Auto-generated method stub
 		
 	}
