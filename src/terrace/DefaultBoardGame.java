@@ -26,15 +26,22 @@ public class DefaultBoardGame {
 		_winner = Optional.absent();
 
 		_players = new ArrayList<Player>();
-		for (int i = 0; i < numHuman; i++) 
-			_players.add(new LocalPlayer(PlayerColor.values()[i]));
+		HashMap<PlayerColor, Player> colorToPlayer = new HashMap<PlayerColor, Player>();
+		for (int i = 0; i < numHuman; i++){
+			PlayerColor color  = PlayerColor.values()[i];
+			Player newPlayer = new LocalPlayer(color);
+			_players.add(newPlayer);
+			colorToPlayer.put(color,  newPlayer);
+			
+		}
+			
 		for (int i = numHuman; i < _numPlayers; i++)
 			_players.add(new AI(PlayerColor.values()[i]));
 		
 		_game = new GameState(
 				BoardFactory.create(_players, dimensions, _variant),
 				_players,
-				0
+				0, colorToPlayer
 		);
 		
 		for (Player p : _players) p.updateState(_game);
@@ -45,6 +52,10 @@ public class DefaultBoardGame {
 		_players.get(_currPlayer).makeMove();
 	}
 
+	
+	public Player getPlayer(PlayerColor color){
+		return _game.getPlayer(color);
+	}
 	public Board getBoard() {
 		return _game.getBoard();
 	}
@@ -121,22 +132,22 @@ public class DefaultBoardGame {
 				Piece captured = _game.getBoard().getPieceAt(to);
 				if (captured != null) {
 					if (captured instanceof TPiece) {
-						_players.remove(captured.getPlayer());
+						_players.remove(captured.getColor());
 						_playersAlive--;
 						if (_players.size() == 1) 
 							setWinner(current);
 						else 
-							removePlayerPieces(captured.getPlayer());
-					} else  captured.getPlayer().getPieces().remove(captured);
+							removePlayerPieces(_game.getPlayer(captured.getColor()));
+					} else  _game.getPlayer(captured.getColor()).getPieces().remove(captured);
 				}
 				
-				if (!(captured != null && captured instanceof TPiece && captured.getPlayer().equals(playerPiece.getPlayer()))) {
+				if (!(captured != null && captured instanceof TPiece && captured.getColor().equals(playerPiece.getColor()))) {
 					playerPiece.setPosn(to);
 					current.getPieces().add(playerPiece);
 					_game.getBoard().setPieceAt(to, playerPiece);
 				}
 				
-				if (captured != null && captured instanceof TPiece && _currPlayer < getPlayerNumber(captured.getPlayer())) 
+				if (captured != null && captured instanceof TPiece && _currPlayer < getPlayerNumber(_game.getPlayer(captured.getColor()))) 
 					_currPlayer--;
 				changeTurn();
 
@@ -179,7 +190,7 @@ public class DefaultBoardGame {
 	 * ====================*/
 	private void checkWinner(Piece piece, Posn to) {
 		if (piece instanceof TPiece && ((TPiece)piece).isAtGoal()) {
-			setWinner(piece.getPlayer());
+			setWinner(_game.getPlayer(piece.getColor()));
 		}
 	}
 }

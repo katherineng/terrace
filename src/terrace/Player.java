@@ -64,47 +64,29 @@ public abstract class Player {
 		return _pieces;
 	}
 	
-	//void move(Piece piece, Posn to) {}
-	
 	public PlayerColor getColor() {
 		return _color;
 	}
 
-//	@Override
-//	public int hashCode() {
-//		final int prime = 31;
-//		int result = 1;
-//		result = prime * result + ((_color == null) ? 0 : _color.hashCode());
-//		result = prime * result + ((_name == null) ? 0 : _name.hashCode());
-//		return result;
-//	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
+	public String getName() {
+		return _name;
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
 		if (obj == null)
 			return false;
-		if (!(obj instanceof Player))
+		if (getClass() != obj.getClass())
 			return false;
 		Player other = (Player) obj;
 		if (_color != other._color)
 			return false;
-		if (_name == null) {
-			if (other._name != null)
-				return false;
-		} else if (!_name.equals(other._name))
-			return false;
 		return true;
 	}
 
-	public String getName() {
-		return _name;
-	}
-	
 	@Override
 	public String toString(){
 		return _color.toString();

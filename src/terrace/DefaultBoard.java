@@ -119,7 +119,7 @@ public class DefaultBoard extends Board {
 		for (int i = idx + 1; i < numPosns; i++) {
 			Posn posn = sameTerrace.get(i);
 			Piece p = _board[posn.x][posn.y];
-			if (p != null && !p.getPlayer().equals(piece.getPlayer())) {
+			if (p != null && !p.getColor().equals(piece.getColor())) {
 				break;
 			} else if (p != null) {
 				continue;
@@ -131,7 +131,7 @@ public class DefaultBoard extends Board {
 		for (int i = idx - 1; i >= 0; i--) {
 			Posn posn = sameTerrace.get(i);
 			Piece p = _board[posn.x][posn.y];
-			if (p != null && !p.getPlayer().equals(piece.getPlayer())) {
+			if (p != null && !p.getColor().equals(piece.getColor())) {
 				break;
 			} else if (p != null) {
 				continue;
@@ -278,7 +278,7 @@ public class DefaultBoard extends Board {
 				}
 			}
 		}
-		return null;
+		return copy;
 	}
 	
 	public int getDimensions() {

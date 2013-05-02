@@ -2,6 +2,7 @@ package terrace;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.google.common.base.Optional;
 
@@ -14,15 +15,21 @@ public class GameState implements Copyable<GameState> {
 	private List<Player> _players;
 	private int _active = 0;
 	private Player _winner = null;
+	private Map<PlayerColor, Player> _colorToPlayer;
 	
-	public GameState(Board board, List<Player> players, int active) {
+	public GameState(Board board, List<Player> players, int active, Map<PlayerColor, Player> map) {
 		_board = board;
 		_players = players;
 		_active = active;
+		_colorToPlayer = map;
 	}
 	
 	public Board getBoard() {
 		return _board;
+	}
+	
+	public Player getPlayer(PlayerColor color){
+		return _colorToPlayer.get(color);
 	}
 	
 	public Optional<Player> getWinner() {
@@ -52,24 +59,24 @@ public class GameState implements Copyable<GameState> {
 				
 				Piece piece = m.getPiece();
 				if (piece instanceof TPiece && ((TPiece)piece).isAtGoal()) {
-					_winner = piece.getPlayer();
+					_winner = _colorToPlayer.get(piece.getColor());
 					if (playerWon != null) playerWon.call(_winner);
 					return;
 				}
 				
 				Optional<Piece> captured = m.getCapturedPiece();
-				if (captured.isPresent()) {
+				if (captured != null && captured.isPresent()) {
 					Piece p = captured.get();
 					
 					if (p instanceof TPiece) {
-						if (_players.indexOf(p.getPlayer()) >= _active) _active--;
-						_players.remove(p.getPlayer());
-						_board.removePlayer(p.getPlayer());
+						if (_players.indexOf(p.getColor()) >= _active) _active--;
+						_players.remove(p.getColor());
+						_board.removePlayer(_colorToPlayer.get(p.getColor()));
 						
 						if (_players.size() == 1 && playerWon != null) {
-							playerWon.call(p.getPlayer());
+							playerWon.call(_colorToPlayer.get(p.getColor()));
 						} else if (playerLost != null) {
-							playerLost.call(p.getPlayer());
+							playerLost.call(_colorToPlayer.get(p.getColor()));
 						}
 					}
 				}
@@ -88,10 +95,11 @@ public class GameState implements Copyable<GameState> {
 	
 	@Override
 	public GameState copy() {
+		Board newBoard = _board.copyBoard();
 		return new GameState(
-				_board.copyBoard(),
+				newBoard,
 				new ArrayList<>(_players),
-				_active
+				_active, _colorToPlayer
 		);
 	}
 }

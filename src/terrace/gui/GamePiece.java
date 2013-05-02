@@ -51,7 +51,7 @@ public class GamePiece implements Drawable {
 		gl.glTranslated(.5 - shiftFactor - rowShift, _board.getElevation(pos) + _radius, .5 - shiftFactor - colShift);
 
 		double mult = (_piece instanceof TPiece) ? .5 : 1;
-		Vector3d vec = _board._playerColors.get(_piece.getPlayer()); // set color
+		Vector3d vec = _board._playerColors.get(_piece.getColor()); // set color
 		if (_selected) 
 			gl.glColor3d(.2*vec.x, .2*vec.y, .2*vec.z);
 		else

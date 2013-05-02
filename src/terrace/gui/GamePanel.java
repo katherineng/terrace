@@ -203,7 +203,7 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 			assert(newSelection != null);
 			
 			//only act of user is the same
-			if (newSelection.getPiece().getPlayer() == _game.getCurrentPlayer()) { 
+			if (_game.getPlayer(newSelection.getPiece().getColor()) == _game.getCurrentPlayer()) { 
 				
 				clearPossible();
 				
@@ -222,7 +222,7 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 				} else { // set selection to something new. Remains in selection mode
 					_possibleMoves = _game.getBoard().getMoves(newSelection.getPiece());
 					for (Move move : _possibleMoves){
-						_board.posToTile(move.getTo()).setMoveColor(_board.getPlayerColors(newSelection.getPiece().getPlayer()));
+						_board.posToTile(move.getTo()).setMoveColor(_board.getPlayerColors(newSelection.getPiece().getColor()));
 					}
 					if (_selection != null) _selection.changeSelection(); // unselect old thing
 					_selection = newSelection;

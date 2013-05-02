@@ -61,7 +61,8 @@ public class AI extends Player {
 	public boolean makeMove() {
 		SearchNode node;
 		try {
-			node = minimax(0, 2, _game.copy());
+			System.out.println(_game.getBoard().piecesToString());
+			node = minimax(0, 0, _game.copy());
 			_game.makeMove(node.getMove(), null, null);
 		} catch (CloneNotSupportedException | IllegalMoveException e1) {
 			// TODO Auto-generated catch block
@@ -72,7 +73,7 @@ public class AI extends Player {
 	}
 	
 	
-	// minimax(0, 3, game.clone())
+	// minimax
 	private SearchNode minimax(int currDepth, int maxDepth, GameState gameState) throws CloneNotSupportedException, IllegalMoveException{
 		assert(maxDepth % 2 == 0);
 		boolean maximizing = currDepth % 2 == 0;
@@ -82,12 +83,6 @@ public class AI extends Player {
 		
 		PriorityQueue<SearchNode> bestNode = new PriorityQueue<SearchNode>();
 		double bestValue = (maximizing) ? Double.NEGATIVE_INFINITY : Double.POSITIVE_INFINITY;
-//<<<<<<< HEAD
-//
-//		for (Move m: possibleMoves){
-//			DefaultBoardGame g = getGameState(m, gameState);
-//			SearchNode currNode = (currDepth == maxDepth || g.isGameOver()) ? 
-//=======
 		
 		for (Move m: possibleMoves) {
 			GameState g = getGameState(m, gameState);
@@ -144,6 +139,7 @@ public class AI extends Player {
 	private List<Move> getPossibleMoves(GameState gameState, Player player) {
 		List<Piece> pieces = player.getPieces();
 
+		System.out.println(gameState.getBoard().piecesToString());
 		LinkedList<Move> possibleMoves = new LinkedList<Move>();
 		
 		for (Piece piece : pieces) {

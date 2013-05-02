@@ -7,13 +7,14 @@ import javax.vecmath.*;
 
 import terrace.DefaultBoardGame;
 import terrace.Player;
+import terrace.PlayerColor;
 import terrace.util.Posn;
 
 public class GUISquareBoard implements Drawable {
 	private RectPrism _foundation;				/** The foundation of the board **/
 	private BoardTile[][] _boardPieces;			/** A 2d Array of the Board tiles **/
 	private List<GamePiece> _gamePieces;	/** An array of the game pieces **/
-	Map<Player, Vector3d> _playerColors;	/** Maps players to their colors **/
+	Map<PlayerColor, Vector3d> _playerColors;	/** Maps players to their colors **/
 	private DefaultBoardGame _game;							/** a Game instance **/
 	GL2 gl;
 	
@@ -50,8 +51,8 @@ public class GUISquareBoard implements Drawable {
 		return _boardPieces[pos.getX()][pos.getY()];
 	}
 	
-	public Vector3d getPlayerColors(Player p) {
-		return _playerColors.get(p);
+	public Vector3d getPlayerColors(PlayerColor playerColor) {
+		return _playerColors.get(playerColor);
 	}
 	
 	public List<BoardTile> getBoardPieces() {
@@ -77,22 +78,22 @@ public class GUISquareBoard implements Drawable {
 	 * Sets up colors for players
 	 */
 	private void setUpColors() {
-		_playerColors = new HashMap<Player, Vector3d>();
+		_playerColors = new HashMap<PlayerColor, Vector3d>();
 		
 		List<Player> players =  _game.getPlayers();
 		for (int i = 0; i < players.size(); i++){
 			switch(i){
 			case 0:
-				_playerColors.put(players.get(i), new Vector3d(51/255., 255/255., 204/255.));
+				_playerColors.put(players.get(i).getColor(), new Vector3d(51/255., 255/255., 204/255.));
 				break;
 			case 1:
-				_playerColors.put(players.get(i), new Vector3d(255/255., 51/255., 102/255.));
+				_playerColors.put(players.get(i).getColor(), new Vector3d(255/255., 51/255., 102/255.));
 				break;
 			case 2:
-				_playerColors.put(players.get(i), new Vector3d(245/255.,184/255.,0/255.));
+				_playerColors.put(players.get(i).getColor(), new Vector3d(245/255.,184/255.,0/255.));
 				break;
 			case 3:
-				_playerColors.put(players.get(i), new Vector3d(38/255.,153/255., 0/255.));
+				_playerColors.put(players.get(i).getColor(), new Vector3d(38/255.,153/255., 0/255.));
 				break;
 			default: //shouldn't get here
 				assert(false);

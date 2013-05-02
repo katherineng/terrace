@@ -1,5 +1,6 @@
 package terrace;
 
+import java.util.HashMap;
 import java.util.List;
 
 import terrace.exception.IllegalMoveException;
@@ -13,7 +14,10 @@ public class GameServer {
 	
 	public GameServer(List<Player> players, Board board) {
 		_players = players;
-		_game = new GameState(board, players, 0);
+		HashMap<PlayerColor, Player> map = new HashMap<PlayerColor, Player>();
+		for (Player p: _players)
+			map.put(p.getColor(), p);
+		_game = new GameState(board, players, 0, map);
 	}
 	public void run() {
 		while (true) {
