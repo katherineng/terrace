@@ -176,7 +176,7 @@ public class DefaultBoardGame {
 	 * AI UTILITIES
 	 * ====================*/
 	private void checkWinner(Piece piece, Posn to) {
-		if (piece instanceof TPiece && ((TPiece)piece).getGoal().equals(to)) {
+		if (piece instanceof TPiece && ((TPiece)piece).isAtGoal()) {
 			setWinner(piece.getPlayer());
 		}
 	}

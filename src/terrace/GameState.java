@@ -51,7 +51,7 @@ public class GameState implements Copyable<GameState> {
 				_board.makeMove(m);
 				
 				Piece piece = m.getPiece();
-				if (piece instanceof TPiece && ((TPiece)piece).getGoal().equals(m.getTo())) {
+				if (piece instanceof TPiece && ((TPiece)piece).isAtGoal()) {
 					_winner = piece.getPlayer();
 					if (playerWon != null) playerWon.call(_winner);
 					return;

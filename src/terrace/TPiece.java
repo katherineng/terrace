@@ -10,8 +10,8 @@ public class TPiece extends Piece {
 		_goal = goal;
 	}
 	
-	public Posn getGoal() {
-		return _goal;
+	public boolean isAtGoal() {
+		return _goal.equals(_posn);
 	}
 	
 	@Override
