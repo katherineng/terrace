@@ -37,6 +37,8 @@ public class DefaultBoardGame {
 				0
 		);
 		
+		for (Player p : _players) p.updateState(_game);
+		
 		_playersAlive = _numPlayers;
 		_currPlayer = 0;
 		
