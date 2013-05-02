@@ -113,7 +113,6 @@ public class DefaultBoardGame {
 	 */
 	public Piece movePiece(Posn from, Posn to) throws IllegalMoveException {
 		if (!isGameOver()){
-			System.out.println("default board game move");
 			Player current = getCurrentPlayer();
 			Piece playerPiece = _game.getBoard().getPieceAt(from);
 			if (playerPiece == null || !current.getPieces().contains(playerPiece)) {
@@ -134,9 +133,7 @@ public class DefaultBoardGame {
 						if (captured instanceof TPiece) {
 							getPlayer(captured.getColor()).died();
 							_playersAlive--;
-							if (_playersAlive == 1) 
-								setWinner(current);
-							else {
+							if (_playersAlive != 1) {
 								removePlayerPieces(_game.getPlayer(captured.getColor()));
 								bool = false;
 							}
@@ -149,9 +146,10 @@ public class DefaultBoardGame {
 						_game.getBoard().setPieceAt(to, playerPiece);
 					}
 
-					checkWinner(playerPiece, to);
+					if (_playersAlive == 1) setWinner(current);
+					else checkWinner(playerPiece, to);
 					changeTurn();
-	
+
 					return captured;
 				}
 			}
@@ -195,10 +193,7 @@ public class DefaultBoardGame {
 	 * AI UTILITIES
 	 * ====================*/
 	private void checkWinner(Piece piece, Posn to) {
-		if( piece instanceof TPiece)
-		System.out.println(((TPiece)piece).isAtGoal());
-		if (piece instanceof TPiece && ((TPiece)piece).isAtGoal()) {
+		if (piece instanceof TPiece && ((TPiece)piece).isAtGoal())
 			setWinner(_game.getPlayer(piece.getColor()));
-		}
 	}
 }
