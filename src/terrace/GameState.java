@@ -82,8 +82,11 @@ public class GameState implements Copyable<GameState> {
 	}
 	
 	public boolean isValid(Move m, Player activePlayer) {
-		// TODO Auto-generated method stub
-		return true;
+		if (!m.getPiece().getPlayer().equals(activePlayer)) return false;
+		
+		List<Move> allowed = _board.getMoves(m.getPiece());
+		
+		return allowed.contains(m);
 	}
 	
 	@Override
