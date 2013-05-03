@@ -87,13 +87,16 @@ public class AI extends Player {
 		
 		for (Move m: possibleMoves) {
 			GameState g = getGameState(m, gameState);
-			SearchNode currNode = (currDepth == maxDepth || g.getWinner().isPresent()) ? 
-					new SearchNode(m, estimateValue(g, getPlayer(g)), 0) : 
-					new SearchNode(m, minimax(currDepth + 1, maxDepth, g).getValue(), 0);
-			if (currNode.getValue() == bestValue) 
+			SearchNode currNode = currDepth == maxDepth || g.getWinner().isPresent()
+					? new SearchNode(m, estimateValue(g, AI.this), 0)
+					: new SearchNode(m, minimax(currDepth + 1, maxDepth, g).getValue(), 0);
+			
+			if (currNode.getValue() == bestValue) {
 				bestNode.add(currNode);
-			else if (maximizing && currNode.getValue() > bestValue || // trying to maximize
-				!maximizing && currNode.getValue() < bestValue){ // trying to minimize
+			} else if (
+					maximizing && currNode.getValue() > bestValue || // trying to maximize
+					!maximizing && currNode.getValue() < bestValue  // trying to minimize
+			) {
 				bestNode.clear();
 				bestValue = currNode.getValue();
 				bestNode.add(currNode);
@@ -116,19 +119,6 @@ public class AI extends Player {
 		GameState copy = gameState.copy();
 		copy.makeMove(m, null, null);
 		return copy;
-	}
-	
-	/**
-	 * Gets the player that corresponds to this AI given a Game
-	 * @param gameState - a Game
-	 * @return - the Player associated with this AI
-	 */
-	private Player getPlayer(GameState gameState) {
-		for (Player p : gameState.getPlayers()) {
-			if (p.getColor().equals(this.getColor()))
-				return p;
-		}
-		return null;
 	}
 	
 	/**
