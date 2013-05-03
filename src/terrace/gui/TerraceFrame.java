@@ -27,24 +27,28 @@ public class TerraceFrame extends JFrame {
 	
 	final GameBuilder _builder = new GameBuilder();
 	private JPanel _cards;
-	private Map<Integer, String> _playerNames = new HashMap<>();
+	private List<String> _playerNames;
 	private GamePanel _currentGame;
+	private HostNetworkScreen _networkScreen;
 	
 	public TerraceFrame() {
 		setPreferredSize(new Dimension(1200, 1200));
 		setMinimumSize(new Dimension(600, 600));
 		_cards = new JPanel(new CardLayout());
 		
+		_networkScreen = new HostNetworkScreen(this);
+		
 		setExtendedState(getExtendedState() | MAXIMIZED_BOTH);
 		getContentPane().setLayout(new CardLayout());
 		setLayout(new CardLayout());
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
 		_cards.add(new StartScreen(this), START_SCREEN);
 		_cards.add(new LocalGameSetup(this, NetworkType.LOCAL), LOCAL_SETUP);
 		_cards.add(new LocalGameSetup(this, NetworkType.HOST), NETWORK_SETUP);
 		_cards.add(new LocalGameSetup(this, NetworkType.JOIN), JOIN_SETUP);
 		_cards.add(new HelpScreen(this), HELP_SCREEN);
-		
+		_cards.add(_networkScreen, HOST_GAME);
 		add(_cards);
 	}
 	
@@ -52,18 +56,19 @@ public class TerraceFrame extends JFrame {
 		if (cardName.equals(GAME)) {
 			if (_currentGame != null) _cards.remove(_currentGame);
 			
+			_builder.setPlayerNames(_playerNames);
 			_currentGame = new GamePanel(_builder.startGame(), this);
 			_cards.add(_currentGame, GAME);
+		} else if (cardName == HOST_GAME) {
+			_networkScreen.setPlayerNames(_playerNames);
 		}
+		
 		CardLayout layout = (CardLayout) _cards.getLayout();
 		layout.show(_cards, cardName);
 	}
 	
 	void setPlayerNames(List<String> names) {
-		int i = 0;
-		for(String n : names) {
-			_playerNames.put(i, n);
-			i++;
-		}
+		_playerNames = names;
+		
 	}
 }
