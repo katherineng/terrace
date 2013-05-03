@@ -55,18 +55,14 @@ public class AI extends Player {
 	@Override
 	public Optional<Move> getMove(int timeout) {
 		SearchNode node;
-	
-	//	try {
-		//	node = minimax(0, 0, _game.copy());
-			System.out.println("hi");
-//			return  Optional.of(node.getMove());
-			return Optional.of(naiveMakeMove());
-//		} catch (IllegalMoveException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		assert false;
-//		return null;
+		
+		try {
+			node = minimax(0, 0, _game.copy());
+			return  Optional.of(node.getMove());
+		} catch (IllegalMoveException e) {
+			System.err.println("ERROR: AI made invalid move. This shouldn't happen.");
+			return Optional.absent();
+		}
 	}
 	
 	/**
