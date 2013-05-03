@@ -170,7 +170,7 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 		public void display(GLAutoDrawable arg0) {
 			GL2 gl=arg0.getGL().getGL2();
 			
-			switch (_mode){
+			switch (_mode) {
 			case SELECTION: // activated when the user has selected something
 				Optional<GamePiece> pieceSelection = getSelection(gl, _selection_mouse, _board.getGamePieces());
 				
@@ -198,12 +198,12 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 				assert(false); 
 				break;
 			}
-			if (_winner.isPresent()){
+			if (_winner.isPresent()) {
 				displayWinner(_winner.get());
 			}
 		}
 		
-		private void displayWinner(Player winner){
+		private void displayWinner(Player winner) {
 			
 		}
 		
@@ -212,7 +212,7 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 		 * draws everything normally
 		 * @param gl
 		 */
-		private void normalDraw(GL2 gl){
+		private void normalDraw(GL2 gl) {
 			applyCameraPerspective(gl);		
 			gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 
@@ -228,11 +228,14 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 		 * @param newSelection - the GamePiece the user has clicked. Can not be null
 		 * @return whether or not the user selected their own game piece (i.e. selecting change anything)
 		 */
-		private boolean setPieceSelection(GamePiece newSelection){
+		private boolean setPieceSelection(GamePiece newSelection) {
 			assert(newSelection != null);
 			
 			//only act of user is the same
-			if (newSelection.getPiece().getPlayer() == _game.getActivePlayer()) { 
+			if (
+					newSelection.getPiece().getPlayer() == _game.getActivePlayer() &&
+					_game.getActivePlayer() instanceof LocalPlayer
+			) { 
 				
 				clearPossible();
 				
@@ -250,7 +253,7 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 					_mode = Mode.NORMAL;
 				} else { // set selection to something new. Remains in selection mode
 					_possibleMoves = _game.getBoard().getMoves(newSelection.getPiece());
-					for (Move move : _possibleMoves){
+					for (Move move : _possibleMoves) {
 						_board.posToTile(move.getTo()).setMoveColor(_board.getPlayerColors(newSelection.getPiece().getColor()));
 					}
 					if (_selection != null) _selection.changeSelection(); // unselect old thing
@@ -326,7 +329,7 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 		 */
 		private void clearPossible() {
 			//change board tile settings
-			if (_possibleMoves != null){
+			if (_possibleMoves != null) {
 				for (Move move : _possibleMoves) _board.posToTile(move.getTo()).setMoveColor(null);
 				_possibleMoves.clear();
 			}
@@ -434,7 +437,7 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		if (!_winner.isPresent()){
+		if (!_winner.isPresent()) {
 			
 			_selection_mouse = new Vector2d(e.getX(), e.getY());
 			_mode = Mode.SELECTION;
@@ -454,7 +457,7 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 	
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		if (_selection != null && !_winner.isPresent()){
+		if (_selection != null && !_winner.isPresent()) {
 			_hover_mouse = new Vector2d(e.getX(), e.getY());
 			_mode = Mode.HOVER;
 		}
