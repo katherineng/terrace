@@ -21,7 +21,10 @@ public class TerraceFrame extends JFrame {
 	private static final String JOIN_SETUP  = "join game setup";
 	private static final String HOST_GAME = "host networked game";
 	private static final String JOIN_NETWORK = "join networked game";
+	
 	final GameBuilder builder = new GameBuilder();
+	private static final String HELP_SCREEN = "help screen";
+	private int numHuman;
 	private JPanel cards;
 	private Map<Integer, String> playerNames;
 	private int boardSize; // 0 if small 1 if large
@@ -42,6 +45,7 @@ public class TerraceFrame extends JFrame {
 		cards.add(new LocalGameSetup(this, NetworkType.LOCAL), LOCAL_SETUP);
 		cards.add(new LocalGameSetup(this, NetworkType.HOST), NETWORK_SETUP);
 		cards.add(new LocalGameSetup(this, NetworkType.JOIN), JOIN_SETUP);
+		cards.add(new HelpScreen(this), HELP_SCREEN);
 	
 		add(cards);
 	}
