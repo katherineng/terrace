@@ -1,6 +1,8 @@
 package terrace.gui;
 
+import java.awt.Color;
 import java.awt.Frame;
+import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -30,6 +32,7 @@ import terrace.util.Callback;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.jogamp.opengl.util.Animator;
+import com.jogamp.opengl.util.awt.Overlay;
 
 
 public class GamePanel extends GLJPanel implements MouseWheelListener, MouseListener, MouseMotionListener{
@@ -75,7 +78,6 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 			@Override
 			public void call(GameState state) {
 				_game = state;
-
 				_board.resetPieces();
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override
@@ -119,6 +121,9 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 	    setVisible(true);
 	}
 	
+	public void causeForfeit() {
+		
+	}
 
 	public class GraphicListener implements GLEventListener{
 
@@ -208,7 +213,6 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 		private void displayWinner(Player winner){
 			
 		}
-		
 		
 		/**
 		 * draws everything normally
