@@ -284,7 +284,6 @@ public class DefaultBoard extends Board {
 	}
 	
 	public int getDimensions() {
-		// TODO Auto-generated method stub
 		return _dimensions;
 	}
 	

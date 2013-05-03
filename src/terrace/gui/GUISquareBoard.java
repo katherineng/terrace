@@ -33,7 +33,7 @@ public class GUISquareBoard extends GUIBoard {
 						this,
 						height,
 						pos,
-						_panel._game.getBoard().getElevation(new Posn(row, col))
+						_panel._game.getBoard().getElevation(pos)
 				);
 				_boardTiles[row][col] = tile;
 			}

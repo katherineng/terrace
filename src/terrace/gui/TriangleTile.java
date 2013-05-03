@@ -21,23 +21,21 @@ public class TriangleTile extends BoardTile{
 
 	@Override
 	public void draw(GL2 gl) {
-		double width = 1.0/_board.getWidth();
-		double shiftFactor = 1.0/_board.getWidth()/2;
-		double rowShift = 1.0/_board.getHeight()*_pos.y;
+		double sideLength =  1.0/_board.getWidth();
+		double rowShift = 1.0/_board.getWidth()/2*_pos.y;
 		double colShift = 1.0/_board.getWidth()*_pos.x;
-		Vector2d pos = new Vector2d(.5 - shiftFactor - rowShift, .5 - shiftFactor - colShift);
+		Vector2d pos = new Vector2d(-.5  + colShift, .5  - rowShift);
+		if (!orientedDown()) pos.y += sideLength/2;
+		double mult = (_level % 2 == 0) ? .7 : 1; 
 
 		gl.glPushMatrix();
 
-		double sideLength = width;
 		double elevation = _height;
-
-		double rotation = (orientedDown()) ? 0 : 180;
+		double rotation = orientedDown() ? 90 : -90;
 		gl.glRotated(rotation, 0., 1., 0.);
 		gl.glTranslated(pos.x, 0, pos.y);
 		gl.glBegin(GL2.GL_QUADS);
-		gl.glColor3d(.5,.2,1.0);
-		gl.glNormal3d(0f, 0f, sideLength);
+		gl.glNormal3d(0f, 0f, 1);
 		gl.glVertex3d(0f, 0f, 0f);
 		gl.glVertex3d(sideLength, 0f, 0f);
 		gl.glVertex3d(sideLength, sideLength*elevation, 0f);
@@ -46,8 +44,7 @@ public class TriangleTile extends BoardTile{
 
 
 		gl.glBegin(GL2.GL_QUADS);
-		gl.glColor3d(.5,.2,1.0);
-		gl.glNormal3d(-sideLength, 0f, 0f);
+		gl.glNormal3d(-1, 0f, 0f);
 		gl.glVertex3d(0f, 0f, 0f);
 		gl.glVertex3d(0f, sideLength*elevation, 0f);
 		gl.glVertex3d(0f, sideLength*elevation, -sideLength);
@@ -56,8 +53,7 @@ public class TriangleTile extends BoardTile{
 
 
 		gl.glBegin(GL2.GL_QUADS);
-		gl.glColor3d(.5,.2,1.0);
-		gl.glNormal3d(sideLength, 0f, -.25f);
+		gl.glNormal3d(1, 0f, -.25f);
 		gl.glVertex3d(sideLength, 0f, 0f);
 		gl.glVertex3d(0f, 0f, -sideLength);
 		gl.glVertex3d(0f, sideLength*elevation, -sideLength);
@@ -66,12 +62,13 @@ public class TriangleTile extends BoardTile{
 
 		//top of triangle
 		gl.glBegin(GL2.GL_TRIANGLES);
-		gl.glNormal3d(0f, sideLength*elevation, 0f);
+		Vector3d select = new Vector3d(mult*.8,mult*.8,mult*.8);
+		gl.glColor3d(select.x, select.y, select.z);
+		gl.glNormal3d(0f, 1, 0f);
 		gl.glVertex3d(0f, sideLength*elevation, 0f);
 		gl.glVertex3d(sideLength, sideLength*elevation, 0f);
 		gl.glVertex3d(0f, sideLength*elevation, -sideLength);
 		gl.glEnd();
-
 
 		//		// draw outlines for board
 		//		gl.glColor3f(0,0,0);

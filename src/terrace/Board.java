@@ -125,7 +125,6 @@ public abstract class Board{
 			}
 			pieces += "]\n";
 		}
-		
 		return pieces;
 	}
 }
