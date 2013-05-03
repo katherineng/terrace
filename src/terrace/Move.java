@@ -39,7 +39,7 @@ public class Move {
 	public int hashCode() {
 		return Objects.hash(_piece, _to);
 	}
-
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) return true;
@@ -52,7 +52,11 @@ public class Move {
 	
 	@Override
 	public String toString() {
-		return _piece + ", " + _to + ", " + _captured;
+		return
+				_piece + ": " +
+				_piece.getPosn() + " -> " +
+				_to +
+				(_captured.isPresent() ? " [captured: " + _captured.get() + "]" : "");
 	}
 	
 }
