@@ -70,7 +70,7 @@ public class GameState implements Copyable<GameState> {
 						System.out.println("player removed");
 						
 						if (_players.size() == 1 && playerWon != null) {
-							playerWon.call(p.getPlayer());
+							playerWon.call(_players.get(0));
 						} else if (playerLost != null) {
 							playerLost.call(p.getPlayer());
 						}

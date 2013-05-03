@@ -44,9 +44,9 @@ public class GamePiece implements Drawable {
 		glu.gluQuadricNormals(quadric, GL.GL_TRUE);
 		gl.glLoadIdentity();
 		Posn pos = _piece.getPosn();
-		double shiftFactor = 1.0/_board.getDimensions()/2;
-		double rowShift = 1.0/_board.getDimensions()*pos.y;
-		double colShift = 1.0/_board.getDimensions()*pos.x;
+		double shiftFactor = _board.getShiftFactor();
+		double rowShift = 1.0/_board.getHeight()*pos.y;
+		double colShift = 1.0/_board.getWidth()*pos.x;
 		gl.glTranslated(.5 - shiftFactor - rowShift, _board.getElevation(pos) + _radius, .5 - shiftFactor - colShift);
 
 		double mult = (_piece instanceof TPiece) ? .5 : 1;

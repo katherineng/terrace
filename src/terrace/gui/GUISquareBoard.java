@@ -2,6 +2,8 @@ package terrace.gui;
 
 import java.util.ArrayList;
 
+import terrace.util.Posn;
+
 public class GUISquareBoard extends GUIBoard {
 	public GUISquareBoard(GamePanel panel) {
 		_panel = panel;
@@ -12,5 +14,31 @@ public class GUISquareBoard extends GUIBoard {
 		setUpColors();
 		
 		setUpBoard();
+	}
+
+	@Override
+	public double getShiftFactor() {
+		return 1.0/_panel._game.getBoard().getWidth()/2;
+	}
+	
+	@Override
+	protected void setUpBoard() {
+		//needed because translation is relative to center of shape, not the corner
+		for (int row = 0; row < _panel._game.getBoard().getWidth(); row++){
+			for (int col = 0; col < _panel._game.getBoard().getHeight(); col++){
+				double height = getElevation(row, col);
+				// set up _boardPiece
+				Posn pos = new Posn(row, col);
+				BoardTile tile = new SquareTile(
+						this,
+						height,
+						pos,
+						_panel._game.getBoard().getElevation(pos)
+				);
+				_boardTiles[row][col] = tile;
+			}
+		}
+		
+		resetPieces();
 	}
 }

@@ -76,19 +76,14 @@ public class AI extends Player {
 	private Move naiveMakeMove() {
 		List<Piece> pieces = getPlayerPieces(this);
 		
-		assert(pieces.size() > 0);
-		LinkedList<Move> possibleMoves = new LinkedList<Move>();
+		assert pieces.size() > 0;
+		List<Move> possibleMoves = new LinkedList<Move>();
 		
-		for (Piece piece: pieces) {
-			for (Move move : _game.getBoard().getMoves(piece)){
-				if (!possibleMoves.contains(move))
-						possibleMoves.addLast(move);
-			}
+		for (Piece piece : pieces) {
+			possibleMoves.addAll(_game.getBoard().getMoves(piece));
 		}
 		
-		Move toMove = possibleMoves.get(getRandom(possibleMoves.size()));
-
-		return toMove;
+		return possibleMoves.get(getRandom(possibleMoves.size()));
 	}	
 	
 	/**
