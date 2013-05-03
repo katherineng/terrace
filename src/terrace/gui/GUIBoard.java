@@ -16,13 +16,13 @@ import terrace.util.Posn;
 
 public abstract class GUIBoard implements Drawable {
 	protected RectPrism _foundation;				/** The foundation of the board **/
-	protected BoardTile[][] _boardPieces;			/** A 2d Array of the Board tiles **/
+	protected BoardTile[][] _boardTiles;			/** A 2d Array of the Board tiles **/
 	protected List<GamePiece> _gamePieces;	/** An array of the game pieces **/
 	protected Map<PlayerColor, Vector3d> _playerColors;	/** Maps players to their colors **/
 	protected GamePanel _panel;							/** a Game instance **/
 	
 	public double getElevation(Posn pos) {
-		BoardTile b = _boardPieces[pos.x][pos.y];
+		BoardTile b = _boardTiles[pos.x][pos.y];
 		return b.getElevation();
 	}
 	
@@ -39,7 +39,7 @@ public abstract class GUIBoard implements Drawable {
 	}
 	
 	public BoardTile posToTile(Posn pos) {
-		return _boardPieces[pos.getX()][pos.getY()];
+		return _boardTiles[pos.getX()][pos.getY()];
 	}
 	
 	public Vector3d getPlayerColors(PlayerColor playerColor) {
@@ -48,9 +48,9 @@ public abstract class GUIBoard implements Drawable {
 	
 	public List<BoardTile> getBoardPieces() {
 		LinkedList<BoardTile> toRet = new LinkedList<BoardTile>();
-		for (int i = 0; i < _boardPieces.length; i++)
-			for (int j = 0; j < _boardPieces[0].length; j++)
-				toRet.addLast(_boardPieces[i][j]);
+		for (int i = 0; i < _boardTiles.length; i++)
+			for (int j = 0; j < _boardTiles[0].length; j++)
+				toRet.addLast(_boardTiles[i][j]);
 		return toRet;
 	}
 	
@@ -100,13 +100,13 @@ public abstract class GUIBoard implements Drawable {
 				double height = getElevation(col, row);
 				// set up _boardPiece
 				Posn pos = new Posn(col, row);
-				BoardTile piece = new BoardTile(
+				BoardTile tile = new BoardTile(
 						this,
 						height,
 						pos,
 						_panel._game.getBoard().getElevation(new Posn(col, row))
 				);
-				_boardPieces[col][row] = piece;
+				_boardTiles[col][row] = tile;
 			}
 		}
 		
@@ -116,11 +116,11 @@ public abstract class GUIBoard implements Drawable {
 	@Override
 	public void draw(GL2 gl) {
 		_foundation.draw(gl);	
-		for (BoardTile[] pieceArray: _boardPieces)
-			for (BoardTile piece: pieceArray)
-				piece.draw(gl);
+		for (BoardTile[] tileArray : _boardTiles)
+			for (BoardTile tile : tileArray)
+				tile.draw(gl);
 		
-		for (GamePiece piece: _gamePieces)
+		for (GamePiece piece : _gamePieces)
 			piece.draw(gl);
 	}
 }
