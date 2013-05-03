@@ -66,6 +66,12 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 				});
 			}
 	    });
+	    game.addWinnerCB(new Callback<Player>() {
+			@Override
+			public void call(Player val) {
+				_winner = Optional.of(val);
+			}
+	    });
 	    
 	    /*==== Camera setup ====*/
 	    Vector3d center = new Vector3d(0., 0., 0.);
