@@ -1,6 +1,8 @@
 package terrace.gui;
 
+import java.awt.Color;
 import java.awt.Frame;
+import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -30,6 +32,7 @@ import terrace.util.Callback;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.jogamp.opengl.util.Animator;
+import com.jogamp.opengl.util.awt.Overlay;
 
 
 public class GamePanel extends GLJPanel implements MouseWheelListener, MouseListener, MouseMotionListener{
@@ -45,6 +48,7 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 	/*==== For Gameplay ====*/
 	private GUIBoard _board;
 	GameState _game;
+	private String _overlayText = "";
 	
 	/*==== For Selection/Hoover ====*/
 	private GamePiece _selection; 		/** The GamePiece that has currently been selected **/
@@ -75,6 +79,8 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 			@Override
 			public void call(GameState state) {
 				_game = state;
+				_overlayText = state.getActivePlayer().getName() + "'s turn";
+				
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override
 					public void run() {
@@ -207,6 +213,15 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 			
 		}
 		
+		
+		private void drawOverlay(GLAutoDrawable drawable) {
+			Overlay overlay = new Overlay(drawable);
+			Graphics2D graphics = overlay.createGraphics();
+			graphics.setColor(Color.green);
+			graphics.drawString(_overlayText, 100, 100);
+			overlay.drawAll();
+			graphics.dispose();
+		}
 		
 		/**
 		 * draws everything normally
