@@ -73,17 +73,8 @@ public class AI extends Player {
 			possibleMoves.addAll(_game.getBoard().getMoves(piece));
 		}
 		
-		return possibleMoves.get(getRandom(possibleMoves.size()));
-	}	
-	
-	/**
-	 * @param size - integer
-	 * @return a number between [0, size)
-	 */
-	private int getRandom(int size){
-		return (int)(Math.random() * ((size-1) + 1));
+		return possibleMoves.get((int)(Math.random() * possibleMoves.size()));
 	}
-	
 	
 	// minimax
 	private SearchNode minimax(int currDepth, int maxDepth, GameState gameState) throws IllegalMoveException{
