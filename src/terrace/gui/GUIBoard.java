@@ -1,6 +1,5 @@
 package terrace.gui;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -9,7 +8,6 @@ import java.util.Map;
 import javax.media.opengl.GL2;
 import javax.vecmath.Vector3d;
 
-import terrace.DefaultBoardGame;
 import terrace.Player;
 import terrace.PlayerColor;
 import terrace.util.Posn;

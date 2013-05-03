@@ -9,10 +9,8 @@ import java.util.Map;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import terrace.DefaultBoardGame;
 import terrace.GameBuilder;
 import terrace.NetworkType;
-import terrace.Variant;
 import terrace.exception.IllegalMoveException;
 
 public class TerraceFrame extends JFrame {
