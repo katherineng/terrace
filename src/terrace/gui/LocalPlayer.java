@@ -2,11 +2,7 @@ package terrace.gui;
 
 import com.google.common.base.Optional;
 
-import terrace.Board;
-import terrace.GameState;
-import terrace.Move;
-import terrace.Player;
-import terrace.PlayerColor;
+import terrace.*;
 
 public class LocalPlayer extends Player {
 	public LocalPlayer(PlayerColor color) {

@@ -67,36 +67,36 @@ public class BoardFactory {
 		
 		for (int i = 0; i < dim; i++) {
 			if (i == 0) {
-				Piece tPiece = new TPiece(new Posn(0,0), p1.getColor(), new Posn(dim - 1, dim - 1));
-				Piece p2Piece = new Piece(numTerraces - 1, new Posn(i, dim - 1), p2.getColor());
-				p1.addPiece(tPiece);
-				p2.addPiece(p2Piece);
+				Piece tPiece = new TPiece(new Posn(0,0), p1, new Posn(dim - 1, dim - 1));
+				Piece p2Piece = new Piece(numTerraces - 1, new Posn(i, dim - 1), p2);
+//				p1.addPiece(tPiece);
+//				p2.addPiece(p2Piece);
 
 				board.setPieceAt(new Posn(i, 0), tPiece);
 				board.setPieceAt(new Posn(i, dim - 1), p2Piece);
 
 			} else if (i == dim - 1) {
-				Piece tPiece = new TPiece(new Posn(dim - 1, dim - 1), p2.getColor(), new Posn(0, 0));
-				Piece p1Piece = new Piece(i / 2, new Posn(i, 0), p1.getColor());
-				p1.addPiece(p1Piece);
-				p2.addPiece(tPiece);
+				Piece tPiece = new TPiece(new Posn(dim - 1, dim - 1), p2, new Posn(0, 0));
+				Piece p1Piece = new Piece(i / 2, new Posn(i, 0), p1);
+//				p1.addPiece(p1Piece);
+//				p2.addPiece(tPiece);
 
 				board.setPieceAt(new Posn(i, i), tPiece);
 				board.setPieceAt(new Posn(i, 0), p1Piece);
 			} else {
-				Piece p1Piece = new Piece(i / 2, new Posn(i, 0), p1.getColor());
-				Piece p2Piece = new Piece(numTerraces - (i / 2) - 1, new Posn(i, dim - 1), p2.getColor());
-				p1.addPiece(p1Piece);
-				p2.addPiece(p2Piece);
+				Piece p1Piece = new Piece(i / 2, new Posn(i, 0), p1);
+				Piece p2Piece = new Piece(numTerraces - (i / 2) - 1, new Posn(i, dim - 1), p2);
+//				p1.addPiece(p1Piece);
+//				p2.addPiece(p2Piece);
 
 				board.setPieceAt(new Posn(i, 0), p1Piece);
 				board.setPieceAt(new Posn(i, dim - 1), p2Piece);
 			}
 
-			Piece p1Piece = new Piece(numTerraces - (i / 2) - 1, new Posn(i, 1), p1.getColor());
-			Piece p2Piece = new Piece(i / 2, new Posn(i, dim  - 2), p2.getColor());
-			p1.addPiece(p1Piece);
-			p2.addPiece(p2Piece);
+			Piece p1Piece = new Piece(numTerraces - (i / 2) - 1, new Posn(i, 1), p1);
+			Piece p2Piece = new Piece(i / 2, new Posn(i, dim  - 2), p2);
+//			p1.addPiece(p1Piece);
+//			p2.addPiece(p2Piece);
 
 			board.setPieceAt(new Posn(i, 1), p1Piece);
 			board.setPieceAt(new Posn(i, dim - 2), p2Piece);
@@ -117,14 +117,14 @@ public class BoardFactory {
 		
 		for (int i = 1; i < dim - 1; i++) {
 			if (i == 1) {
-				Piece t1Piece = new TPiece(new Posn(1, 0), p1.getColor(), new Posn(dim - 1, dim - 1));
-				Piece t2Piece = new TPiece(new Posn(0, 1), p2.getColor(), new Posn(dim - 1, dim - 1));
-				Piece p3Piece = new Piece(numTerraces - (i / 2) - 1, new Posn(i, dim -1), p3.getColor());
-				Piece p4Piece = new Piece(numTerraces - (i / 2) - 1, new Posn(dim -1, i), p4.getColor());
-				p1.addPiece(t1Piece);
-				p2.addPiece(t2Piece);
-				p3.addPiece(p3Piece);
-				p4.addPiece(p4Piece);
+				Piece t1Piece = new TPiece(new Posn(1, 0), p1, new Posn(dim - 1, dim - 1));
+				Piece t2Piece = new TPiece(new Posn(0, 1), p2, new Posn(dim - 1, dim - 1));
+				Piece p3Piece = new Piece(numTerraces - (i / 2) - 1, new Posn(i, dim -1), p3);
+				Piece p4Piece = new Piece(numTerraces - (i / 2) - 1, new Posn(dim -1, i), p4);
+//				p1.addPiece(t1Piece);
+//				p2.addPiece(t2Piece);
+//				p3.addPiece(p3Piece);
+//				p4.addPiece(p4Piece);
 
 				board.setPieceAt(new Posn(i, 0), t1Piece);
 				board.setPieceAt(new Posn(i, dim - 1), p3Piece);
@@ -133,14 +133,14 @@ public class BoardFactory {
 				board.setPieceAt(new Posn(dim - 1, i), p4Piece);
 
 			} else if(i == dim - 2) {
-				Piece p1Piece = new Piece(i / 2, new Posn(i, 0), p1.getColor());
-				Piece p2Piece = new Piece(i / 2, new Posn(0, i), p2.getColor());
-				Piece t3Piece = new TPiece(new Posn(i, dim - 1), p3.getColor(), new Posn(0, 0));
-				Piece t4Piece = new TPiece(new Posn(dim - 1, i), p4.getColor(), new Posn(0, 0));
-				p1.addPiece(p1Piece);
-				p2.addPiece(p2Piece);
-				p3.addPiece(t3Piece);
-				p4.addPiece(t4Piece);
+				Piece p1Piece = new Piece(i / 2, new Posn(i, 0), p1);
+				Piece p2Piece = new Piece(i / 2, new Posn(0, i), p2);
+				Piece t3Piece = new TPiece(new Posn(i, dim - 1), p3, new Posn(0, 0));
+				Piece t4Piece = new TPiece(new Posn(dim - 1, i), p4, new Posn(0, 0));
+//				p1.addPiece(p1Piece);
+//				p2.addPiece(p2Piece);
+//				p3.addPiece(t3Piece);
+//				p4.addPiece(t4Piece);
 
 				board.setPieceAt(new Posn(i, 0), p1Piece);
 				board.setPieceAt(new Posn(i, dim - 1), t3Piece);
@@ -148,14 +148,14 @@ public class BoardFactory {
 				board.setPieceAt(new Posn(0, i), p2Piece);
 				board.setPieceAt(new Posn(dim - 1, i), t4Piece);
 			} else {
-				Piece p1Piece = new Piece(i / 2, new Posn(i, 0), p1.getColor());
-				Piece p2Piece = new Piece(i / 2, new Posn(0, i), p2.getColor());
-				Piece p3Piece = new Piece(numTerraces - (i / 2) - 1, new Posn(i, dim -1), p3.getColor());
-				Piece p4Piece = new Piece(numTerraces - (i / 2) - 1, new Posn(dim -1, i), p4.getColor());
-				p1.addPiece(p1Piece);
-				p2.addPiece(p2Piece);
-				p3.addPiece(p3Piece);
-				p4.addPiece(p4Piece);
+				Piece p1Piece = new Piece(i / 2, new Posn(i, 0), p1);
+				Piece p2Piece = new Piece(i / 2, new Posn(0, i), p2);
+				Piece p3Piece = new Piece(numTerraces - (i / 2) - 1, new Posn(i, dim -1), p3);
+				Piece p4Piece = new Piece(numTerraces - (i / 2) - 1, new Posn(dim -1, i), p4);
+//				p1.addPiece(p1Piece);
+//				p2.addPiece(p2Piece);
+//				p3.addPiece(p3Piece);
+//				p4.addPiece(p4Piece);
 
 				board.setPieceAt(new Posn(i, 0), p1Piece);
 				board.setPieceAt(new Posn(i, dim - 1), p3Piece);

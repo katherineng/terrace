@@ -201,7 +201,6 @@ public class DefaultBoard extends Board {
 	private void getDownhillMoves(Posn start, Piece piece, List<Move> moves) {
 		Posn currPosn = piece.getPosn();
 		int prevElevation = _elevationsMap.get(_dimensions)[currPosn.x][currPosn.y];
-		
 		if (currPosn.x != start.x) {
 			int increment = start.x - currPosn.x;
 			for (int i = start.x + increment; i >= 0 && i < _dimensions; i += increment) {
@@ -210,27 +209,23 @@ public class DefaultBoard extends Board {
 				
 				int currElevation = _elevationsMap.get(_dimensions)[i][start.y];
 				if (prevElevation - currElevation != 1) break;
-				
-				prevElevation = currElevation;		
+				prevElevation = currElevation;
 				moves.add(new Move(piece, new Posn(i, start.y), p));
 			}
 		}
-		
 		else if (currPosn.y != start.y) {
 			int increment = start.y - currPosn.y;
 			for (int i = start.y + increment; i >= 0 && i < _dimensions; i += increment) {
 				Piece p = _board[start.x][i];
 				if (p != null) break;
-				
 				int currElevation = _elevationsMap.get(_dimensions)[start.x][i];
 				if (prevElevation - currElevation != 1) break;
-				
 				prevElevation = currElevation;
 				moves.add(new Move(piece, new Posn(start.x, i), p));
 			}
 		}
 	}
-	
+
 	@Override
 	public List<Move> getMoves(Piece piece) {
 		List<Move> moves = new LinkedList<>();

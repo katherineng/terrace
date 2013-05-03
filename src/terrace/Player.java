@@ -2,20 +2,17 @@ package terrace;
 
 import java.util.*;
 
-import terrace.util.Copyable;
-import terrace.util.Posn;
-
 import com.google.common.base.Optional;
 
 
 public abstract class Player implements Cloneable{
-	private List<Piece> _pieces;
+	//private List<Piece> _pieces;
 	PlayerColor _color;
 	String _name;
 	boolean alive;
 	
 	public Player(PlayerColor color) {
-		_pieces = new LinkedList<Piece>();
+		//_pieces = new LinkedList<Piece>();
 		_color = color;
 		_name = "";
 		alive = true;
@@ -38,9 +35,9 @@ public abstract class Player implements Cloneable{
 	public Player clone() throws CloneNotSupportedException{
 		Player toRet = (Player) super.clone();
 		LinkedList<Piece> newPieces = new LinkedList<Piece>();
-		for (Piece p: _pieces)
-			newPieces.addLast(new Piece(p.getSize(), p.getPosn().clone(), p.getColor()));
-		toRet._pieces = newPieces;
+//		for (Piece p: _pieces)
+//			newPieces.addLast(new Piece(p.getSize(), p.getPosn().clone(), p.getColor()));
+//		toRet._pieces = newPieces;
 		toRet._name = _name;
 		return toRet;
 	}
@@ -81,17 +78,17 @@ public abstract class Player implements Cloneable{
 		return false;
 	}
 	
-	public void removePiece(Piece piece) {
-		_pieces.remove(piece);
-	}
-	
-	public void addPiece(Piece piece) {
-		_pieces.add(piece);
-	}
-	
-	public List<Piece> getPieces() {
-		return _pieces;
-	}
+//	public void removePiece(Piece piece) {
+//		//_pieces.remove(piece);
+//	}
+//	
+//	public void addPiece(Piece piece) {
+//		_pieces.add(piece);
+//	}
+//	
+//	public List<Piece> getPieces() {
+//		return _pieces;
+//	}
 	
 	public PlayerColor getColor() {
 		return _color;

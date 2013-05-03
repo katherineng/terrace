@@ -1,28 +1,14 @@
 package terrace.gui;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
-import java.util.List;
+import java.awt.event.*;
+import java.util.*;
 
-import javax.media.opengl.GL;
-import javax.media.opengl.GL2;
-import javax.media.opengl.GLAutoDrawable;
-import javax.media.opengl.GLCapabilities;
-import javax.media.opengl.GLEventListener;
-import javax.media.opengl.GLProfile;
+import javax.media.opengl.*;
 import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.glu.GLU;
-import javax.swing.SwingUtilities;
-import javax.vecmath.Vector2d;
-import javax.vecmath.Vector3d;
+import javax.vecmath.*;
 
-import terrace.DefaultBoardGame;
-import terrace.Move;
-import terrace.Player;
+import terrace.*;
 import terrace.exception.IllegalMoveException;
-import terrace.util.Posn;
 
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
@@ -202,7 +188,7 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 			assert(newSelection != null);
 			
 			//only act of user is the same
-			if (_game.getPlayer(newSelection.getPiece().getColor()) == _game.getCurrentPlayer()) { 
+			if (newSelection.getPiece().getPlayer() == _game.getCurrentPlayer()) { 
 				
 				clearPossible();
 				
