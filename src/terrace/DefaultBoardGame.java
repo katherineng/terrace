@@ -26,24 +26,31 @@ public class DefaultBoardGame {
 		_winner = Optional.absent();
 
 		_players = new ArrayList<Player>();
+		HashMap<PlayerColor, Player> colorToPlayer = new HashMap<PlayerColor, Player>();
+		for (int i = 0; i < numHuman; i++){
+		PlayerColor color = PlayerColor.values()[i];
+		Player newPlayer = new LocalPlayer(color);
+		_players.add(newPlayer);
+		colorToPlayer.put(color, newPlayer);
 
-			
+		}
+
 		for (int i = numHuman; i < _numPlayers; i++)
-			_players.add(new AI(PlayerColor.values()[i]));
-		
+		_players.add(new AI(PlayerColor.values()[i]));
+
 		_game = new GameState(
-				BoardFactory.create(_players, dimensions, _variant),
-				_players,
-				0
+		BoardFactory.create(_players, dimensions, _variant),
+		_players,
+		0
 		);
-		
+
 		for (Player p : _players) p.updateState(_game);
-		
+
 		_playersAlive = _numPlayers;
 		_currPlayer = 0;
-		
+
 		_players.get(_currPlayer).makeMove();
-	}
+		}
 
 
 	public Board getBoard() {
