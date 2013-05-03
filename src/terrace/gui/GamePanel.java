@@ -1,5 +1,6 @@
 package terrace.gui;
 
+import java.awt.Frame;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -32,6 +33,7 @@ import com.jogamp.opengl.util.Animator;
 
 
 public class GamePanel extends GLJPanel implements MouseWheelListener, MouseListener, MouseMotionListener{
+	private final Frame _frame; // the containing frame
 	
 	/** Determines current drawing mode **/
 	private enum Mode {NORMAL, SELECTION, HOVER};
@@ -54,7 +56,7 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 	
 	private Optional<Player> _winner = Optional.absent();
 	
-	public GamePanel(GameServer game) {
+	public GamePanel(GameServer game, Frame frame) {
 		/*==== General Drawing ====*/
 		super(new GLCapabilities(GLProfile.getDefault()));
 		setSize(600,600);
@@ -64,6 +66,7 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 	    Animator animator = new Animator(this);
 	    animator.start();
 	    _mode = Mode.NORMAL;
+	    _frame = frame;
 	    
 	    /*==== Gameplay ====*/ 
 	    _game = game.getState();
@@ -82,8 +85,14 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 	    });
 	    game.addWinnerCB(new Callback<Player>() {
 			@Override
-			public void call(Player val) {
-				_winner = Optional.of(val);
+			public void call(final Player winner) {
+				_winner = Optional.of(winner);
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						new WinnerDialog(_frame, winner.getName()).setVisible(true);
+					}
+				});
 			}
 	    });
 	    

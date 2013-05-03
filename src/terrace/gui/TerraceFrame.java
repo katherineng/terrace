@@ -52,7 +52,7 @@ public class TerraceFrame extends JFrame {
 		if (cardName.equals(GAME)) {
 			if (_currentGame != null) _cards.remove(_currentGame);
 			
-			_currentGame = new GamePanel(_builder.startGame());
+			_currentGame = new GamePanel(_builder.startGame(), this);
 			_cards.add(_currentGame, GAME);
 		}
 		CardLayout layout = (CardLayout) _cards.getLayout();
