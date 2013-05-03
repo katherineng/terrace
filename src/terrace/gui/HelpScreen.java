@@ -87,11 +87,7 @@ public class HelpScreen extends JPanel {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			try {
-				_frame.changeCard("Setup");
-			} catch (IllegalMoveException e1) {
-				// TODO not sure what to do here, swallow for now
-			}
+			_frame.changeCard("Setup");
 		}
 		
 	}

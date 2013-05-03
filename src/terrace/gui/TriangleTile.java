@@ -22,9 +22,13 @@ public class TriangleTile extends BoardTile{
 	@Override
 	public void draw(GL2 gl) {
 		double sideLength =  1.0/_board.getWidth();
-		double rowShift = 1.0/_board.getWidth()/2*_pos.y;
-		double colShift = 1.0/_board.getWidth()*_pos.x;
-		Vector2d pos = new Vector2d(-.5  + colShift, .5  - rowShift);
+		double colShift = 1.0/_board.getWidth()/2*_pos.y;
+		double rowShift = 1.0/_board.getWidth()*_pos.x;
+		if (!orientedDown()){
+			colShift += sideLength;
+			rowShift += sideLength;
+		}
+		Vector2d pos = new Vector2d(.5  - rowShift, .5  - colShift);
 		if (!orientedDown()) pos.y += sideLength/2;
 		double mult = (_level % 2 == 0) ? .7 : 1; 
 
@@ -32,8 +36,8 @@ public class TriangleTile extends BoardTile{
 
 		double elevation = _height;
 		double rotation = orientedDown() ? 90 : -90;
-		gl.glRotated(rotation, 0., 1., 0.);
 		gl.glTranslated(pos.x, 0, pos.y);
+		gl.glRotated(rotation, 0., 1., 0.);
 		gl.glBegin(GL2.GL_QUADS);
 		gl.glNormal3d(0f, 0f, 1);
 		gl.glVertex3d(0f, 0f, 0f);
@@ -70,24 +74,23 @@ public class TriangleTile extends BoardTile{
 		gl.glVertex3d(0f, sideLength*elevation, -sideLength);
 		gl.glEnd();
 
-		//		// draw outlines for board
-		//		gl.glColor3f(0,0,0);
-		//		double side = -1;
-		//
-		//		// anti-aliasing for the lines
-		//		gl.glPushAttrib(GL2.GL_HINT_BIT | GL2.GL_CURRENT_BIT | GL2.GL_LINE_BIT | GL2.GL_COLOR_BUFFER_BIT);
-		//		gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
-		//		gl.glEnable(GL.GL_BLEND);
-		//		gl.glHint(GL.GL_LINE_SMOOTH_HINT, GL.GL_FASTEST);
-		//		gl.glEnable(GL.GL_LINE_SMOOTH);
-		//
-		//		// draw outlines for the squares
-		//		gl.glBegin(GL2.GL_LINE_STRIP);
-		//		gl.glVertex3d(-0.5*dim, -0.5 *_height* side, -0.5*dim);
-		//		gl.glVertex3d(0.5 *dim* side, -0.5 *_height* side, -0.5*dim * side);
-		//		gl.glVertex3d(0.5*dim, -0.5 *_height* side, 0.5*dim);
-		//		gl.glVertex3d(-0.5*dim * side, -0.5*_height * side, 0.5 *dim* side);
-		//		gl.glEnd();
+		// draw outlines for board
+		gl.glColor3f(0,0,0);
+		double side = -1;
+
+		// anti-aliasing for the lines
+		gl.glPushAttrib(GL2.GL_HINT_BIT | GL2.GL_CURRENT_BIT | GL2.GL_LINE_BIT | GL2.GL_COLOR_BUFFER_BIT);
+		gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
+		gl.glEnable(GL.GL_BLEND);
+		gl.glHint(GL.GL_LINE_SMOOTH_HINT, GL.GL_FASTEST);
+		gl.glEnable(GL.GL_LINE_SMOOTH);
+
+		// draw outlines for the squares
+		gl.glBegin(GL2.GL_LINE_STRIP);
+		gl.glVertex3d(0f, sideLength*elevation, 0f);
+		gl.glVertex3d(sideLength, sideLength*elevation, 0f);
+		gl.glVertex3d(0f, sideLength*elevation, -sideLength);
+		gl.glEnd();
 
 		gl.glPopMatrix();
 	}

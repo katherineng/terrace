@@ -74,22 +74,14 @@ public class StartScreen extends JPanel {
 	class GameTypeListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-				try {
-					_frame.changeCard(e.getActionCommand());
-				} catch (IllegalMoveException e1) {
-					// TODO not sure what to do here, swallow for now
-				}
+			_frame.changeCard(e.getActionCommand());
 		}
 	}
 	
 	class HelpButtonListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			try {
-				_frame.changeCard("help screen");
-			} catch (IllegalMoveException e1) {
-				// TODO not sure what to do here, swallow for now
-			}
+			_frame.changeCard("help screen");
 		}
 		
 	}

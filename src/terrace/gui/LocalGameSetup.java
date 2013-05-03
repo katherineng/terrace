@@ -396,11 +396,7 @@ public class LocalGameSetup extends JPanel {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			try {
-				_frame.changeCard("Setup");
-			} catch (IllegalMoveException e1) {
-				// TODO not sure what to do here, swallow for now
-			}
+			_frame.changeCard("Setup");
 			resetScreen();
 		}
 		
@@ -432,9 +428,9 @@ public class LocalGameSetup extends JPanel {
 			_frame.setPlayerNames(playerNames);
 			if (v == Variant.TRIANGLE) {
 				if (boardSize == 0) {
-					_frame._builder.setSize(3);
-				} else {
 					_frame._builder.setSize(4);
+				} else {
+					_frame._builder.setSize(3);
 				}
 			} else {
 				if (boardSize == 0) {
@@ -444,14 +440,11 @@ public class LocalGameSetup extends JPanel {
 				}
 			}
 			_frame._builder.setVariant(v);
-			try {
-				if (_networkType == NetworkType.HOST) {
-					_frame.changeCard("host networked game");
-				} else {
-					_frame.changeCard("Game");
-				}
-			} catch (IllegalMoveException e1) {
-				// TODO not sure what to do here, swallow for now
+			
+			if (_networkType == NetworkType.HOST) {
+				_frame.changeCard("host networked game");
+			} else {
+				_frame.changeCard("Game");
 			}
 		}
 

@@ -41,13 +41,20 @@ public class GameState implements Copyable<GameState> {
 		_active = (_active + 1) % _players.size();
 	}
 	
+	public void forfeitGame(Player player) {
+		if (_players.indexOf(player) < _active) _active--;
+		_players.remove(player);
+		_board.removePlayer(player);
+	
+	}
+	
 	public void makeMove(
 			Move m,
 			Callback<Player> playerLost,
 			Callback<Player> playerWon
 	) throws IllegalMoveException {
-		System.out.println("making move");
 		try {
+			System.out.println("Making move");
 			if(isValid(m, getActivePlayer())) {
 				_board.makeMove(m);
 				
@@ -78,7 +85,7 @@ public class GameState implements Copyable<GameState> {
 				throw new IllegalMoveException("Bad move");
 			}
 		} finally {
-			System.out.println("ending");
+			System.out.println(getBoard().piecesToString());
 			endTurn();
 		}
 	}

@@ -227,7 +227,7 @@ public class TriangleBoard extends Board {
 	
 	@Override
 	public int getElevation(Posn p) {
-		return _elevationsMap.get(_dimensions)[p.getY()][p.getX()];
+		return _elevationsMap.get(_dimensions)[p.getX()][p.getY()];
 	}
 	
 	public String elevationsToString() {
