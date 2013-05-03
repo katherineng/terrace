@@ -17,6 +17,7 @@ public class TriangleBoard extends Board {
 		_dimensions = dimensions;
 		_board = new Piece[_dimensions][_dimensions*2];
 		_elevationsMap = new HashMap<Integer, int[][]>();
+		setUp();
 	}
 	public void setUp() {
 		if (_elevationsMap.get(_dimensions) == null) {

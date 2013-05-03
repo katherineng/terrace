@@ -1,15 +1,30 @@
 package terrace.gui;
-import java.awt.event.*;
-import java.util.*;
 
-import javax.media.opengl.*;
-import javax.media.opengl.awt.GLCanvas;
+import java.awt.Frame;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
+import java.util.List;
+
+import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
+import javax.media.opengl.GLAutoDrawable;
+import javax.media.opengl.GLCapabilities;
+import javax.media.opengl.GLEventListener;
+import javax.media.opengl.GLProfile;
+import javax.media.opengl.awt.GLJPanel;
 import javax.media.opengl.glu.GLU;
 import javax.swing.SwingUtilities;
-import javax.vecmath.*;
+import javax.vecmath.Vector2d;
+import javax.vecmath.Vector3d;
 
-import terrace.*;
-import terrace.exception.IllegalMoveException;
+import terrace.GameServer;
+import terrace.GameState;
+import terrace.Move;
+import terrace.Piece;
+import terrace.Player;
 import terrace.util.Callback;
 
 import com.google.common.base.Function;
@@ -17,7 +32,8 @@ import com.google.common.base.Optional;
 import com.jogamp.opengl.util.Animator;
 
 
-public class GamePanel extends GLCanvas implements MouseWheelListener, MouseListener, MouseMotionListener{
+public class GamePanel extends GLJPanel implements MouseWheelListener, MouseListener, MouseMotionListener{
+	private final Frame _frame; // the containing frame
 	
 	/** Determines current drawing mode **/
 	private enum Mode {NORMAL, SELECTION, HOVER};
@@ -40,7 +56,7 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 	
 	private Optional<Player> _winner = Optional.absent();
 	
-	public GamePanel(GameServer game) {
+	public GamePanel(GameServer game, Frame frame) {
 		/*==== General Drawing ====*/
 		super(new GLCapabilities(GLProfile.getDefault()));
 		setSize(600,600);
@@ -50,6 +66,7 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 	    Animator animator = new Animator(this);
 	    animator.start();
 	    _mode = Mode.NORMAL;
+	    _frame = frame;
 	    
 	    /*==== Gameplay ====*/ 
 	    _game = game.getState();
@@ -62,6 +79,18 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 					@Override
 					public void run() {
 						repaint();
+					}
+				});
+			}
+	    });
+	    game.addWinnerCB(new Callback<Player>() {
+			@Override
+			public void call(final Player winner) {
+				_winner = Optional.of(winner);
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						new WinnerDialog(_frame, winner.getName()).setVisible(true);
 					}
 				});
 			}

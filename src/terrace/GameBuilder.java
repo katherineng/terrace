@@ -19,6 +19,8 @@ public class GameBuilder {
 	private Variant _variant;
 	private int _size = 8;
 	
+	private List<String> _names;
+	
 	public GameBuilder() {}
 	
 	public void setNumLocalPlayers(int num) {
@@ -58,7 +60,8 @@ public class GameBuilder {
 		
 		for (int i = 0; i < localPlayers; i++) {
 			players.add(new LocalPlayer(PlayerColor.values()[playerNum]));
-			playerNum++;
+			playerNum++;// TODO Auto-generated method stub
+			
 		}
 		for (int i = 0; i < getNumAIPlayers(); i++) {
 			players.add(new AI(PlayerColor.values()[playerNum]));
@@ -68,6 +71,7 @@ public class GameBuilder {
 		GameState game = new GameState(BoardFactory.create(players, _size, _variant), players, 0);
 		final GameServer s = new GameServer(game);
 		
+		int i = 0;
 		for (final Player p : players) {
 			if (p instanceof AI) {
 				s.addUpdateStateCB(new Callback<GameState>() {
@@ -77,6 +81,7 @@ public class GameBuilder {
 					}
 				});
 			}
+			p.setName(_names.get(i++));
 		}
 		
 		es.submit(new Runnable() {
@@ -91,5 +96,9 @@ public class GameBuilder {
 	
 	private enum GameType {
 		Local, Host, Client
+	}
+	
+	public void setPlayerNames(List<String> names) {
+		_names = names;
 	}
 }

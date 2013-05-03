@@ -46,4 +46,8 @@ public abstract class Player {
 	public String toString(){
 		return _color.toString();
 	}
+
+	public void setName(String name) {
+		_name = name;
+	}
 }

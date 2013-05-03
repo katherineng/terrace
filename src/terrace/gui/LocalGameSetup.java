@@ -409,32 +409,47 @@ public class LocalGameSetup extends JPanel {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			_frame.builder.setNumLocalPlayers(numPlayers);
+			_frame._builder.setNumLocalPlayers(numPlayers);
 			List<String> playerNames = new ArrayList<>();
-			switch (numPlayers) {
-			case 4: playerNames.add(player4.getText());
-			case 3: playerNames.add(player3.getText());
-			case 2: playerNames.add(player2.getText());
-			case 1: playerNames.add(player1.getText());
+			if(_networkType == NetworkType.LOCAL) {
+				if (numPlayers > 2) {
+					 playerNames.add(player4.getText());
+					 playerNames.add(player3.getText());
+					 playerNames.add(player2.getText());
+					 playerNames.add(player1.getText());
+				} else {
+					playerNames.add(player2.getText());
+					playerNames.add(player1.getText());
+				}
+			} else {
+				switch (numPlayers) {
+				case 3: playerNames.add(player3.getText());
+				case 2: playerNames.add(player2.getText());
+				case 1: playerNames.add(player1.getText());
+				}
 			}
 			Collections.reverse(playerNames);
 			_frame.setPlayerNames(playerNames);
-			if (v.equals(Variant.TRIANGLE)) {
+			if (v == Variant.TRIANGLE) {
 				if (boardSize == 0) {
-					_frame.setBoardSize(3);
+					_frame._builder.setSize(3);
 				} else {
-					_frame.setBoardSize(4);
+					_frame._builder.setSize(4);
 				}
 			} else {
 				if (boardSize == 0) {
-					_frame.setBoardSize(6);
+					_frame._builder.setSize(6);
 				} else {
-					_frame.setBoardSize(8);
+					_frame._builder.setSize(8);
 				}
 			}
-			_frame.builder.setVariant(v);
+			_frame._builder.setVariant(v);
 			try {
-				_frame.changeCard("Game");
+				if (_networkType == NetworkType.HOST) {
+					_frame.changeCard("host networked game");
+				} else {
+					_frame.changeCard("Game");
+				}
 			} catch (IllegalMoveException e1) {
 				// TODO not sure what to do here, swallow for now
 			}

@@ -1,6 +1,5 @@
 package terrace.gui;
 
-
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Font;
@@ -70,11 +69,9 @@ public class StartScreen extends JPanel {
 		pane.add(terrace, terraceConst);
 		pane.add(startGameCard, startGameConst);
 		pane.add(helpButton, helpConst);
-		
 	}
-
+	
 	class GameTypeListener implements ActionListener {
-		
 		@Override
 		public void actionPerformed(ActionEvent e) {
 				try {
@@ -83,10 +80,9 @@ public class StartScreen extends JPanel {
 					// TODO not sure what to do here, swallow for now
 				}
 		}
-		
 	}
+	
 	class HelpButtonListener implements ActionListener {
-
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			try {
@@ -97,18 +93,4 @@ public class StartScreen extends JPanel {
 		}
 		
 	}
-	/* private static void createAndShowGUI() {
-	        //Create and set up the window.
-	        JFrame frame = new JFrame("CardLayoutDemo");
-	        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	        frame.setPreferredSize(new Dimension(800, 800));
-	        
-	        //Create and set up the content pane.
-	        StartScreen demo = new StartScreen(frame);
-	        demo.addComponents(frame.getContentPane());
-	        
-	        //Display the window.
-	        frame.pack();
-	        frame.setVisible(true);
-	    }*/
 }
