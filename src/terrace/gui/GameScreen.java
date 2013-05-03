@@ -14,12 +14,10 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import javax.vecmath.Vector3d;
 
 import terrace.GameBuilder;
 import terrace.NetworkType;
 import terrace.Player;
-import terrace.PlayerColor;
 
 @SuppressWarnings("serial")
 public class GameScreen extends JPanel {
@@ -101,26 +99,6 @@ public class GameScreen extends JPanel {
 	
 	public void setCurrPlayer(Player player) {
 		_turn.setText(player.getName() + "'s turn");
-		Color rgb;
-		
-		switch (player.getColor()) {
-		case BLUE:
-			rgb = new Color(51, 255, 204);
-			break;
-		case PINK:
-			rgb = new Color(255, 51, 102);
-			break;
-		case YELLOW:
-			rgb = new Color(245, 184, 0);
-			break;
-		case GREEN:
-			rgb = new Color(38, 153, 0);
-			break;
-		default:
-			rgb = new Color(0, 0, 0);
-			break;
-		}
-		
-		_turn.setForeground(rgb);
+		_turn.setForeground(player.getColor().toColor());
 	}
 }
