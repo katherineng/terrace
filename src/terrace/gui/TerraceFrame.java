@@ -54,12 +54,21 @@ public class TerraceFrame extends JFrame {
 	}
 	
 	public void changeCard(String cardName) {
-		if (cardName.equals(GAME)) {
+		if (cardName.equals(START_SCREEN)) {
+			if (_currentGameScreen != null) {
+				_cards.remove(_currentGameScreen);
+				_currentGameScreen = null;
+				_currentGame = null;
+			}
+			
+		} else if (cardName.equals(GAME)) {
 			if (_currentGameScreen != null) _cards.remove(_currentGameScreen);
 			
 			_builder.setPlayerNames(_playerNames);
-			_currentGame = new GamePanel(_builder.startGame(), this);
-			_currentGameScreen = new GameScreen(_currentGame, this);
+			
+			_currentGameScreen = new GameScreen(_builder, this);
+			_currentGame = _currentGameScreen.getGame();
+			
 			_cards.add(_currentGameScreen, GAME);
 			
 		} else if (cardName == HOST_GAME) {
@@ -73,5 +82,9 @@ public class TerraceFrame extends JFrame {
 	void setPlayerNames(List<String> names) {
 		_playerNames = names;
 		
+	}
+	
+	GameBuilder getBuilder() {
+		return _builder;
 	}
 }

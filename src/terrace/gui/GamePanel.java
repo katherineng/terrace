@@ -37,6 +37,7 @@ import com.jogamp.opengl.util.awt.Overlay;
 
 public class GamePanel extends GLJPanel implements MouseWheelListener, MouseListener, MouseMotionListener{
 	private final Frame _frame; // the containing frame
+	private final GameScreen _screen;
 	
 	/** Determines current drawing mode **/
 	private enum Mode {NORMAL, SELECTION, HOVER};
@@ -59,7 +60,7 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 	
 	private Optional<Player> _winner = Optional.absent();
 	
-	public GamePanel(GameServer game, Frame frame) {
+	public GamePanel(GameServer game, Frame frame, GameScreen screen) {
 		/*==== General Drawing ====*/
 		super(new GLCapabilities(GLProfile.getDefault()));
 		setSize(600,600);
@@ -70,15 +71,19 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 	    animator.start();
 	    _mode = Mode.NORMAL;
 	    _frame = frame;
+	    _screen = screen;
 	    
 	    /*==== Gameplay ====*/ 
 	    _game = game.getState();
 	    _board = GUIBoardFactory.create(GamePanel.this);
+	    _board.resetPieces();
+	    _screen.setCurrPlayer(_game.getActivePlayer());
 	    game.addUpdateStateCB(new Callback<GameState>() {
 			@Override
 			public void call(GameState state) {
 				_game = state;
-				_board.resetPieces();
+				_screen.setCurrPlayer(_game.getActivePlayer());
+				
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override
 					public void run() {
@@ -121,6 +126,7 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 	    setVisible(true);
 	}
 	
+	// TODO: remove player from game
 	public void causeForfeit() {
 		
 	}

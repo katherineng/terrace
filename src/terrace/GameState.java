@@ -41,6 +41,7 @@ public class GameState implements Copyable<GameState> {
 		_active = (_active + 1) % _players.size();
 	}
 	
+	//TODO
 	public void forfeitGame(Player player) {
 		if (_players.indexOf(player) < _active) _active--;
 		_players.remove(player);

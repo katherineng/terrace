@@ -3,6 +3,7 @@ package terrace.gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -13,19 +14,27 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.vecmath.Vector3d;
 
+import terrace.GameBuilder;
 import terrace.NetworkType;
+import terrace.Player;
+import terrace.PlayerColor;
 
 @SuppressWarnings("serial")
 public class GameScreen extends JPanel {
 	private static final Color backgroundColor = Color.GRAY;
 	private final TerraceFrame _frame;
 	private NetworkType _networkType;
+	private GamePanel _game;
+	private GameBuilder _builder;
+	private JLabel _turn;
 	
 	
-	public GameScreen(GamePanel game, TerraceFrame frame) {
+	public GameScreen(GameBuilder builder, TerraceFrame frame) {
 		_frame = frame;
-		//_networkType = networkType;
+		_builder = builder;
+		_networkType = NetworkType.LOCAL;
 		setBackground(backgroundColor);
 		
 		setLayout(new BorderLayout());
@@ -34,13 +43,30 @@ public class GameScreen extends JPanel {
 		topBar.setLayout(new BoxLayout(topBar, BoxLayout.X_AXIS));
 		topBar.setBorder(new EmptyBorder(5, 20, 5, 5));
 		
-		JLabel turn = new JLabel("Player 1's turn");
+		_turn = new JLabel("");
+		_turn.setFont(new Font("Dialog", Font.BOLD, 16));
+		
 		JButton mainMenu = new JButton("Main Menu");
 		mainMenu.addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent e) {
+				String message;
+				
+				switch (_networkType) {
+				case JOIN:
+					message = "Are you sure you want to forfeit this match?";
+					break;
+				case HOST:
+					message = "Are you sure you want to shut down this game server?";
+					break;
+				default:
+					message = "Are you sure you want to quit this game?";
+					break;
+				}
+				
+				
 				int n = JOptionPane.showConfirmDialog(_frame,
-				"Are you sure you want to forfeit this match?",
+				message,
 				"Return to Main Menu",
 				JOptionPane.YES_NO_OPTION);
 				
@@ -48,22 +74,53 @@ public class GameScreen extends JPanel {
 					_frame.changeCard("Setup");
 					
 					if (_networkType == NetworkType.JOIN) {
-						
+						// TODO: remove self from game, notify other players
 					} else if (_networkType == NetworkType.HOST) {
-						
+						// TODO: end game, notify other players
 					}
 				}
 			}
 		});
 		JButton pause = new JButton("Pause");
 		
-		topBar.add(turn);
+		topBar.add(_turn);
 		topBar.add(Box.createHorizontalGlue());
 		topBar.add(pause);
 		topBar.add(Box.createRigidArea(new Dimension(5, 1)));
 		topBar.add(mainMenu);
 		
 		add(topBar, BorderLayout.PAGE_START);
-		add(game, BorderLayout.CENTER);
+		
+		_game = new GamePanel(_builder.startGame(), _frame, this);
+		add(_game, BorderLayout.CENTER);
+	}
+	
+	GamePanel getGame() {
+		return _game;
+	}
+	
+	public void setCurrPlayer(Player player) {
+		_turn.setText(player.getName() + "'s turn");
+		Color rgb;
+		
+		switch (player.getColor()) {
+		case BLUE:
+			rgb = new Color(51, 255, 204);
+			break;
+		case PINK:
+			rgb = new Color(255, 51, 102);
+			break;
+		case YELLOW:
+			rgb = new Color(245, 184, 0);
+			break;
+		case GREEN:
+			rgb = new Color(38, 153, 0);
+			break;
+		default:
+			rgb = new Color(0, 0, 0);
+			break;
+		}
+		
+		_turn.setForeground(rgb);
 	}
 }
