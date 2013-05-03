@@ -7,6 +7,7 @@ import java.util.concurrent.Executors;
 
 import terrace.ai.AI;
 import terrace.gui.LocalPlayer;
+import terrace.util.Callback;
 
 public class GameBuilder {
 	private ExecutorService es = Executors.newCachedThreadPool();
@@ -64,8 +65,19 @@ public class GameBuilder {
 			playerNum++;
 		}
 		
-		Board b = BoardFactory.create(players, _size, _variant);
-		final GameServer s = new GameServer(new GameState(b, players, 0));
+		GameState game = new GameState(BoardFactory.create(players, _size, _variant), players, 0);
+		final GameServer s = new GameServer(game);
+		
+		for (final Player p : players) {
+			if (p instanceof AI) {
+				s.addUpdateStateCB(new Callback<GameState>() {
+					@Override
+					public void call(GameState state) {
+						((AI)p).updateGameState(state);
+					}
+				});
+			}
+		}
 		
 		es.submit(new Runnable() {
 			@Override
