@@ -48,7 +48,6 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 	/*==== For Gameplay ====*/
 	private GUIBoard _board;
 	GameState _game;
-	private String _overlayText = "";
 	
 	/*==== For Selection/Hoover ====*/
 	private GamePiece _selection; 		/** The GamePiece that has currently been selected **/
@@ -79,12 +78,10 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 			@Override
 			public void call(GameState state) {
 				_game = state;
-				_overlayText = state.getActivePlayer().getName() + "'s turn";
 				
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override
 					public void run() {
-						System.out.println("asdf");
 						repaint();
 					}
 				});
@@ -124,6 +121,9 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 	    setVisible(true);
 	}
 	
+	public void causeForfeit() {
+		
+	}
 
 	public class GraphicListener implements GLEventListener{
 
@@ -212,16 +212,6 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 		
 		private void displayWinner(Player winner){
 			
-		}
-		
-		
-		private void drawOverlay(GLAutoDrawable drawable) {
-			Overlay overlay = new Overlay(drawable);
-			Graphics2D graphics = overlay.createGraphics();
-			graphics.setColor(Color.green);
-			graphics.drawString(_overlayText, 100, 100);
-			overlay.drawAll();
-			graphics.dispose();
 		}
 		
 		/**

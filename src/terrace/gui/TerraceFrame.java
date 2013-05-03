@@ -55,12 +55,13 @@ public class TerraceFrame extends JFrame {
 	
 	public void changeCard(String cardName) {
 		if (cardName.equals(GAME)) {
-			if (_currentGame != null) _cards.remove(_currentGame);
+			if (_currentGameScreen != null) _cards.remove(_currentGameScreen);
 			
 			_builder.setPlayerNames(_playerNames);
 			_currentGame = new GamePanel(_builder.startGame(), this);
 			_currentGameScreen = new GameScreen(_currentGame, this);
 			_cards.add(_currentGameScreen, GAME);
+			
 		} else if (cardName == HOST_GAME) {
 			_networkScreen.setPlayerNames(_playerNames);
 		}

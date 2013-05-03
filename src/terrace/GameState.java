@@ -41,6 +41,13 @@ public class GameState implements Copyable<GameState> {
 		_active = (_active + 1) % _players.size();
 	}
 	
+	public void forfeitGame(Player player) {
+		if (_players.indexOf(player) < _active) _active--;
+		_players.remove(player);
+		_board.removePlayer(player);
+	
+	}
+	
 	public void makeMove(
 			Move m,
 			Callback<Player> playerLost,
@@ -66,8 +73,6 @@ public class GameState implements Copyable<GameState> {
 						if (_players.indexOf(p.getPlayer()) < _active) _active--;
 						_players.remove(p.getPlayer());
 						_board.removePlayer(p.getPlayer());
-						
-						System.out.println("player removed");
 						
 						if (_players.size() == 1 && playerWon != null) {
 							playerWon.call(_players.get(0));

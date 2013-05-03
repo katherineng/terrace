@@ -20,7 +20,7 @@ import terrace.NetworkType;
 public class GameScreen extends JPanel {
 	private static final Color backgroundColor = Color.GRAY;
 	private final TerraceFrame _frame;
-	//private NetworkType _networkType;
+	private NetworkType _networkType;
 	
 	
 	public GameScreen(GamePanel game, TerraceFrame frame) {
@@ -46,6 +46,12 @@ public class GameScreen extends JPanel {
 				
 				if (n == JOptionPane.YES_OPTION) {
 					_frame.changeCard("Setup");
+					
+					if (_networkType == NetworkType.JOIN) {
+						
+					} else if (_networkType == NetworkType.HOST) {
+						
+					}
 				}
 			}
 		});
