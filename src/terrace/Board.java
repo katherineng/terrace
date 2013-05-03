@@ -89,7 +89,7 @@ public abstract class Board{
 		for (int y = 0; y < getHeight(); y++) {
 			for (int x = 0; x < getWidth(); x++) {
 				Piece p = _board[x][y];
-				if (p != null && p.getPlayer().equals(player)) {
+				if (p != null && p.getPlayer() == player) {
 					toRet.add(p);
 				}
 			}
