@@ -12,7 +12,7 @@ public class WinnerDialog extends JDialog {
 	public WinnerDialog(Frame owner, String name) {
 		super(owner);
 		
-		setPreferredSize(new Dimension(200, 200));
+		setSize(new Dimension(200, 200));
 		add(new JLabel(name + " has won!"));
 	}
 }
