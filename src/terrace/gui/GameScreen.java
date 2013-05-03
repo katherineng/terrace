@@ -19,15 +19,16 @@ import terrace.GameBuilder;
 import terrace.NetworkType;
 import terrace.Player;
 
-@SuppressWarnings("serial")
 public class GameScreen extends JPanel {
+	private static final long serialVersionUID = -3415367755182469262L;
 	private static final Color backgroundColor = Color.GRAY;
+	
 	private final TerraceFrame _frame;
 	private NetworkType _networkType;
-	private GamePanel _game;
+	private GamePanel _panel;
 	private GameBuilder _builder;
-	private JLabel _turn;
-	
+	private JLabel _status;
+	private boolean _gameOver = false;
 	
 	public GameScreen(GameBuilder builder, TerraceFrame frame) {
 		_frame = frame;
@@ -41,47 +42,49 @@ public class GameScreen extends JPanel {
 		topBar.setLayout(new BoxLayout(topBar, BoxLayout.X_AXIS));
 		topBar.setBorder(new EmptyBorder(5, 20, 5, 5));
 		
-		_turn = new JLabel("");
-		_turn.setFont(new Font("Dialog", Font.BOLD, 16));
+		_status = new JLabel();
+		_status.setFont(new Font("Dialog", Font.BOLD, 16));
 		
 		JButton mainMenu = new JButton("Main Menu");
 		mainMenu.addActionListener(new ActionListener() {
-			
+			@Override
 			public void actionPerformed(ActionEvent e) {
-				String message;
-				
-				switch (_networkType) {
-				case JOIN:
-					message = "Are you sure you want to forfeit this match?";
-					break;
-				case HOST:
-					message = "Are you sure you want to shut down this game server?";
-					break;
-				default:
-					message = "Are you sure you want to quit this game?";
-					break;
-				}
-				
-				
-				int n = JOptionPane.showConfirmDialog(_frame,
-				message,
-				"Return to Main Menu",
-				JOptionPane.YES_NO_OPTION);
-				
-				if (n == JOptionPane.YES_OPTION) {
-					_frame.changeCard("Setup");
+				if (!_gameOver) {
+					String message;
 					
-					if (_networkType == NetworkType.JOIN) {
-						// TODO: remove self from game, notify other players
-					} else if (_networkType == NetworkType.HOST) {
-						// TODO: end game, notify other players
+					switch (_networkType) {
+					case JOIN:
+						message = "Are you sure you want to forfeit this match?";
+						break;
+					case HOST:
+						message = "Are you sure you want to shut down this game server?";
+						break;
+					default:
+						message = "Are you sure you want to quit this game?";
+						break;
 					}
+					
+					if (JOptionPane.showConfirmDialog(
+							_frame,
+							message,
+							"Return to Main Menu",
+							JOptionPane.YES_NO_OPTION
+					) != JOptionPane.YES_OPTION) {
+						return;
+					}
+				}
+				_frame.changeCard(TerraceFrame.START_SCREEN);
+				
+				if (_networkType == NetworkType.JOIN) {
+					// TODO: remove self from game, notify other players
+				} else if (_networkType == NetworkType.HOST) {
+					// TODO: end game, notify other players
 				}
 			}
 		});
 		JButton pause = new JButton("Pause");
 		
-		topBar.add(_turn);
+		topBar.add(_status);
 		topBar.add(Box.createHorizontalGlue());
 		topBar.add(pause);
 		topBar.add(Box.createRigidArea(new Dimension(5, 1)));
@@ -89,21 +92,22 @@ public class GameScreen extends JPanel {
 		
 		add(topBar, BorderLayout.PAGE_START);
 		
-		_game = new GamePanel(_builder.startGame(), _frame, this);
-		add(_game, BorderLayout.CENTER);
+		_panel = new GamePanel(_builder.startGame(), _frame, this);
+		add(_panel, BorderLayout.CENTER);
 	}
 	
 	GamePanel getGame() {
-		return _game;
+		return _panel;
 	}
 	
 	public void setCurrPlayer(Player player) {
-		_turn.setText(player.getName() + "'s turn");
-		_turn.setForeground(player.getColor().toColor());
+		_status.setText(player.getName() + "'s turn");
+		_status.setForeground(player.getColor().toColor());
 	}
 	
 	public void setWinner(Player player) {
-		_turn.setText(player.getName() + " won.");
-		_turn.setForeground(player.getColor().toColor());
+		_gameOver = true;
+		_status.setText(player.getName() + " won.");
+		_status.setForeground(player.getColor().toColor());
 	}
 }
