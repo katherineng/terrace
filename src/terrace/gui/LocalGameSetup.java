@@ -54,7 +54,6 @@ public class LocalGameSetup extends JPanel {
 	public LocalGameSetup(TerraceFrame frame, NetworkType networkType) {
 		_frame = frame;
 		_networkType = networkType;
-		System.out.println(networkType);
 		setBackground(backgroundColor);
 		addComponents();
 	}
@@ -75,6 +74,7 @@ public class LocalGameSetup extends JPanel {
 
 		JRadioButton small = new JRadioButton("small");
 		small.setActionCommand("0");
+		small.addActionListener(new BoardTypeListener());
 		small.setFont(defaultFont);
 		small.setAlignmentX(CENTER_ALIGNMENT);
 		small.setForeground(defaultColor);
@@ -82,6 +82,7 @@ public class LocalGameSetup extends JPanel {
 
 		JRadioButton large = new JRadioButton("large");
 		large.setActionCommand("1");
+		large.addActionListener(new BoardTypeListener());
 		large.setFont(defaultFont);
 		large.setAlignmentX(CENTER_ALIGNMENT);
 		large.setForeground(defaultColor);
@@ -112,6 +113,7 @@ public class LocalGameSetup extends JPanel {
 
 		JRadioButton triangle = new JRadioButton("triangle");
 		triangle.setActionCommand("TRIANGLE");
+		triangle.addActionListener(new VariantTypeListener());
 		triangle.setFont(defaultFont);
 		triangle.setAlignmentX(Component.CENTER_ALIGNMENT);
 		triangle.setForeground(defaultColor);
@@ -119,6 +121,7 @@ public class LocalGameSetup extends JPanel {
 		
 		standard = new JRadioButton("square - standard rules");
 		standard.setActionCommand("STANDARD");
+		standard.addActionListener(new VariantTypeListener());
 		standard.setFont(defaultFont);
 		standard.setBackground(backgroundColor);
 		standard.setForeground(defaultColor);
@@ -127,6 +130,7 @@ public class LocalGameSetup extends JPanel {
 
 		JRadioButton downhill = new JRadioButton("square - downhill rules");
 		downhill.setActionCommand("DOWNHILL");
+		downhill.addActionListener(new VariantTypeListener());
 		downhill.setFont(defaultFont);
 		downhill.setBackground(backgroundColor);
 		downhill.setForeground(defaultColor);
@@ -134,6 +138,7 @@ public class LocalGameSetup extends JPanel {
 
 		JRadioButton aggressive = new JRadioButton("square - aggresive rules");
 		aggressive.setActionCommand("AGGRESSIVE");
+		aggressive.addActionListener(new VariantTypeListener());
 		aggressive.setFont(defaultFont);
 		aggressive.setBackground(backgroundColor);
 		aggressive.setForeground(defaultColor);
@@ -439,7 +444,7 @@ public class LocalGameSetup extends JPanel {
 
 	}
 	
-	class variantTypeListener implements ActionListener {
+	class VariantTypeListener implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -448,7 +453,7 @@ public class LocalGameSetup extends JPanel {
 		
 	}
 	
-	class boardTypeListener implements ActionListener {
+	class BoardTypeListener implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -512,7 +517,6 @@ public class LocalGameSetup extends JPanel {
 				}
 				break;
 			default:
-				System.out.println("sd;kfjdas");
 				switch (numPlayers) {
 				case 1: player2.setEnabled(false);
 						player2.setVisible(false);
