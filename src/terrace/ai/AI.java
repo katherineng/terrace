@@ -32,10 +32,6 @@ public class AI extends Player {
 			_heuristic = heuristic;
 		}
 		
-		private double getHeuristic() {
-			return _heuristic;
-		}
-		
 		private double getValue() {
 			return _value;
 		}
@@ -43,12 +39,10 @@ public class AI extends Player {
 		private Move getMove() {
 			return _move;
 		}
-
+		
 		@Override
 		public int compareTo(SearchNode o) {
-			if (_heuristic > o.getHeuristic()) return 1;
-			if (_heuristic == o.getHeuristic()) return 0;
-			return -1;
+			return Double.compare(_heuristic, o._heuristic);
 		}
 	}
 	
