@@ -65,7 +65,7 @@ public class Piece implements Comparable<Piece>, Copyable<Piece> {
 	
 	@Override
 	public Piece copy() {
-		return new Piece(_size, _posn.clone(), _player);
+		return new Piece(_size,new Posn(_posn.x, _posn.y), _player);
 	}
 
 	public Player getPlayer() {
