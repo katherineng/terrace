@@ -14,14 +14,10 @@ import terrace.util.Posn;
 public class GamePiece implements Drawable {
 	boolean _selected;	/** Whether or not this object has been selected by the user **/
 	private double _radius;
-	private GLU glu;
 	GUIBoard _board;
 	Piece _piece;
-	GLUquadric _quadric;
 	
 	public GamePiece(GUIBoard board, Piece piece){
-		glu = new GLU();
-		_quadric = glu.gluNewQuadric();
 		_board = board;
 	    _selected = false;
 	    _radius = (piece.getSize() + 1) * .01;
@@ -40,9 +36,12 @@ public class GamePiece implements Drawable {
 	}
 
 	@Override
-	public void draw(GL2 gl){
+	public void draw(GL2 gl) {
+		GLU glu = new GLU();
+		GLUquadric quadric = glu.gluNewQuadric();
+		
 	    gl.glPushMatrix();			
-		glu.gluQuadricNormals(_quadric, GL.GL_TRUE);
+		glu.gluQuadricNormals(quadric, GL.GL_TRUE);
 		gl.glLoadIdentity();
 		Posn pos = _piece.getPosn();
 		double shiftFactor = 1.0/_board.getDimensions()/2;
@@ -58,7 +57,7 @@ public class GamePiece implements Drawable {
 			gl.glColor3d(mult*vec.x, mult*vec.y, vec.z);
 		
 		
-		glu.gluSphere(_quadric, _radius, 25, 25);
+		glu.gluSphere(quadric, _radius, 25, 25);
 	    gl.glPopMatrix();
 	}
 	
