@@ -14,7 +14,7 @@ public class Move {
 	public Move(Piece piece, Posn to) {
 		_piece = piece;
 		_to = to;
-		_captured = null;
+		_captured = Optional.absent();
 	}
 	
 	public Move(Piece piece, Posn to, Piece captured) {
@@ -58,5 +58,4 @@ public class Move {
 				_to +
 				(_captured.isPresent() ? " [captured: " + _captured.get() + "]" : "");
 	}
-	
 }
