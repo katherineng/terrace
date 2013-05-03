@@ -84,6 +84,7 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override
 					public void run() {
+						System.out.println("asdf");
 						repaint();
 					}
 				});

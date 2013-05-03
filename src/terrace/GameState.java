@@ -63,9 +63,11 @@ public class GameState implements Copyable<GameState> {
 					Piece p = captured.get();
 					
 					if (p instanceof TPiece) {
-						if (_players.indexOf(p.getPlayer()) >= _active) _active--;
+						if (_players.indexOf(p.getPlayer()) < _active) _active--;
 						_players.remove(p.getPlayer());
 						_board.removePlayer(p.getPlayer());
+						
+						System.out.println("player removed");
 						
 						if (_players.size() == 1 && playerWon != null) {
 							playerWon.call(p.getPlayer());

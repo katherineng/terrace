@@ -30,6 +30,7 @@ public class TerraceFrame extends JFrame {
 	private List<String> _playerNames;
 	private GamePanel _currentGame;
 	private HostNetworkScreen _networkScreen;
+	private GameScreen _currentGameScreen;
 	
 	public TerraceFrame() {
 		setPreferredSize(new Dimension(1200, 1200));
@@ -52,13 +53,14 @@ public class TerraceFrame extends JFrame {
 		add(_cards);
 	}
 	
-	public void changeCard(String cardName) throws IllegalMoveException {
+	public void changeCard(String cardName) {
 		if (cardName.equals(GAME)) {
 			if (_currentGame != null) _cards.remove(_currentGame);
 			
 			_builder.setPlayerNames(_playerNames);
 			_currentGame = new GamePanel(_builder.startGame(), this);
-			_cards.add(_currentGame, GAME);
+			_currentGameScreen = new GameScreen(_currentGame, this);
+			_cards.add(_currentGameScreen, GAME);
 		} else if (cardName == HOST_GAME) {
 			_networkScreen.setPlayerNames(_playerNames);
 		}
