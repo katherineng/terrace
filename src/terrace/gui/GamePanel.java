@@ -406,9 +406,13 @@ public class GamePanel extends GLCanvas implements MouseWheelListener, MouseList
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		if (!_winner.isPresent()){
+			
 			_selection_mouse = new Vector2d(e.getX(), e.getY());
 			_mode = Mode.SELECTION;
 			repaint();
+		} else {
+
+			System.out.println(_winner.get());
 		}
 	}
 	
