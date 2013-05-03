@@ -7,9 +7,7 @@ public class GUIBoardFactory {
 		if (panel._game.getBoard() instanceof DefaultBoard) {
 			return new GUISquareBoard(panel);
 		} else {
-			// TODO
-			assert false;
-			return null;
+			return new GUITriangleBoard(panel);
 		}
 	}
 }
