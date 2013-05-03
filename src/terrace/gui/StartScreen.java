@@ -18,13 +18,12 @@ import terrace.exception.IllegalMoveException;
 
 public class StartScreen extends JPanel {
 	private TerraceFrame _frame;
-	Font headerFont;
-	Font defaultFont;
+	private static final Font headerFont = new Font("Verdana", Font.BOLD, 36);
+	private static final Font defaultFont = new Font("Verdana", Font.BOLD, 20);
 	
 	public StartScreen(TerraceFrame frame) {
 		_frame = frame;
-		headerFont = new Font("Verdana", Font.BOLD, 36);
-		defaultFont = new Font("Verdana", Font.BOLD, 20);
+		
 		addComponents(this);
 	}
 	private void addComponents(Container pane) {
@@ -60,13 +59,17 @@ public class StartScreen extends JPanel {
 		startGameCard.setBackground(Color.GRAY);
 		GridBagConstraints startGameConst = new GridBagConstraints();
 		startGameConst.gridx = 0;
-		startGameConst.gridy = 2;
+		startGameConst.gridy = 1;
 		
-		
+		JButton helpButton = new JButton("Help");
+		GridBagConstraints helpConst = new GridBagConstraints();
+		helpConst.gridx = 0;
+		helpConst.gridy = 2;
+		helpButton.addActionListener(new HelpButtonListener());
 		
 		pane.add(terrace, terraceConst);
 		pane.add(startGameCard, startGameConst);
-		//pane.add(numPlayersPanel, numPlayersConst);
+		pane.add(helpButton, helpConst);
 		
 	}
 
@@ -79,6 +82,18 @@ public class StartScreen extends JPanel {
 				} catch (IllegalMoveException e1) {
 					// TODO not sure what to do here, swallow for now
 				}
+		}
+		
+	}
+	class HelpButtonListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			try {
+				_frame.changeCard("help screen");
+			} catch (IllegalMoveException e1) {
+				// TODO not sure what to do here, swallow for now
+			}
 		}
 		
 	}
