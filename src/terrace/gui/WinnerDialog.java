@@ -1,5 +1,6 @@
 package terrace.gui;
 
+import java.awt.Dimension;
 import java.awt.Frame;
 
 import javax.swing.JDialog;
@@ -11,6 +12,7 @@ public class WinnerDialog extends JDialog {
 	public WinnerDialog(Frame owner, String name) {
 		super(owner);
 		
+		setPreferredSize(new Dimension(200, 200));
 		add(new JLabel(name + " has won!"));
 	}
 }
