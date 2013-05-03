@@ -75,6 +75,8 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 			@Override
 			public void call(GameState state) {
 				_game = state;
+
+				_board.resetPieces();
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override
 					public void run() {
@@ -277,7 +279,6 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 				
 				Piece captured = _game.getBoard().getPieceAt(newSelection.getPosn());
 				Move m = new Move(_selection.getPiece(), newSelection.getPosn(), captured);
-				
 				if (_game.isValid(m, p)) {
 					p.sendMove(m);
 					clearPossible();

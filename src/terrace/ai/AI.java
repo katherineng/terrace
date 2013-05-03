@@ -55,10 +55,10 @@ public class AI extends Player {
 	@Override
 	public Optional<Move> getMove(int timeout) {
 		SearchNode node;
+	
 	//	try {
 		//	node = minimax(0, 0, _game.copy());
-			System.out.println("HI");
-			System.out.println(_game.getBoard().piecesToString());
+			System.out.println("hi");
 //			return  Optional.of(node.getMove());
 			return Optional.of(naiveMakeMove());
 //		} catch (IllegalMoveException e) {
@@ -124,7 +124,6 @@ public class AI extends Player {
 			}
 		}
 		assert(bestNode.peek() != null);
-		System.out.println("returns");
 		return bestNode.poll();
 
 	}

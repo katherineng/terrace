@@ -432,9 +432,9 @@ public class LocalGameSetup extends JPanel {
 			_frame.setPlayerNames(playerNames);
 			if (v == Variant.TRIANGLE) {
 				if (boardSize == 0) {
-					_frame._builder.setSize(3);
-				} else {
 					_frame._builder.setSize(4);
+				} else {
+					_frame._builder.setSize(3);
 				}
 			} else {
 				if (boardSize == 0) {
