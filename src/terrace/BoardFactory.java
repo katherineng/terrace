@@ -167,6 +167,29 @@ public class BoardFactory {
 	}
 	
 	private static void setUpTriangle2P(Player p1, Player p2, Board board) {
+		for (int i = 0; i < board.getWidth(); i++) {
+			Piece p1PieceEdge, p2PieceEdge;
+			
+			if (i == 0) {
+				p1PieceEdge = new TPiece(new Posn(i, 0), p1, new Posn(board.getWidth() - 1, board.getHeight() - 1));
+				p2PieceEdge = new Piece(board.getWidth() - i - 1, new Posn(i, board.getHeight() - 1), p2);
+			} else if (i == board.getWidth() - 1) {
+				p1PieceEdge = new Piece(i, new Posn(i, 0), p1);
+				p2PieceEdge = new TPiece(new Posn(i, board.getHeight() - 1), p2, new Posn(0, 0));
+			} else {
+				p1PieceEdge = new Piece(i, new Posn(i, 0), p1);
+				p2PieceEdge = new Piece(board.getWidth() - i - 1, new Posn(i, board.getHeight() - 1), p2);
+			}
+			
+			Piece p1Piece = new Piece(i, new Posn(i, 1), p1);
+			Piece p2Piece = new Piece(board.getWidth() - i - 1, new Posn(i, board.getHeight() - 2), p2);
+			
+			board.setPieceAt(new Posn(i, 0), p1PieceEdge);
+			board.setPieceAt(new Posn(i, 1), p1Piece);
+			board.setPieceAt(new Posn(i, board.getHeight() - 2), p2PieceEdge);
+			board.setPieceAt(new Posn(i, board.getHeight() - 1), p2Piece);
+			
+		}
 		
 	}
 	
