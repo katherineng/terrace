@@ -18,6 +18,7 @@ import javax.media.opengl.GLEventListener;
 import javax.media.opengl.GLProfile;
 import javax.media.opengl.awt.GLJPanel;
 import javax.media.opengl.glu.GLU;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.vecmath.Vector2d;
 import javax.vecmath.Vector3d;
@@ -25,6 +26,7 @@ import javax.vecmath.Vector3d;
 import terrace.GameServer;
 import terrace.GameState;
 import terrace.Move;
+import terrace.NetworkType;
 import terrace.Piece;
 import terrace.Player;
 import terrace.util.Callback;
@@ -99,7 +101,19 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override
 					public void run() {
-						new WinnerDialog(_frame, winner.getName()).setVisible(true);
+						Object[] options = {"Return to main menu"};
+						int n = JOptionPane.showOptionDialog(_frame,
+							winner.getName() + " has won!",
+							"Game Over",
+							JOptionPane.YES_OPTION,
+							JOptionPane.INFORMATION_MESSAGE,
+							null,
+							options,
+							options[0]);
+						
+						if (n == JOptionPane.YES_OPTION) {
+							((TerraceFrame) _frame).changeCard("Setup");
+						}
 					}
 				});
 			}
