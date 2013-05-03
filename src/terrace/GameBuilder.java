@@ -16,7 +16,7 @@ public class GameBuilder {
 	private int networkPlayers;
 	private GameType type;
 	private Variant _variant;
-	private int _size;
+	private int _size = 8;
 	
 	public GameBuilder() {}
 	
