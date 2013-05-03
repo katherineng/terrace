@@ -32,10 +32,6 @@ public class AI extends Player {
 			_heuristic = heuristic;
 		}
 		
-		private double getHeuristic() {
-			return _heuristic;
-		}
-		
 		private double getValue() {
 			return _value;
 		}
@@ -43,30 +39,24 @@ public class AI extends Player {
 		private Move getMove() {
 			return _move;
 		}
-
+		
 		@Override
 		public int compareTo(SearchNode o) {
-			if (_heuristic > o.getHeuristic()) return 1;
-			if (_heuristic == o.getHeuristic()) return 0;
-			return -1;
+			return Double.compare(_heuristic, o._heuristic);
 		}
 	}
 	
 	@Override
 	public Optional<Move> getMove(int timeout) {
 		SearchNode node;
-	
-	//	try {
-		//	node = minimax(0, 0, _game.copy());
-			System.out.println("hi");
-//			return  Optional.of(node.getMove());
-			return Optional.of(naiveMakeMove());
-//		} catch (IllegalMoveException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		assert false;
-//		return null;
+		
+		try {
+			node = minimax(0, 0, _game.copy());
+			return  Optional.of(node.getMove());
+		} catch (IllegalMoveException e) {
+			System.err.println("ERROR: AI made invalid move. This shouldn't happen.");
+			return Optional.absent();
+		}
 	}
 	
 	/**
@@ -83,17 +73,8 @@ public class AI extends Player {
 			possibleMoves.addAll(_game.getBoard().getMoves(piece));
 		}
 		
-		return possibleMoves.get(getRandom(possibleMoves.size()));
-	}	
-	
-	/**
-	 * @param size - integer
-	 * @return a number between [0, size)
-	 */
-	private int getRandom(int size){
-		return (int)(Math.random() * ((size-1) + 1));
+		return possibleMoves.get((int)(Math.random() * possibleMoves.size()));
 	}
-	
 	
 	// minimax
 	private SearchNode minimax(int currDepth, int maxDepth, GameState gameState) throws IllegalMoveException{
@@ -106,13 +87,16 @@ public class AI extends Player {
 		
 		for (Move m: possibleMoves) {
 			GameState g = getGameState(m, gameState);
-			SearchNode currNode = (currDepth == maxDepth || g.getWinner().isPresent()) ? 
-					new SearchNode(m, estimateValue(g, getPlayer(g)), 0) : 
-					new SearchNode(m, minimax(currDepth + 1, maxDepth, g).getValue(), 0);
-			if (currNode.getValue() == bestValue) 
+			SearchNode currNode = currDepth == maxDepth || g.getWinner().isPresent()
+					? new SearchNode(m, estimateValue(g, AI.this), 0)
+					: new SearchNode(m, minimax(currDepth + 1, maxDepth, g).getValue(), 0);
+			
+			if (currNode.getValue() == bestValue) {
 				bestNode.add(currNode);
-			else if (maximizing && currNode.getValue() > bestValue || // trying to maximize
-				!maximizing && currNode.getValue() < bestValue){ // trying to minimize
+			} else if (
+					maximizing && currNode.getValue() > bestValue || // trying to maximize
+					!maximizing && currNode.getValue() < bestValue  // trying to minimize
+			) {
 				bestNode.clear();
 				bestValue = currNode.getValue();
 				bestNode.add(currNode);
@@ -135,19 +119,6 @@ public class AI extends Player {
 		GameState copy = gameState.copy();
 		copy.makeMove(m, null, null);
 		return copy;
-	}
-	
-	/**
-	 * Gets the player that corresponds to this AI given a Game
-	 * @param gameState - a Game
-	 * @return - the Player associated with this AI
-	 */
-	private Player getPlayer(GameState gameState) {
-		for (Player p : gameState.getPlayers()) {
-			if (p.getColor().equals(this.getColor()))
-				return p;
-		}
-		return null;
 	}
 	
 	/**

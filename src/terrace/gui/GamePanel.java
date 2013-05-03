@@ -101,19 +101,7 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override
 					public void run() {
-						Object[] options = {"Return to main menu"};
-						int n = JOptionPane.showOptionDialog(_frame,
-							winner.getName() + " has won!",
-							"Game Over",
-							JOptionPane.YES_OPTION,
-							JOptionPane.INFORMATION_MESSAGE,
-							null,
-							options,
-							options[0]);
-						
-						if (n == JOptionPane.YES_OPTION) {
-							((TerraceFrame) _frame).changeCard("Setup");
-						}
+						_screen.setWinner(winner);
 					}
 				});
 			}
