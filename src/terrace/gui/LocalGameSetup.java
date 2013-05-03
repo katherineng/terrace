@@ -411,7 +411,7 @@ public class LocalGameSetup extends JPanel {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			_frame.builder.setNumLocalPlayers(numPlayers);
+			_frame._builder.setNumLocalPlayers(numPlayers);
 			List<String> playerNames = new ArrayList<>();
 			switch (numPlayers) {
 			case 4: playerNames.add(player4.getText());
@@ -423,18 +423,18 @@ public class LocalGameSetup extends JPanel {
 			_frame.setPlayerNames(playerNames);
 			if (v.equals(Variant.TRIANGLE)) {
 				if (boardSize == 0) {
-					_frame.setBoardSize(3);
+					_frame._builder.setSize(3);
 				} else {
-					_frame.setBoardSize(4);
+					_frame._builder.setSize(4);
 				}
 			} else {
 				if (boardSize == 0) {
-					_frame.setBoardSize(6);
+					_frame._builder.setSize(6);
 				} else {
-					_frame.setBoardSize(8);
+					_frame._builder.setSize(8);
 				}
 			}
-			_frame.builder.setVariant(v);
+			_frame._builder.setVariant(v);
 			try {
 				_frame.changeCard("Game");
 			} catch (IllegalMoveException e1) {

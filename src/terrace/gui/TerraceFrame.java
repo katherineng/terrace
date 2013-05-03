@@ -14,6 +14,8 @@ import terrace.NetworkType;
 import terrace.exception.IllegalMoveException;
 
 public class TerraceFrame extends JFrame {
+	private static final long serialVersionUID = 641801362474775997L;
+	
 	private static final String START_SCREEN = "Setup";
 	private static final String GAME = "Game";
 	private static final String LOCAL_SETUP = "local game setup";
@@ -21,53 +23,47 @@ public class TerraceFrame extends JFrame {
 	private static final String JOIN_SETUP  = "join game setup";
 	private static final String HOST_GAME = "host networked game";
 	private static final String JOIN_NETWORK = "join networked game";
-	
-	final GameBuilder builder = new GameBuilder();
 	private static final String HELP_SCREEN = "help screen";
-	private int numHuman;
-	private JPanel cards;
-	private Map<Integer, String> playerNames;
-	private int boardSize; // 0 if small 1 if large
-	private GamePanel currentGame;
+	
+	final GameBuilder _builder = new GameBuilder();
+	private JPanel _cards;
+	private Map<Integer, String> _playerNames = new HashMap<>();
+	private GamePanel _currentGame;
 	
 	public TerraceFrame() {
-		playerNames = new HashMap<>();
-		
 		setPreferredSize(new Dimension(1200, 1200));
 		setMinimumSize(new Dimension(600, 600));
-		cards = new JPanel(new CardLayout());
+		_cards = new JPanel(new CardLayout());
 		
 		setExtendedState(getExtendedState() | MAXIMIZED_BOTH);
 		getContentPane().setLayout(new CardLayout());
 		setLayout(new CardLayout());
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		cards.add(new StartScreen(this), START_SCREEN);
-		cards.add(new LocalGameSetup(this, NetworkType.LOCAL), LOCAL_SETUP);
-		cards.add(new LocalGameSetup(this, NetworkType.HOST), NETWORK_SETUP);
-		cards.add(new LocalGameSetup(this, NetworkType.JOIN), JOIN_SETUP);
-		cards.add(new HelpScreen(this), HELP_SCREEN);
-	
-		add(cards);
+		_cards.add(new StartScreen(this), START_SCREEN);
+		_cards.add(new LocalGameSetup(this, NetworkType.LOCAL), LOCAL_SETUP);
+		_cards.add(new LocalGameSetup(this, NetworkType.HOST), NETWORK_SETUP);
+		_cards.add(new LocalGameSetup(this, NetworkType.JOIN), JOIN_SETUP);
+		_cards.add(new HelpScreen(this), HELP_SCREEN);
+		
+		add(_cards);
 	}
 	
 	public void changeCard(String cardName) throws IllegalMoveException {
 		if (cardName.equals(GAME)) {
-			if (currentGame != null) cards.remove(currentGame);
+			if (_currentGame != null) _cards.remove(_currentGame);
 			
-			currentGame = new GamePanel(builder.startGame());
-			cards.add(currentGame, GAME);
+			_currentGame = new GamePanel(_builder.startGame());
+			_cards.add(_currentGame, GAME);
 		}
-		CardLayout layout = (CardLayout) cards.getLayout();
-		layout.show(cards, cardName);
+		CardLayout layout = (CardLayout) _cards.getLayout();
+		layout.show(_cards, cardName);
 	}
+	
 	void setPlayerNames(List<String> names) {
 		int i = 0;
 		for(String n : names) {
-			playerNames.put(i, n);
+			_playerNames.put(i, n);
 			i++;
 		}
-	}
-	void setBoardSize(int n) {
-		boardSize = n;
 	}
 }
