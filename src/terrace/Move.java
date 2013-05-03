@@ -14,7 +14,7 @@ public class Move {
 	public Move(Piece piece, Posn to) {
 		_piece = piece;
 		_to = to;
-		_captured = null;
+		_captured = Optional.absent();
 	}
 	
 	public Move(Piece piece, Posn to, Piece captured) {
@@ -39,7 +39,7 @@ public class Move {
 	public int hashCode() {
 		return Objects.hash(_piece, _to);
 	}
-
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) return true;
@@ -52,7 +52,10 @@ public class Move {
 	
 	@Override
 	public String toString() {
-		return _piece + ", " + _to + ", " + _captured;
+		return
+				_piece + ": " +
+				_piece.getPosn() + " -> " +
+				_to +
+				(_captured.isPresent() ? " [captured: " + _captured.get() + "]" : "");
 	}
-	
 }

@@ -87,7 +87,11 @@ public class GameBuilder {
 		es.submit(new Runnable() {
 			@Override
 			public void run() {
-				s.run();
+				try {
+					s.run();
+				} catch (Throwable t) {
+					System.err.println(t.getLocalizedMessage());
+				}
 			}
 		});
 		

@@ -9,6 +9,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -22,7 +24,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
-
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.PlainDocument;
 
 import terrace.*;
 import terrace.exception.IllegalMoveException;
@@ -50,6 +54,7 @@ public class LocalGameSetup extends JPanel {
 	private JTextField player4;
 	private JRadioButton standard;
 	private JRadioButton onePlayer;
+	private final static int MAX_NAME_LENGTH = 15;
 	private int boardSize = 1;// 0 if small 1 if large
 	private final String regexp = "[^,]+";
 	private JLabel error;
@@ -206,6 +211,7 @@ public class LocalGameSetup extends JPanel {
 		
 		//text fields for player names
 		player1 = new JTextField(10);
+		player1.setDocument(new LengthLimit(MAX_NAME_LENGTH));
 		GridBagConstraints player1Const = new GridBagConstraints();
 		player1Const.gridx = 1;
 		player1Const.gridy = 1;
@@ -216,6 +222,7 @@ public class LocalGameSetup extends JPanel {
 		player1.setText("Player 1");
 
 		player2 = new JTextField(10);
+		player2.setDocument(new LengthLimit(MAX_NAME_LENGTH));
 		GridBagConstraints player2Const = new GridBagConstraints();
 		player2Const.gridx = 1;
 		player2Const.gridy = 2;
@@ -228,6 +235,7 @@ public class LocalGameSetup extends JPanel {
 		player2.setVisible(false);
 		
 		player3 = new JTextField(10);
+		player3.setDocument(new LengthLimit(MAX_NAME_LENGTH));
 		GridBagConstraints player3Const = new GridBagConstraints();
 		player3Const.gridx = 1;
 		player3Const.gridy = 3;
@@ -341,6 +349,7 @@ public class LocalGameSetup extends JPanel {
 			player2.setText("CPU");
 			
 			player4 = new JTextField(10);
+			player4.setDocument(new LengthLimit(MAX_NAME_LENGTH));
 			GridBagConstraints player4Const = new GridBagConstraints();
 			player4Const.gridx = 1;
 			player4Const.gridy = 4;
@@ -416,6 +425,59 @@ public class LocalGameSetup extends JPanel {
 		}
 		
 	}
+	class LengthListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			JTextField source = (JTextField) e.getSource();
+			String word = source.getText();
+			if (word.length() > MAX_NAME_LENGTH) {
+				source.setText(word.substring(0, MAX_NAME_LENGTH));
+			}
+		}
+		
+	}
+	//[^,]+
+	class NameLengthListener implements KeyListener {
+
+		@Override
+		public void keyTyped(KeyEvent e) {
+			JTextField source = (JTextField) e.getSource();
+			String word = (String)source.getText();
+			char key = e.getKeyChar();
+			if(key == 127) {
+				source.setText(word.substring(0, 0));
+			}
+			if(word.length() < MAX_NAME_LENGTH -1) {
+				source.setText(word + e.getKeyChar());
+			}
+		}
+
+		@Override
+		public void keyPressed(KeyEvent e) {
+		}
+
+		@Override
+		public void keyReleased(KeyEvent e) {
+		}
+		
+	}
+	class LengthLimit extends PlainDocument {
+		  private int limit;
+		  LengthLimit(int limit) {
+		    super();
+		    this.limit = limit;
+		  }
+		  public void insertString(int offset, String str, AttributeSet attr) throws BadLocationException {
+		    if (str == null)
+		      return;
+
+		    if ((getLength() + str.length()) <= limit) {
+		      super.insertString(offset, str, attr);
+		    }
+		  }
+		}
+
 	
 	public int checkRegexp() {
 		if (!player1.getText().matches(regexp)) {
@@ -515,7 +577,7 @@ public class LocalGameSetup extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			numPlayers = Integer.parseInt(e.getActionCommand());
 			switch (_networkType) {
-			case LOCAL: 
+			case LOCAL: //TODO resets names when numPlayers changes
 				switch (numPlayers) {
 				case 1: p2.setText("CPU");
 						player2.setText("CPU");
