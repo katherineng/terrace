@@ -1,5 +1,6 @@
 package terrace;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import terrace.exception.IllegalMoveException;
@@ -8,12 +9,27 @@ import terrace.util.Callback;
 import com.google.common.base.Optional;
 
 public class GameServer {
-	private final List<Player> _players;
+	private final List<Callback<GameState>> _updateStateCBs = new LinkedList<>();
+	private final List<Callback<Player>> _notifyWinnerCBs = new LinkedList<>();
+	private final List<Callback<Player>> _notifyLoserCBs = new LinkedList<>();
 	private GameState _game;
 	
-	public GameServer(List<Player> players, Board board) {
-		_players = players;
-		_game = new GameState(board, players, 0);
+	public GameServer(
+			GameState state
+	) {
+		_game = state;
+	}
+	public GameState getState() {
+		return _game;
+	}
+	public void addUpdateStateCB(Callback<GameState> cb) {
+		_updateStateCBs.add(cb);
+	}
+	public void addWinnerCB(Callback<Player> cb) {
+		_notifyWinnerCBs.add(cb);
+	}
+	public void addLoserCB(Callback<Player> cb) {
+		_notifyLoserCBs.add(cb);
 	}
 	public void run() {
 		while (true) {
@@ -26,14 +42,16 @@ public class GameServer {
 							new Callback<Player>() {
 								@Override
 								public void call(Player loser) {
-									// TODO: Notify losers.
+									for (Callback<Player> cb : _notifyLoserCBs) {
+										cb.call(loser);
+									}
 								}
 							},
 							new Callback<Player>() {
 								@Override
 								public void call(Player winner) {
-									for (Player player : _players) {
-										player.notifyWinner(winner);
+									for (Callback<Player> cb : _notifyWinnerCBs) {
+										cb.call(winner);
 									}
 								}
 							}
@@ -41,11 +59,12 @@ public class GameServer {
 				} catch (IllegalMoveException e) {
 					// Skip turn.
 				}
+			} else {
+				_game.endTurn();
 			}
-			_game.endTurn();
 			
-			for (Player player : _players) {
-				player.updateState(_game);
+			for (Callback<GameState> cb : _updateStateCBs) {
+				cb.call(_game);
 			}
 			
 			if (_game.getWinner().isPresent()) return;

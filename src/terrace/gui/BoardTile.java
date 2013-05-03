@@ -17,12 +17,12 @@ public class BoardTile implements Drawable {
 	private double _height;
 	private int _level;
 	private Posn _pos;
-	GUISquareBoard _board;
+	GUIBoard _board;
 	private boolean _selected;	/** Whether this tile is being hovered over **/
 	private boolean _correct;	/** Whether this is a valid move when the user clicks on it **/
 	Vector3d _moveColor;		/** The color of the tile if the move is possible. Corresponds to the current user **/
 
-	public BoardTile(GUISquareBoard board, double height, Posn pos, int level){
+	public BoardTile(GUIBoard board, double height, Posn pos, int level){
 		_height = height;
 		_level = level;
 		_pos = pos;

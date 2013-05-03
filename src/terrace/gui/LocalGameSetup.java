@@ -21,6 +21,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
+import terrace.GameBuilder;
 import terrace.NetworkType;
 import terrace.Variant;
 import terrace.exception.IllegalMoveException;
@@ -405,7 +406,7 @@ public class LocalGameSetup extends JPanel {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			_frame.setNumPlayers(numPlayers);
+			_frame.builder.setNumLocalPlayers(numPlayers);
 			List<String> playerNames = new ArrayList<>();
 			switch (numPlayers) {
 			case 4: playerNames.add(player4.getText());
@@ -428,7 +429,7 @@ public class LocalGameSetup extends JPanel {
 					_frame.setBoardSize(8);
 				}
 			}
-			_frame.setVariant(v);
+			_frame.builder.setVariant(v);
 			try {
 				_frame.changeCard("Game");
 			} catch (IllegalMoveException e1) {

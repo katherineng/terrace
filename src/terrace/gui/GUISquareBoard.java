@@ -1,135 +1,16 @@
 package terrace.gui;
 
-import java.util.*;
+import java.util.ArrayList;
 
-import javax.media.opengl.*;
-import javax.vecmath.*;
-
-import terrace.DefaultBoardGame;
-import terrace.Player;
-import terrace.PlayerColor;
-import terrace.util.Posn;
-
-public class GUISquareBoard implements Drawable {
-	private RectPrism _foundation;				/** The foundation of the board **/
-	private BoardTile[][] _boardPieces;			/** A 2d Array of the Board tiles **/
-	private List<GamePiece> _gamePieces;	/** An array of the game pieces **/
-	Map<PlayerColor, Vector3d> _playerColors;	/** Maps players to their colors **/
-	private DefaultBoardGame _game;							/** a Game instance **/
-	GL2 gl;
-	
-	public GUISquareBoard(GL2 gl, DefaultBoardGame game) {
-		_game = game;
+public class GUISquareBoard extends GUIBoard {
+	public GUISquareBoard(GamePanel panel) {
+		_panel = panel;
 		_foundation = new RectPrism(0.0, -0.01, 0.0, 1.0, 0.01, 1.0);
-		int dimension = _game.getBoard().getWidth();
+		int dimension = _panel._game.getBoard().getWidth();
 		_boardPieces = new BoardTile[dimension][dimension];
 		_gamePieces = new ArrayList<GamePiece>();
 		setUpColors();
-		this.gl = gl;
 		
 		setUpBoard();
-	}
-	
-	public double getElevation(Posn pos) {
-		BoardTile b = _boardPieces[pos.x][pos.y];
-		return b.getElevation();
-	}
-	
-	public double getElevation(int col, int row) {
-		return  _game.getBoard().getElevation(new Posn(col, row))/60.;		
-	}
-	
-	public int getDimensions() {
-		return _game.getBoard().getWidth();
-	}
-	
-	public List<GamePiece> getGamePieces() {
-		return _gamePieces;
-	}
-	
-	public BoardTile posToTile(Posn pos) {
-		return _boardPieces[pos.getX()][pos.getY()];
-	}
-	
-	public Vector3d getPlayerColors(PlayerColor playerColor) {
-		return _playerColors.get(playerColor);
-	}
-	
-	public List<BoardTile> getBoardPieces() {
-		LinkedList<BoardTile> toRet = new LinkedList<BoardTile>();
-		for (int i = 0; i < _boardPieces.length; i++)
-			for (int j = 0; j < _boardPieces[0].length; j++)
-				toRet.addLast(_boardPieces[i][j]);
-		return toRet;
-	}
-	
-	public void resetPieces() {	
-		int dimension = _game.getBoard().getWidth();
-		_gamePieces.clear();
-		//needed because translation is relative to center of shape, not the corner
-		for (int row = 0; row < dimension; row++)
-			for (int col = 0; col < dimension; col++)
-				// set up _gamePiece
-				if (_game.getBoard().getPieceAt(new Posn(col,  row)) != null) 
-					_gamePieces.add(new GamePiece(gl, this, _game.getBoard().getPieceAt(new Posn(col,  row))));
-	}
-	
-	/**
-	 * Sets up colors for players
-	 */
-	private void setUpColors() {
-		_playerColors = new HashMap<PlayerColor, Vector3d>();
-		
-		List<Player> players =  _game.getPlayers();
-		for (int i = 0; i < players.size(); i++){
-			switch(i){
-			case 0:
-				_playerColors.put(players.get(i).getColor(), new Vector3d(51/255., 255/255., 204/255.));
-				break;
-			case 1:
-				_playerColors.put(players.get(i).getColor(), new Vector3d(255/255., 51/255., 102/255.));
-				break;
-			case 2:
-				_playerColors.put(players.get(i).getColor(), new Vector3d(245/255.,184/255.,0/255.));
-				break;
-			case 3:
-				_playerColors.put(players.get(i).getColor(), new Vector3d(38/255.,153/255., 0/255.));
-				break;
-			default: //shouldn't get here
-				assert(false);
-			}
-		}
-	}
-	
-	private void setUpBoard() {
-		int dimension = _game.getBoard().getWidth();
-		//needed because translation is relative to center of shape, not the corner
-		for (int row = 0; row < dimension; row++){
-			for (int col = 0; col < dimension; col++){
-				double height = getElevation(col, row);
-				// set up _boardPiece
-				Posn pos = new Posn(col, row);
-				BoardTile piece = new BoardTile(
-						this,
-						height,
-						pos,
-						_game.getBoard().getElevation(new Posn(col, row))
-				);
-				_boardPieces[col][row] = piece;
-			}
-		}
-		
-		resetPieces();
-	}
-	
-	@Override
-	public void draw(GL2 gl) {
-		_foundation.draw(gl);	
-		for (BoardTile[] pieceArray: _boardPieces)
-			for (BoardTile piece: pieceArray)
-				piece.draw(gl);
-		
-		for (GamePiece piece: _gamePieces)
-			piece.draw(gl);
 	}
 }

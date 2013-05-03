@@ -15,11 +15,11 @@ public class GamePiece implements Drawable {
 	boolean _selected;	/** Whether or not this object has been selected by the user **/
 	private double _radius;
 	private GLU glu;
-	GUISquareBoard _board;
+	GUIBoard _board;
 	Piece _piece;
 	GLUquadric _quadric;
 	
-	public GamePiece(GL2 gl, GUISquareBoard board, Piece piece){
+	public GamePiece(GUIBoard board, Piece piece){
 		glu = new GLU();
 		_quadric = glu.gluNewQuadric();
 		_board = board;

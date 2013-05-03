@@ -81,7 +81,7 @@ public class GameState implements Copyable<GameState> {
 		}
 	}
 	
-	private boolean isValid(Move m, Player activePlayer) {
+	public boolean isValid(Move m, Player activePlayer) {
 		// TODO Auto-generated method stub
 		return true;
 	}
