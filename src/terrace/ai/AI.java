@@ -36,10 +36,6 @@ public class AI extends Player {
 			return _heuristic;
 		}
 		
-		private Move getMove() {
-			return _move;
-		}
-		
 		private double getValue() {
 			return _value;
 		}
@@ -57,27 +53,13 @@ public class AI extends Player {
 		return Optional.absent();
 	}
 	
-	@Override
-	public boolean makeMove() {
-//		SearchNode node;
-//		try {
-//			node = minimax(0, 0, _game.clone());
-//			System.out.println(node.getMove());
-//			_game.makeMove(node.getMove(), null, null);
-//		} catch (CloneNotSupportedException | IllegalMoveException e1) {
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//		}
-		naiveMakeMove();
-		return true;
-	}
-	
 	/**
 	 * The AI naively makes a move. For testing purposes only
 	 * @return
 	 */
-	private boolean naiveMakeMove(){
-		List<Piece> pieces = getPieces();
+	private boolean naiveMakeMove() {
+		List<Piece> pieces = getPlayerPieces(this);
+		
 		assert(pieces.size() > 0);
 		LinkedList<Move> possibleMoves = new LinkedList<Move>();
 		
@@ -144,7 +126,7 @@ public class AI extends Player {
 	 * @throws IllegalMoveException
 	 */
 	private GameState getGameState(Move m, GameState gameState) throws IllegalMoveException, CloneNotSupportedException {
-		GameState copy = gameState.clone();
+		GameState copy = gameState.copy();
 		copy.makeMove(m, null, null);
 		return copy;
 	}
@@ -169,8 +151,8 @@ public class AI extends Player {
 	 * @return - the list of moves the <player> could make
 	 */
 	private List<Move> getPossibleMoves(GameState gameState, Player player) {
-		List<Piece> pieces = player.getPieces();
-
+		List<Piece> pieces = getPlayerPieces(player);
+		
 		System.out.println(gameState.getBoard().piecesToString());
 		LinkedList<Move> possibleMoves = new LinkedList<Move>();
 		
@@ -211,15 +193,18 @@ public class AI extends Player {
 	 */
 	private double estimatePlayerValue(Player player) {
 		double toRet = 0;
-		for (Piece p : player.getPieces()) {
+		for (Piece p : getPlayerPieces(player)) {
 			double pieceValue = (p.getSize() + 1);
 			toRet += pieceValue;
 		}
 		return toRet;
 	}
-
-	@Override
-	public void updateState(GameState game) {
+	
+	public void updateGameState(GameState game) {
 		_game = game;
+	}
+	
+	public List<Piece> getPlayerPieces(Player p) {
+		return _game.getBoard().getPlayerPieces(p);
 	}
 }
