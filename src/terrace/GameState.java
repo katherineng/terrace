@@ -54,8 +54,8 @@ public class GameState implements Copyable<GameState> {
 			Callback<Player> playerLost,
 			Callback<Player> playerWon
 	) throws IllegalMoveException {
-		System.out.println("making move");
 		try {
+			System.out.println("Making move");
 			if(isValid(m, getActivePlayer())) {
 				_board.makeMove(m);
 				
@@ -86,7 +86,7 @@ public class GameState implements Copyable<GameState> {
 				throw new IllegalMoveException("Bad move");
 			}
 		} finally {
-			System.out.println("ending");
+			System.out.println(getBoard().piecesToString());
 			endTurn();
 		}
 	}

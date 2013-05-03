@@ -76,6 +76,7 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 	    /*==== Gameplay ====*/ 
 	    _game = game.getState();
 	    _board = GUIBoardFactory.create(GamePanel.this);
+	    _board.resetPieces();
 	    _screen.setCurrPlayer(_game.getActivePlayer());
 	    game.addUpdateStateCB(new Callback<GameState>() {
 			@Override
@@ -288,7 +289,6 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 				
 				Piece captured = _game.getBoard().getPieceAt(newSelection.getPosn());
 				Move m = new Move(_selection.getPiece(), newSelection.getPosn(), captured);
-				
 				if (_game.isValid(m, p)) {
 					p.sendMove(m);
 					clearPossible();
