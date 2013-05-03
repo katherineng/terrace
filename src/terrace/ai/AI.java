@@ -39,6 +39,10 @@ public class AI extends Player {
 		private double getValue() {
 			return _value;
 		}
+		
+		private Move getMove() {
+			return _move;
+		}
 
 		@Override
 		public int compareTo(SearchNode o) {
@@ -50,14 +54,26 @@ public class AI extends Player {
 	
 	@Override
 	public Optional<Move> getMove(int timeout) {
-		return Optional.absent();
+		SearchNode node;
+	//	try {
+		//	node = minimax(0, 0, _game.copy());
+			System.out.println("HI");
+			System.out.println(_game.getBoard().piecesToString());
+//			return  Optional.of(node.getMove());
+			return Optional.of(naiveMakeMove());
+//		} catch (IllegalMoveException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		assert false;
+//		return null;
 	}
 	
 	/**
 	 * The AI naively makes a move. For testing purposes only
 	 * @return
 	 */
-	private boolean naiveMakeMove() {
+	private Move naiveMakeMove() {
 		List<Piece> pieces = getPlayerPieces(this);
 		
 		assert(pieces.size() > 0);
@@ -71,13 +87,8 @@ public class AI extends Player {
 		}
 		
 		Move toMove = possibleMoves.get(getRandom(possibleMoves.size()));
-		try {
-			_game.makeMove(toMove, null, null);
-		} catch (IllegalMoveException e) {
-			System.out.println(e.getMessage());
-			e.printStackTrace();
-		}
-		return true;
+
+		return toMove;
 	}	
 	
 	/**
@@ -90,7 +101,7 @@ public class AI extends Player {
 	
 	
 	// minimax
-	private SearchNode minimax(int currDepth, int maxDepth, GameState gameState) throws CloneNotSupportedException, IllegalMoveException{
+	private SearchNode minimax(int currDepth, int maxDepth, GameState gameState) throws IllegalMoveException{
 		assert(maxDepth % 2 == 0);
 		boolean maximizing = currDepth % 2 == 0;
 		List<Move> possibleMoves = getPossibleMoves(gameState, gameState.getActivePlayer());
@@ -113,6 +124,7 @@ public class AI extends Player {
 			}
 		}
 		assert(bestNode.peek() != null);
+		System.out.println("returns");
 		return bestNode.poll();
 
 	}
@@ -125,7 +137,7 @@ public class AI extends Player {
 	 * @throws CloneNotSupportedException
 	 * @throws IllegalMoveException
 	 */
-	private GameState getGameState(Move m, GameState gameState) throws IllegalMoveException, CloneNotSupportedException {
+	private GameState getGameState(Move m, GameState gameState) throws IllegalMoveException {
 		GameState copy = gameState.copy();
 		copy.makeMove(m, null, null);
 		return copy;

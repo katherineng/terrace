@@ -23,9 +23,9 @@ public class GameBuilder {
 	
 	public void setNumLocalPlayers(int num) {
 		assert num >= 1 && num <= 4;
-		
 		localPlayers = num;
 	}
+	
 	public int getNumLocalPlayers() {
 		return localPlayers;
 	}

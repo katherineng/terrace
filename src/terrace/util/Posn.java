@@ -5,7 +5,7 @@ import java.util.Objects;
 import javax.vecmath.*;
 
 @SuppressWarnings("serial")
-public class Posn extends Point3i implements Cloneable{
+public class Posn extends Point3i {
 
 	public Posn(int x, int y) {
 		super(x, y, 0);
@@ -17,11 +17,6 @@ public class Posn extends Point3i implements Cloneable{
 	@Override
 	public int hashCode() {
 		return Objects.hash(x, y);
-	}
-	
-	public Posn clone(){
-		Posn toRet = (Posn) super.clone();
-		return toRet;
 	}
 	
 	/* (non-Javadoc)

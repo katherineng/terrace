@@ -21,9 +21,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
-import terrace.GameBuilder;
-import terrace.NetworkType;
-import terrace.Variant;
+import terrace.*;
 import terrace.exception.IllegalMoveException;
 
 
