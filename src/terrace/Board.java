@@ -85,9 +85,8 @@ public abstract class Board{
 	}
 	
 	public List<Piece> getPlayerPieces(Player player) {
-		
 		List<Piece> toRet = new LinkedList<Piece>();
-		for (int y = getHeight() - 1; y >= 0; y--) {
+		for (int y = 0; y < getHeight(); y++) {
 			for (int x = 0; x < getWidth(); x++) {
 				Piece p = _board[x][y];
 				if (p != null && p.getPlayer().equals(player)) {
