@@ -14,10 +14,10 @@ import terrace.network.Request;
 import terrace.util.Callback;
 
 public class GameBuilder {
-	private final ExecutorService es = Executors.newCachedThreadPool();
+	private final ExecutorService _es = Executors.newCachedThreadPool();
 	
-	private int localPlayers;
-	private int networkPlayers = 0;
+	private int _localPlayers;
+	private int _networkPlayers = 0;
 	private GameType _type;
 	private Variant _variant;
 	private int _size = 8;
@@ -28,14 +28,14 @@ public class GameBuilder {
 	
 	public void setNumLocalPlayers(int num) {
 		assert num >= 1 && num <= 4;
-		localPlayers = num;
+		_localPlayers = num;
 	}
 	
 	public int getNumLocalPlayers() {
-		return localPlayers;
+		return _localPlayers;
 	}
 	public int getNumAIPlayers() {
-		switch (localPlayers) {
+		switch (_localPlayers) {
 		case 1: return 1;
 		case 2: return 0;
 		case 3: return 1;
@@ -63,14 +63,14 @@ public class GameBuilder {
 	) {
 		_type = GameType.Host;
 		
-		es.submit(new Runnable() {
+		_es.submit(new Runnable() {
 			@Override
 			public void run() {
 				try {
 					ServerSocket server = new ServerSocket(port);
 					
 					while (true) {
-						es.submit(new ClientConnection(server.accept()));
+						_es.submit(new ClientConnection(server.accept()));
 					}
 				} catch (IOException e) {
 					System.err.println("LOG: " + e.getLocalizedMessage());
@@ -83,7 +83,7 @@ public class GameBuilder {
 		
 		int playerNum = 0;
 		
-		for (int i = 0; i < localPlayers; i++) {
+		for (int i = 0; i < _localPlayers; i++) {
 			players.add(new LocalPlayer(PlayerColor.values()[playerNum]));
 			playerNum++;
 		}
@@ -108,7 +108,7 @@ public class GameBuilder {
 			p.setName(_names.get(i++));
 		}
 		
-		es.submit(new Runnable() {
+		_es.submit(new Runnable() {
 			@Override
 			public void run() {
 				try {
