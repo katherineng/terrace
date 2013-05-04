@@ -61,17 +61,7 @@ public abstract class GUIBoard implements Drawable {
 		return toRet;
 	}
 	
-	public void resetPieces() {	
-		_gamePieces.clear();
-		//needed because translation is relative to center of shape, not the corner
-		for (int row = 0; row < _panel._game.getBoard().getWidth(); row++)
-			for (int col = 0; col < _panel._game.getBoard().getHeight(); col++){
-				// set up _gamePiece
-				Piece piece = _panel._game.getBoard().getPieceAt(new Posn(row,  col));
-				if (piece != null) 
-					_gamePieces.add(new GamePiece(this, piece));
-			}
-	}
+	public abstract void resetPieces();
 	
 	/**
 	 * Sets up colors for players
