@@ -21,7 +21,8 @@ import terrace.Player;
 
 public class GameScreen extends JPanel {
 	private static final long serialVersionUID = -3415367755182469262L;
-	private static final Color backgroundColor = Color.GRAY;
+	private static final Color backgroundColor = Color.DARK_GRAY;
+	private static final Color defaultColor = Color.WHITE;
 	
 	private final TerraceFrame _frame;
 	private NetworkType _networkType;
@@ -40,6 +41,7 @@ public class GameScreen extends JPanel {
 		setLayout(new BorderLayout());
 		
 		JPanel topBar = new JPanel();
+		topBar.setBackground(backgroundColor);
 		topBar.setLayout(new BoxLayout(topBar, BoxLayout.X_AXIS));
 		topBar.setBorder(new EmptyBorder(5, 20, 5, 5));
 		
@@ -85,7 +87,7 @@ public class GameScreen extends JPanel {
 		});
 		JButton pause = new JButton("Pause");
 		_variant = new JLabel("Game Variant: " + _builder.getVariant() +" ");
-		
+		_variant.setForeground(defaultColor);
 		topBar.add(_status);
 		topBar.add(Box.createHorizontalGlue());
 		topBar.add(_variant);

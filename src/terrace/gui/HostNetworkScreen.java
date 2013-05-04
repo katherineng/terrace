@@ -3,6 +3,7 @@ package terrace.gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -19,7 +20,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -33,17 +36,18 @@ import javax.swing.event.ListSelectionListener;
 
 import terrace.network.Request;
 
-public class HostNetworkScreen extends JPanel {
+public class HostNetworkScreen extends TerracePanel {
 	private TerraceFrame _frame;
 	private int _numPlayers;
 	private List<String> _playerNames;
 	private Set<String> _localPlayers;
 	private DefaultListModel<Request> _requestListModel;
 	private JList<Request> _requests;
-	private static final Color backgroundColor = Color.GRAY;
-	private static final Color headerColor = Color.BLACK;
+	private static final Color backgroundColor = Color.DARK_GRAY;
+	private static final Color headerColor = Color.WHITE;
 	private static final Color defaultColor = Color.WHITE;
-	private static final Color fadedColor = Color.LIGHT_GRAY;
+	private static final Color fadedColor = Color.GRAY;
+	private static final Color highlightColor = new Color(245, 245, 245);
 	private static final Font headerFont = new Font("Verdana", Font.BOLD, 30);
 	private static final Font defaultFont = new Font("Verdana", Font.BOLD, 16);
 	
@@ -59,6 +63,7 @@ public class HostNetworkScreen extends JPanel {
 	private JButton removeButton;
 	
 	public HostNetworkScreen(TerraceFrame frame) {
+		super(frame);
 		_frame = frame;
 		acceptedRequests = new HashMap<>();
 		setBackground(backgroundColor);
@@ -78,6 +83,7 @@ public class HostNetworkScreen extends JPanel {
 		_requestListModel.addElement(r);
 	}
 	public void setPlayerNames(List<String> names) {
+		removeAll();
 		_numPlayers = names.size();
 		_playerNames = names;
 		_localPlayers = new HashSet<>();
@@ -85,9 +91,13 @@ public class HostNetworkScreen extends JPanel {
 		for(String name : names) {
 			currentListModel.addElement(name);
 		}
-		addComponents();
+		JPanel infoPanel = new JPanel(new GridBagLayout());
+		infoPanel.setBackground(backgroundColor);
+		infoPanel.setBorder(BorderFactory.createLineBorder(defaultColor));
+		addComponents(infoPanel);
+		add(infoPanel);
 	}
-	private void addComponents() {
+	private void addComponents(Container pane) {
 		List<String> names1 = new ArrayList<>();
 		names1.add("name1");
 		names1.add("name2");
@@ -105,9 +115,13 @@ public class HostNetworkScreen extends JPanel {
 		_requestListModel.addElement(new Request(names3));
 		_requests.addListSelectionListener(new AcceptRequestListener());
 		JScrollPane requestScroll = new JScrollPane(_requests);
+		_requests.setBackground(fadedColor);
+		_requests.setForeground(defaultColor);
+		_requests.setCellRenderer(new ListSelectionRenderer());
 		GridBagConstraints scrollConstraints = new GridBagConstraints();
 		scrollConstraints.gridx  = 1;
 		scrollConstraints.gridy = 1;
+		scrollConstraints.insets = new Insets(0, 0, 0, 10);
 		requestScroll.setPreferredSize(new Dimension(300, 300));
 		
 		JLabel currentLabel = new JLabel("Current Players");
@@ -125,13 +139,15 @@ public class HostNetworkScreen extends JPanel {
 		currentList.setSelectedIndex(0);
 		currentList.setVisibleRowCount(5);
 		currentList.setFont(defaultFont);
+		currentList.setForeground(defaultColor);
+		currentList.setCellRenderer(new ListSelectionRenderer());
 		JScrollPane currListScrollPane = new JScrollPane(currentList);
-		
+		currentList.setBackground(fadedColor);
 
 		GridBagConstraints currScrollConstraints = new GridBagConstraints();
 		currScrollConstraints.gridx  = 0;
 		currScrollConstraints.gridy = 1;
-		currScrollConstraints.insets = new Insets(0, 0, 0, 20);
+		currScrollConstraints.insets = new Insets(0, 10, 0, 20);
 		currListScrollPane.setPreferredSize(new Dimension(300, 300));
 		
 		removeButton = new JButton("remove from game");
@@ -158,37 +174,38 @@ public class HostNetworkScreen extends JPanel {
 		error = new JLabel();
 		GridBagConstraints errorConst = new GridBagConstraints();
 		errorConst.gridx = 0;
-		errorConst.gridy = 4;
+		errorConst.gridy = 3;
 		errorConst.gridwidth = 2;
 		errorConst.insets = new Insets(20, 0, 0, 0);
 		error.setFont(defaultFont);
+		error.setForeground(defaultColor);
 		error.setVisible(false);
 		
 		JButton backButton = new JButton("Back");
 		GridBagConstraints backConst = new GridBagConstraints();
 		backConst.gridx  = 0;
-		backConst.gridy = 3;
-		backConst.insets = new Insets(20, 0, 0, 0);
+		backConst.gridy = 4;
+		backConst.insets = new Insets(20, 10, 10, 0);
 		backConst.anchor = GridBagConstraints.WEST;
 		backButton.addActionListener(new BackListener());
 		
 		JButton goButton = new JButton("Start Game");
 		GridBagConstraints goConst = new GridBagConstraints();
 		goConst.gridx = 1;
-		goConst.gridy = 3;
-		goConst.insets = new Insets(20, 0, 0, 0);
+		goConst.gridy = 4;
+		goConst.insets = new Insets(20, 0, 10, 10);
 		goConst.anchor = GridBagConstraints.EAST;
 		goButton.addActionListener(new GoListener());
 		
-		add(currListScrollPane, currScrollConstraints);
-		add(requestScroll, scrollConstraints);
-		add(addButton, addConst);
-		add(removeButton, removeConst);
-		add(currentLabel, currLabelConst);
-		add(requestLabel, requestConst);
-		add(error, errorConst);
-		add(backButton, backConst);
-		add(goButton, goConst);
+		pane.add(currListScrollPane, currScrollConstraints);
+		pane.add(requestScroll, scrollConstraints);
+		pane.add(addButton, addConst);
+		pane.add(removeButton, removeConst);
+		pane.add(currentLabel, currLabelConst);
+		pane.add(requestLabel, requestConst);
+		pane.add(error, errorConst);
+		pane.add(backButton, backConst);
+		pane.add(goButton, goConst);
 	}
 	class GoListener implements ActionListener {
 
@@ -220,6 +237,16 @@ public class HostNetworkScreen extends JPanel {
 			error.setVisible(false);
 		}
 		
+	}
+	public class ListSelectionRenderer extends DefaultListCellRenderer {
+	     @Override
+	     public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+	         Component c = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+	         if (isSelected) {
+	             c.setBackground(highlightColor);
+	         }
+	         return c;
+	     }
 	}
 	class RemoveButtonListener implements ActionListener {
 

@@ -17,8 +17,8 @@ import javax.swing.JTextArea;
 
 import terrace.exception.IllegalMoveException;
 
-
-public class HelpScreen extends JPanel {
+//TODO redo for the new background
+public class HelpScreen extends TerracePanel {
 	private TerraceFrame _frame;
 	private JTextArea textArea;
 	private JLabel terraceLabel;
@@ -28,10 +28,11 @@ public class HelpScreen extends JPanel {
 	private static final Font headerFont = new Font("Verdana", Font.BOLD, 36);
 	private static final Font defaultFont = new Font("Verdana", Font.BOLD, 16);
 	
-	private static final Color backgroundColor = Color.GRAY;
+	private static final Color backgroundColor = Color.DARK_GRAY;
 	private static final Color textColor = Color.GRAY;
 	
 	public HelpScreen(TerraceFrame frame) {
+		super(frame);
 		_frame = frame;
 		setBackground(backgroundColor);
 		setLayout(new GridBagLayout());

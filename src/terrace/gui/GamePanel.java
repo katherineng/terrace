@@ -32,7 +32,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.jogamp.opengl.util.Animator;
 
-
+//TODO add countown
 public class GamePanel extends GLJPanel implements MouseWheelListener, MouseListener, MouseMotionListener{
 	private final Frame _frame; // the containing frame
 	private final GameScreen _screen;
