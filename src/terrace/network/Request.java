@@ -1,4 +1,4 @@
-package message;
+package terrace.network;
 
 import java.util.List;
 

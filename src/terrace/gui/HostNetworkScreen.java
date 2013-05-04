@@ -22,7 +22,8 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import message.Request;
+import terrace.network.Request;
+
 
 public class HostNetworkScreen extends JPanel {
 	private TerraceFrame _frame;
