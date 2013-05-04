@@ -35,7 +35,6 @@ public class GameServer {
 		while (true) {
 			Optional<Move> move = _game.getActivePlayer().getMove(45);
 			if (move.isPresent()) {
-				System.out.println("move present");
 				try {
 					_game.makeMove(
 							move.get(),
