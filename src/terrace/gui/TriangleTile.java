@@ -36,10 +36,11 @@ public class TriangleTile extends BoardTile{
 
 		double elevation = _height;
 		double rotation = orientedDown() ? 90 : -90;
+		//double side = orientedDown() ? 1 : -1;
 		gl.glTranslated(pos.y, 0, pos.x);
 		gl.glRotated(rotation, 0., 1., 0.);
 		gl.glBegin(GL2.GL_QUADS);
-		gl.glNormal3d(0f, 0f, 1);
+		gl.glNormal3d(0f, 0f, 1f);
 		gl.glVertex3d(0f, 0f, 0f);
 		gl.glVertex3d(sideLength, 0f, 0f);
 		gl.glVertex3d(sideLength, sideLength*elevation, 0f);
@@ -48,7 +49,7 @@ public class TriangleTile extends BoardTile{
 
 
 		gl.glBegin(GL2.GL_QUADS);
-		gl.glNormal3d(-1, 0f, 0f);
+		gl.glNormal3d(-1f, 0f, 0f);
 		gl.glVertex3d(0f, 0f, 0f);
 		gl.glVertex3d(0f, sideLength*elevation, 0f);
 		gl.glVertex3d(0f, sideLength*elevation, -sideLength);
@@ -57,7 +58,7 @@ public class TriangleTile extends BoardTile{
 
 
 		gl.glBegin(GL2.GL_QUADS);
-		gl.glNormal3d(1, 0f, -.25f);
+		gl.glNormal3d(Math.sqrt(2)/2f, 0f, -Math.sqrt(2)/2f);
 		gl.glVertex3d(sideLength, 0f, 0f);
 		gl.glVertex3d(0f, 0f, -sideLength);
 		gl.glVertex3d(0f, sideLength*elevation, -sideLength);
@@ -93,7 +94,7 @@ public class TriangleTile extends BoardTile{
 
 		// draw outlines for board
 		gl.glColor3f(0,0,0);
-		double side = -1;
+		//double side = -1;
 
 		// anti-aliasing for the lines
 		gl.glPushAttrib(GL2.GL_HINT_BIT | GL2.GL_CURRENT_BIT | GL2.GL_LINE_BIT | GL2.GL_COLOR_BUFFER_BIT);
