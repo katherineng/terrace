@@ -26,12 +26,9 @@ public class DefaultBoard extends Board {
 	@Override
 	public Board copyBoard() {
 		Board copy = new DefaultBoard(_dimensions, _variant);
-		for (int i = 0; i < _dimensions; i++) {
-			for (int j = 0; j < _dimensions; j++) {
-				assert(copy._board[i][j] == null);
-				Piece p = _board[i][j];
-				if (p != null) 
-					copy.setPieceAt(p.getPosn(), p.copy());
+		for (int x = 0; x < getWidth(); x++) {
+			for (int y = 0; y < getHeight(); y++) {
+				copy._board[x][y] = _board[x][y].copy();
 			}
 		}
 		return copy;
