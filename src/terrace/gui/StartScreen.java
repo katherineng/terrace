@@ -81,11 +81,7 @@ public class StartScreen extends TerracePanel {
 		
 		JPanel helpPanel = new JPanel();
 		helpPanel.setBackground(Color.DARK_GRAY);
-		JButton helpButton = new JButton();
-		JPanel buttonPanel = new JPanel();
-		buttonPanel.add(new JLabel("asdlkfjdsfkljs"));
-		buttonPanel.setBackground(Color.white);
-		helpButton.add(buttonPanel);
+		JButton helpButton = new JButton("Help");
 		GridBagConstraints helpConst = new GridBagConstraints();
 		helpConst.gridx = 0;
 		helpConst.gridy = 2;
