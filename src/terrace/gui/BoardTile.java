@@ -56,5 +56,10 @@ public abstract class BoardTile implements Drawable {
 	public void incorrect(){
 		_correct = !_correct;
 	}
+	
+	@Override
+	public String toString() {
+		return _pos.toString() + " " + _moveColor;
+	}
 
 }

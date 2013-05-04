@@ -26,6 +26,7 @@ import terrace.Move;
 import terrace.Piece;
 import terrace.Player;
 import terrace.util.Callback;
+import terrace.util.Posn;
 
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
@@ -267,7 +268,9 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 				} else { // set selection to something new. Remains in selection mode
 					_possibleMoves = _game.getBoard().getMoves(newSelection.getPiece());
 					for (Move move : _possibleMoves) {
+						System.out.println(move);
 						_board.posToTile(move.getTo()).setMoveColor(_board.getPlayerColors(newSelection.getPiece().getColor()));
+						//System.out.println(_board.posToTile(move.getTo()));
 					}
 					if (_selection != null) _selection.changeSelection(); // unselect old thing
 					_selection = newSelection;
