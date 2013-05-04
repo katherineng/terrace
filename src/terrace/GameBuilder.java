@@ -8,6 +8,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import terrace.ai.AI;
 import terrace.gui.LocalPlayer;
@@ -15,6 +17,8 @@ import terrace.network.Request;
 import terrace.util.Callback;
 
 public class GameBuilder {
+	private final ExecutorService es = Executors.newCachedThreadPool();
+	
 	private int localPlayers;
 	private int networkPlayers = 0;
 	private GameType _type;
@@ -62,7 +66,7 @@ public class GameBuilder {
 	) {
 		_type = GameType.Host;
 		
-		new Thread() {
+		es.submit(new Runnable() {
 			@Override
 			public void run() {
 				try {
@@ -71,18 +75,18 @@ public class GameBuilder {
 					while (true) {
 						final Socket client = server.accept();
 						
-						new Thread() {
+						es.submit(new Runnable() {
 							@Override
 							public void run() {
 								dispatchClient(client);
 							}
-						}.start();
+						});
 					}
 				} catch (IOException e) {
 					System.err.println("LOG: " + e.getLocalizedMessage());
 				}
 			}
-		}.start();
+		});
 	}
 	public GameServer startGame() {
 		List<Player> players = new LinkedList<>();
@@ -114,7 +118,7 @@ public class GameBuilder {
 			p.setName(_names.get(i++));
 		}
 		
-		new Thread() {
+		es.submit(new Runnable() {
 			@Override
 			public void run() {
 				try {
@@ -123,7 +127,7 @@ public class GameBuilder {
 					t.printStackTrace();
 				}
 			}
-		}.start();
+		});
 		
 		return s;
 	}
