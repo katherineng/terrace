@@ -21,7 +21,7 @@ public abstract class GUIBoard implements Drawable {
 	protected GamePanel _panel;							/** a Game instance **/
 	
 	public double getElevation(Posn pos) {
-		BoardTile b = _boardTiles[pos.y][pos.x];
+		BoardTile b = _boardTiles[pos.x][pos.y];
 		return b.getElevation();
 	}
 	
@@ -30,6 +30,8 @@ public abstract class GUIBoard implements Drawable {
 	}
 	
 	public abstract double getShiftFactor();
+	abstract double getRowShift(Posn p);
+	abstract double getColShift(Posn p);
 
 	public double getHeight() {
 		return _panel._game.getBoard().getHeight();
@@ -104,10 +106,8 @@ public abstract class GUIBoard implements Drawable {
 	public void draw(GL2 gl) {
 		_foundation.draw(gl);	
 		for (BoardTile[] tileArray : _boardTiles)
-			for (BoardTile tile : tileArray)
-				tile.draw(gl);
+			for (BoardTile tile : tileArray) tile.draw(gl);
 		
-		for (GamePiece piece : _gamePieces)
-			piece.draw(gl);
+		for (GamePiece piece : _gamePieces) piece.draw(gl);
 	}
 }

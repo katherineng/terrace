@@ -35,10 +35,6 @@ public class Move {
 		return _captured;
 	}
 	
-	@Override
-	public int hashCode() {
-		return Objects.hash(_piece, _to);
-	}
 	
 	@Override
 	public boolean equals(Object obj) {

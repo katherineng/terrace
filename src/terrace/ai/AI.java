@@ -48,15 +48,16 @@ public class AI extends Player {
 	
 	@Override
 	public Optional<Move> getMove(int timeout) {
+		System.out.println("Move");
 		SearchNode node;
 		
 		try {
 			node = minimax(0, 0, _game.copy());
-			return  Optional.of(node.getMove());
 		} catch (IllegalMoveException e) {
 			System.err.println("ERROR: AI made invalid move. This shouldn't happen.");
-			return Optional.absent();
+		//	return Optional.absent();
 		}
+		return  Optional.of(naiveMakeMove());
 	}
 	
 	/**
@@ -75,37 +76,39 @@ public class AI extends Player {
 		
 		return possibleMoves.get((int)(Math.random() * possibleMoves.size()));
 	}
+
+
 	
-	// minimax
+	//TODO: player's equals method shouldn't depend on pieces. make only dependent on color
+	// minimax(0, 3, game.clone())
 	private SearchNode minimax(int currDepth, int maxDepth, GameState gameState) throws IllegalMoveException{
 		assert(maxDepth % 2 == 0);
 		boolean maximizing = currDepth % 2 == 0;
+
 		List<Move> possibleMoves = getPossibleMoves(gameState, gameState.getActivePlayer());
 		
-		PriorityQueue<SearchNode> bestNode = new PriorityQueue<SearchNode>();
+
+		SearchNode bestNode = null;
 		double bestValue = (maximizing) ? Double.NEGATIVE_INFINITY : Double.POSITIVE_INFINITY;
-		
-		for (Move m: possibleMoves) {
+		assert(possibleMoves.size() > 0);
+		int i = 0;
+		for (Move m: possibleMoves){
 			GameState g = getGameState(m, gameState);
-			SearchNode currNode = currDepth == maxDepth || g.getWinner().isPresent()
-					? new SearchNode(m, estimateValue(g, AI.this), 0)
-					: new SearchNode(m, minimax(currDepth + 1, maxDepth, g).getValue(), 0);
-			
-			if (currNode.getValue() == bestValue) {
-				bestNode.add(currNode);
-			} else if (
-					maximizing && currNode.getValue() > bestValue || // trying to maximize
-					!maximizing && currNode.getValue() < bestValue  // trying to minimize
-			) {
-				bestNode.clear();
+			SearchNode currNode = (currDepth == maxDepth || g.getWinner().isPresent()) ? 
+					new SearchNode(m, estimateValue(g, AI.this), 0.) : 
+					new SearchNode(m, minimax(currDepth + 1, maxDepth, g).getValue(), 0.);
+			if (maximizing && currNode.getValue() >= bestValue || // trying to maximize
+				!maximizing && currNode.getValue() <= bestValue){ // trying to minimize
 				bestValue = currNode.getValue();
-				bestNode.add(currNode);
+				bestNode = currNode;
 			}
 		}
-		assert(bestNode.peek() != null);
-		return bestNode.poll();
+		assert(bestNode != null);
+		System.out.println(_game.getBoard().piecesToString());
+		return bestNode;
 
 	}
+	
 
 	/**
 	 * Gets a new, resulting Game instance given a move and a game
@@ -130,13 +133,14 @@ public class AI extends Player {
 	private List<Move> getPossibleMoves(GameState gameState, Player player) {
 		List<Piece> pieces = getPlayerPieces(player);
 		
-		System.out.println(gameState.getBoard().piecesToString());
 		LinkedList<Move> possibleMoves = new LinkedList<Move>();
 		
 		for (Piece piece : pieces) {
 			for (Move move : gameState.getBoard().getMoves(piece)) {
-				if (!possibleMoves.contains(move))
+				//if (!possibleMoves.contains(move)){
+					System.out.println(move);
 						possibleMoves.addLast(move);
+				//}
 			}
 		}
 		return possibleMoves;
