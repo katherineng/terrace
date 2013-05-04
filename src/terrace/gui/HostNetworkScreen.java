@@ -73,15 +73,10 @@ public class HostNetworkScreen extends JPanel {
 	}
 	private void addComponents() {
 		
-		requestListModel = new DefaultListModel();
-		_requests = new JList(requestListModel);
+		_requestListModel = new DefaultListModel<>();
+		_requests = new JList<>(_requestListModel);
+		JScrollPane requestScroll = new JScrollPane(_requests);
 		
-		JPanel currentPlayers = new JPanel(new GridBagLayout());
-		//currentPlayers.setBackground(backgroundColor);
-		GridBagConstraints currConstraints = new GridBagConstraints();
-		currConstraints.gridx = 0;
-		currConstraints.gridy = 1;
-		//currConstraints.insets = new Insets(0, 0, 0, 0);
 		
 		JLabel currentLabel = new JLabel("Current Players");
 		currentLabel.setForeground(headerColor);
@@ -133,7 +128,6 @@ public class HostNetworkScreen extends JPanel {
 		requestLabel.setForeground(headerColor);
 		requestConst.insets = new Insets(0, 0, 20, 0);
 
-		
 		requestListModel = new DefaultListModel<>();
 		requestListModel.addElement("john, joe");
 		requestListModel.addElement("dlasfjkldafj");
