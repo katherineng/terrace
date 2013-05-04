@@ -1,8 +1,6 @@
 package terrace.gui;
 
-import java.awt.Color;
 import java.awt.Frame;
-import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -32,7 +30,6 @@ import terrace.util.Callback;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.jogamp.opengl.util.Animator;
-import com.jogamp.opengl.util.awt.Overlay;
 
 
 public class GamePanel extends GLJPanel implements MouseWheelListener, MouseListener, MouseMotionListener{
