@@ -36,7 +36,7 @@ public class TriangleTile extends BoardTile{
 
 		double elevation = _height;
 		double rotation = orientedDown() ? 90 : -90;
-		gl.glTranslated(pos.x, 0, pos.y);
+		gl.glTranslated(pos.y, 0, pos.x);
 		gl.glRotated(rotation, 0., 1., 0.);
 		gl.glBegin(GL2.GL_QUADS);
 		gl.glNormal3d(0f, 0f, 1);
@@ -65,8 +65,25 @@ public class TriangleTile extends BoardTile{
 		gl.glEnd();
 
 		//top of triangle
+		
+		Vector3d select = (_selected) ? HOVER_COLOR : new Vector3d(mult*.8,mult*.8,mult*.8);
+		
+		// invalid move colors
+		if (_selected && !_correct){
+			if (_incorrect_timing < 20){
+				select = new Vector3d(1.0, select.y, select.z);
+				_incorrect_timing++;
+			} else {
+				_incorrect_timing = 0;
+				_correct = true;
+			}
+		} 
+					
+		// possible move colors
+		if (_moveColor != null) select = new Vector3d(_moveColor.x *.5, _moveColor.y * .5, _moveColor.z * .5);
+		
 		gl.glBegin(GL2.GL_TRIANGLES);
-		Vector3d select = new Vector3d(mult*.8,mult*.8,mult*.8);
+		//Vector3d select = new Vector3d(mult*.8,mult*.8,mult*.8);
 		gl.glColor3d(select.x, select.y, select.z);
 		gl.glNormal3d(0f, 1, 0f);
 		gl.glVertex3d(0f, sideLength*elevation, 0f);

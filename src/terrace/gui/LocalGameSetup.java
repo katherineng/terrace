@@ -3,6 +3,7 @@ package terrace.gui;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -315,30 +316,54 @@ public class LocalGameSetup extends JPanel {
 		JButton goButton = new JButton();
 		GridBagConstraints goConst = new GridBagConstraints();
 		goButton.addActionListener(new GoListener());
-		goConst.gridx = 3;
-		goConst.gridy = 2;
+		goConst.gridx = 2;
+		goConst.gridy = 3;
 		goConst.insets = new Insets(30, 0, 0,0);
+		goConst.anchor = GridBagConstraints.EAST;
 		
 		JButton backButton = new JButton("Back");
 		backButton.addActionListener(new BackListener());
 		GridBagConstraints backConst = new GridBagConstraints();
 		backConst.gridx = 0;
-		backConst.gridy = 2;
+		backConst.gridy = 3;
 		backConst.insets = new Insets(30, 0, 0,0);
+		backConst.anchor = GridBagConstraints.WEST;
 		
 		error = new JLabel("");
 		error.setPreferredSize(new Dimension(250, 50));
 		GridBagConstraints errorConst = new GridBagConstraints();
 		error.setVisible(false);
 		errorConst.gridx = 1;
-		errorConst.gridy = 5;
+		errorConst.gridy = 6;
 		//errorConst.gridwidth = 2;
+		JLabel portLabel = new JLabel("Port");
+		portLabel.setFont(defaultFont);
+		portLabel.setVisible(false);
+		
+		JTextField portField = new JTextField(10);
+		portField.setFont(defaultFont);
+		portField.setBackground(backgroundColor);
+		portField.setForeground(fadedColor);
+		portField.setVisible(false);
+		
+		JPanel portPanel = new JPanel();
+		portPanel.setLayout(new FlowLayout());
+		portPanel.setBackground(backgroundColor);
+		GridBagConstraints portPanelConst = new GridBagConstraints();
+		portPanelConst.gridx = 1;
+		portPanelConst.gridy = 2;
+		portPanelConst.anchor = GridBagConstraints.WEST;
+		portPanelConst.insets = new Insets(30, 0, 0, 0);
+		
+		portPanel.add(portLabel);
+		portPanel.add(portField);
 		
 		
 		add(playerNames, playerNamesConst);
 		add(goButton, goConst);
 		add(numPlayersPanel, numPlayersConst);
 		add(backButton, backConst);
+		add(portPanel, portPanelConst);
 		playerNames.add(error, errorConst);
 		
 		if(_networkType == NetworkType.LOCAL) {
@@ -379,6 +404,8 @@ public class LocalGameSetup extends JPanel {
 			
 			
 		} else if(_networkType == NetworkType.HOST) {
+			portField.setVisible(true);
+			portLabel.setVisible(true);
 			goButton.setText("Create Game");
 		} else {
 			goButton.setText("Join Game");
@@ -393,7 +420,8 @@ public class LocalGameSetup extends JPanel {
 	}
 	private void resetScreen() {
 		switch (_networkType) {
-		case LOCAL: standard.setSelected(true);
+		case LOCAL: standard.setSelected(true);//TODO if field is empty when focus is lost, reset to "player _"
+					player1.setText("Player 1");
 					onePlayer.setSelected(true);
 					p2.setText("CPU");
 					player2.setText("CPU");
@@ -404,12 +432,15 @@ public class LocalGameSetup extends JPanel {
 					player3.setVisible(false);
 					player4.setVisible(false);
 					break;
-		default :	standard.setSelected(true);
+		default :	player1.setText("Player 1");
+					standard.setSelected(true);
 					onePlayer.setSelected(true);
 					player2.setVisible(false);
+					player2.setText("Player 2");
 					player2.setEnabled(false);
 					p2.setVisible(false);
 					player3.setEnabled(false);
+					player3.setText("Player 3");
 					p3.setVisible(false);
 					player3.setVisible(false);
 					break;
@@ -423,7 +454,6 @@ public class LocalGameSetup extends JPanel {
 			_frame.changeCard("Setup");
 			resetScreen();
 		}
-		
 	}
 	class LengthListener implements ActionListener {
 
@@ -437,7 +467,6 @@ public class LocalGameSetup extends JPanel {
 		}
 		
 	}
-	//[^,]+
 	class NameLengthListener implements KeyListener {
 
 		@Override
@@ -511,49 +540,55 @@ public class LocalGameSetup extends JPanel {
 				setErrorMsg("<html>Player " + n + "'s name may not contain commas (,)</html>");
 				return;
 			}
-			
-			_frame._builder.setNumLocalPlayers(numPlayers);
-			List<String> playerNames = new ArrayList<>();
-			if(_networkType == NetworkType.LOCAL) {
-				if (numPlayers > 2) {
-					playerNames.add(player4.getText());
-					playerNames.add(player3.getText());
-					playerNames.add(player2.getText());
-					playerNames.add(player1.getText());
-				} else {
-					playerNames.add(player2.getText());
-					playerNames.add(player1.getText());
-				}
+
+			if (_networkType == NetworkType.JOIN) {
+				System.out.println("daslfkjdasfkljdak");//DEBUG
+				_frame.changeCard("join networked game");
 			} else {
-				switch (numPlayers) {
-				case 3: playerNames.add(player3.getText());
-				case 2: playerNames.add(player2.getText());
-				case 1: playerNames.add(player1.getText());
-				}
-			}
-			Collections.reverse(playerNames);
-			_frame.setPlayerNames(playerNames);
-			if (v == Variant.TRIANGLE) {
-				if (boardSize == 0) {
-					_frame._builder.setSize(4);
+				_frame._builder.setNumLocalPlayers(numPlayers);
+				List<String> playerNames = new ArrayList<>();
+				if(_networkType == NetworkType.LOCAL) {
+					if (numPlayers > 2) {
+						playerNames.add(player4.getText());
+						playerNames.add(player3.getText());
+						playerNames.add(player2.getText());
+						playerNames.add(player1.getText());
+					} else {
+						playerNames.add(player2.getText());
+						playerNames.add(player1.getText());
+					}
 				} else {
-					_frame._builder.setSize(5);
+					switch (numPlayers) {
+					case 3: playerNames.add(player3.getText());
+					case 2: playerNames.add(player2.getText());
+					case 1: playerNames.add(player1.getText());
+					}
 				}
-			} else {
-				if (boardSize == 0) {
-					_frame._builder.setSize(6);
+				Collections.reverse(playerNames);
+				_frame.setPlayerNames(playerNames);
+				if (v == Variant.TRIANGLE) {
+					if (boardSize == 0) {
+						_frame._builder.setSize(4);
+					} else {
+						_frame._builder.setSize(5);
+					}
 				} else {
-					_frame._builder.setSize(8);
+					if (boardSize == 0) {
+						_frame._builder.setSize(6);
+					} else {
+						_frame._builder.setSize(8);
+					}
 				}
-			}
-			_frame._builder.setVariant(v);
-			
-			if (_networkType == NetworkType.HOST) {
-				_frame.changeCard("host networked game");
-			} else {
-				_frame.changeCard("Game");
+				_frame._builder.setVariant(v);
+
+				if (_networkType == NetworkType.HOST) {
+					_frame.changeCard("host networked game");
+				} else {
+					_frame.changeCard("Game");
+				}
 			}
 		}
+			
 
 	}
 	

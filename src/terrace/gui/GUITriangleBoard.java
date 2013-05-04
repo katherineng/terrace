@@ -3,6 +3,7 @@ package terrace.gui;
 import java.util.*;
 
 import terrace.Board;
+import terrace.Piece;
 import terrace.util.Posn;
 
 public class GUITriangleBoard extends GUIBoard {
@@ -49,7 +50,7 @@ public class GUITriangleBoard extends GUIBoard {
 		for (int y = 0; y < gameBoard.getHeight(); y++){
 			for (int x = 0; x < gameBoard.getWidth(); x++){
 				Posn pos = new Posn(x, y);
-				double height = gameBoard.getElevation(pos)/30.;
+				double height = gameBoard.getElevation(pos)/10.;
 				// set up _boardPiece
 				BoardTile tile = new TriangleTile(
 						this,
@@ -63,5 +64,19 @@ public class GUITriangleBoard extends GUIBoard {
 		
 		resetPieces();
 		
+	}
+	
+	@Override
+	public void resetPieces() {	
+		_gamePieces.clear();
+		//needed because translation is relative to center of shape, not the corner
+		for (int row = 0; row < _panel._game.getBoard().getWidth(); row++)
+			for (int col = 0; col < _panel._game.getBoard().getHeight(); col++){
+				// set up _gamePiece
+				Piece piece = _panel._game.getBoard().getPieceAt(new Posn(row,  col));
+				if (piece != null) {
+					_gamePieces.add(new TriangleGamePiece(this, piece));
+				}
+			}
 	}
 }

@@ -50,10 +50,12 @@ public class TerraceFrame extends JFrame {
 		_cards.add(new LocalGameSetup(this, NetworkType.JOIN), JOIN_SETUP);
 		_cards.add(new HelpScreen(this), HELP_SCREEN);
 		_cards.add(_networkScreen, HOST_GAME);
+		_cards.add(new JoinNetworkScreen(this), JOIN_NETWORK);
 		add(_cards);
 	}
 	
 	public void changeCard(String cardName) {
+		System.out.println(cardName);
 		if (cardName.equals(START_SCREEN)) {
 			if (_currentGameScreen != null) {
 				_cards.remove(_currentGameScreen);
