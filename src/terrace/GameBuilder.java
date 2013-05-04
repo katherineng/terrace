@@ -117,7 +117,7 @@ public class GameBuilder {
 				try {
 					s.run();
 				} catch (Throwable t) {
-					System.err.println(t.getLocalizedMessage());
+					t.printStackTrace();
 				}
 			}
 		}.start();
