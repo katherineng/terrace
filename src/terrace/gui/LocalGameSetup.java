@@ -486,9 +486,12 @@ public class LocalGameSetup extends JPanel {
 			return 2;
 		} else if (!player3.getText().matches(regexp)) {
 			return 3;
-		} else if (!player4.getText().matches(regexp)) {
-			return 4;
+		} else if (_networkType == NetworkType.LOCAL){
+			if (!player4.getText().matches(regexp)) {
+				return 4;
+			}
 		}
+		
 		return 0;
 	}
 	
