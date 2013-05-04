@@ -23,4 +23,9 @@ public class TPiece extends Piece {
 	public Piece copy() {
 		return new TPiece(_posn, _player, _goal);
 	}
+	
+	@Override
+	public boolean isTPiece(){
+		return true;
+	}
 }

@@ -37,6 +37,10 @@ public class Piece implements Comparable<Piece>, Copyable<Piece> {
 		return _player.getColor();
 	}
 	
+	public boolean isTPiece(){
+		return false;
+	}
+	
 	@Override
 	public int compareTo(Piece o) {
 		return _size - o.getSize();
