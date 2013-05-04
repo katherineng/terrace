@@ -1,7 +1,5 @@
 package terrace;
 
-import java.io.IOException;
-import java.net.ServerSocket;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -9,7 +7,7 @@ import java.util.concurrent.Executors;
 
 import terrace.ai.AI;
 import terrace.gui.LocalPlayer;
-import terrace.network.ClientConnection;
+import terrace.network.HostServer;
 import terrace.network.Request;
 import terrace.util.Callback;
 
@@ -63,20 +61,7 @@ public class GameBuilder {
 	) {
 		_type = GameType.Host;
 		
-		_es.submit(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					ServerSocket server = new ServerSocket(port);
-					
-					while (true) {
-						_es.submit(new ClientConnection(server.accept()));
-					}
-				} catch (IOException e) {
-					System.err.println("LOG: " + e.getLocalizedMessage());
-				}
-			}
-		});
+		_es.submit(new HostServer(port, _es));
 	}
 	public GameServer startGame() {
 		List<Player> players = new LinkedList<>();
@@ -122,11 +107,11 @@ public class GameBuilder {
 		return s;
 	}
 	
-	private enum GameType {
-		Local, Host, Client
-	}
-	
 	public void setPlayerNames(List<String> names) {
 		_names = names;
+	}
+	
+	private enum GameType {
+		Local, Host, Client
 	}
 }
