@@ -83,7 +83,7 @@ public class GameState implements Copyable<GameState> {
 					}
 				}
 			} else {
-				throw new IllegalMoveException("Bad move");
+				throw new IllegalMoveException("Bad move: " + m);
 			}
 		} finally {
 			endTurn();
@@ -92,8 +92,6 @@ public class GameState implements Copyable<GameState> {
 	
 	public boolean isValid(Move m, Player activePlayer) {
 		if (!m.getPiece().getPlayer().equals(activePlayer)) return false;
-		//System.out.println(m.getPiece().getPosn().x + " " + m.getPiece().getPosn().y + " => " + m.getTo().x + " " + m.getTo().x);
-		//System.out.println(_board.piecesToString());
 		List<Move> allowed = _board.getMoves(m.getPiece());
 		return allowed.contains(m);
 	}
