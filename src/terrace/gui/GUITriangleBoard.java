@@ -50,7 +50,7 @@ public class GUITriangleBoard extends GUIBoard {
 		for (int y = 0; y < gameBoard.getHeight(); y++){
 			for (int x = 0; x < gameBoard.getWidth(); x++){
 				Posn pos = new Posn(x, y);
-				double height = gameBoard.getElevation(pos)/30.;
+				double height = gameBoard.getElevation(pos)/10.;
 				// set up _boardPiece
 				BoardTile tile = new TriangleTile(
 						this,
