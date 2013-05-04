@@ -16,6 +16,7 @@ import javax.media.opengl.GLEventListener;
 import javax.media.opengl.GLProfile;
 import javax.media.opengl.awt.GLJPanel;
 import javax.media.opengl.glu.GLU;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.vecmath.Vector2d;
 import javax.vecmath.Vector3d;
@@ -23,6 +24,7 @@ import javax.vecmath.Vector3d;
 import terrace.GameServer;
 import terrace.GameState;
 import terrace.Move;
+import terrace.NetworkType;
 import terrace.Piece;
 import terrace.Player;
 import terrace.util.Callback;
@@ -79,6 +81,8 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 			@Override
 			public void call(GameState state) {
 				_game = state;
+				_board.resetPieces();
+				
 				if (!_game.getWinner().isPresent()) {
 					_screen.setCurrPlayer(_game.getActivePlayer());
 				}
@@ -294,7 +298,6 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 				if (_game.isValid(m, p)) {
 					p.sendMove(m);
 					clearPossible();
-					_board.resetPieces();
 				} else {
 					_hover.incorrect();
 					_mode = Mode.HOVER;
