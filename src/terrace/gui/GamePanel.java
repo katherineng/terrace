@@ -399,21 +399,22 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 			float intensity[]= {1,1,1,1};
 			gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_DIFFUSE, intensity, 0);
 			
-			gl.glEnable(GL2.GL_LIGHT1);
-			float position2[]= {0,-0.8f,0.3f,1};
-			gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_POSITION, position2, 0);
-			float intensity2[]= {1,0,0,0};
-			gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_DIFFUSE, intensity2, 0);
-			float specIntensity2[]= {1,1,1,1};
-			gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_SPECULAR, specIntensity2, 0);
+//			gl.glEnable(GL2.GL_LIGHT1);
+//			float position2[]= {0,-0.8f,0.3f,1};
+//			gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_POSITION, position2, 0);
+//			float intensity2[]= {1,0,0,0};
+//			gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_DIFFUSE, intensity2, 0);
+//			float specIntensity2[]= {1,1,1,1};
+//			gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_SPECULAR, specIntensity2, 0);
 			
+			
+			Vector3d bg = _board.getPlayerColors(_game.getActivePlayer().getColor());
 			
 			gl.glEnable(GL2.GL_COLOR_MATERIAL);
 			gl.glColorMaterial(GL.GL_FRONT_AND_BACK, GL2.GL_AMBIENT_AND_DIFFUSE);
 			float specColor[]= {1,1,1,1};
 			gl.glMaterialfv(GL.GL_FRONT_AND_BACK,GL2.GL_SPECULAR, specColor,0);
 			gl.glMaterialf(GL.GL_FRONT_AND_BACK,GL2.GL_SHININESS, 80);
-
 			gl.glEnable(GL2.GL_FOG);
 			gl.glFogf(GL2.GL_FOG_START,0.3f);
 			gl.glFogf(GL2.GL_FOG_END,1);

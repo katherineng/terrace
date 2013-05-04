@@ -12,6 +12,7 @@ import terrace.util.Posn;
 
 public class AI extends Player {
 	GameState _game;
+	int lookahead = -1;
 
 	public AI(PlayerColor color) {
 		super(color);
@@ -26,7 +27,6 @@ public class AI extends Player {
 		private Move _move;		/** The move made **/
 		private double _value;	/** the value associated a certain game state **/
 		private double _heuristic; /** maybe store some value that makes AI more aggressive? **/
-		private double _limit;
 
 		private SearchNode(Move move, double value, double heuristic) {
 			_move = move;
@@ -34,14 +34,6 @@ public class AI extends Player {
 			_heuristic = heuristic;
 		}
 
-		private double getLimit(){
-			return _limit;
-		}
-		
-		private void setLimit(double limit){
-			_limit = limit;
-		}
-		
 		private double getValue() {
 			return _value;
 		}
@@ -60,7 +52,8 @@ public class AI extends Player {
 	public Optional<Move> getMove(int timeout) {
 		SearchNode node;		
 		try {
-			node = minimax(0, 2, _game.copy());
+			assert(lookahead != -1);
+			node = minimax(0, lookahead, _game.copy(), Double.POSITIVE_INFINITY);
 			return Optional.of(node.getMove());
 		} catch (IllegalMoveException e) {
 			System.err.println(e.getMessage() + " ERROR: AI made invalid move. This shouldn't happen.");
@@ -69,46 +62,38 @@ public class AI extends Player {
 		assert false;
 		return null;
 	}
-
-	/**
-	 * The AI naively makes a move. For testing purposes only
-	 * @return
-	 */
-	private Move naiveMakeMove() {
-		List<Piece> pieces = _game.getBoard().getPlayerPieces(this);
-
-		assert pieces.size() > 0;
-		List<Move> possibleMoves = new LinkedList<Move>();
-
-		for (Piece piece : pieces) {
-			possibleMoves.addAll(_game.getBoard().getMoves(piece));
-		}
-
-		return possibleMoves.get((int)(Math.random() * possibleMoves.size()));
-	}
-	private SearchNode minimax(int currDepth, int maxDepth, GameState gameState) throws IllegalMoveException{
+	
+	
+	private SearchNode minimax(int currDepth, int maxDepth, GameState gameState, double limit) throws IllegalMoveException{
 		//assert(maxDepth % 2 == 0);
-		boolean maximizing = currDepth % 2 == 0;
+		boolean maximizing = gameState.getActivePlayer() == this;
 
+		double nextLimit = (maximizing) ? Double.NEGATIVE_INFINITY : Double.POSITIVE_INFINITY;
 		List<Move> possibleMoves = getPossibleMoves(gameState, gameState.getActivePlayer());
 
 		PriorityQueue<SearchNode> bestNode = new PriorityQueue<>();
-		double bestValue = (maximizing) ? Double.NEGATIVE_INFINITY : Double.POSITIVE_INFINITY;
+		double bestValue = nextLimit;
 		assert(possibleMoves.size() > 0);
 		for (Move m: possibleMoves){
 			GameState g = getGameState(m, gameState);
 			
+			double newLimit = (bestNode.isEmpty()) ? nextLimit : bestNode.peek().getValue();
+			
 			SearchNode currNode = (currDepth == maxDepth || (g.getWinner() != null && g.getWinner().isPresent())) ? 
 			new SearchNode(m, estimateValue(g, AI.this), heuristicValue(g)) : 
-			new SearchNode(m, minimax(currDepth + 1, maxDepth, g).getValue(), heuristicValue(g));
+			new SearchNode(m, minimax(currDepth + 1, maxDepth, g, newLimit).getValue(), heuristicValue(g));
+
+//			if ( !maximizing && currNode.getValue() <= limit)
+//				return currNode;
 			
 			if (currNode.getValue() == bestValue && currNode.getValue() == bestValue){
 				bestNode.add(currNode);
 			} else if (maximizing && currNode.getValue() > bestValue || // trying to maximize
 					!maximizing && currNode.getValue() < bestValue){ // trying to minimize
-				bestNode.clear();;
+				bestNode.clear();
 				bestValue = currNode.getValue();
 				bestNode.add(currNode);
+				limit = bestValue;
 			}
 		}
 		assert(bestNode.peek() != null);
@@ -212,6 +197,7 @@ public class AI extends Player {
 	}
 
 	public void updateGameState(GameState game) {
+		if (lookahead == -1) lookahead = (game.getPlayers().size() == 2) ? 2 : 3;
 		_game = game;
 	}
 }
