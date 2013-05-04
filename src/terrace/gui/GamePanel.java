@@ -85,6 +85,7 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 			public void call(GameState state) {
 				_game = state;
 				_screen.setCurrPlayer(_game.getActivePlayer());
+				_board.resetPieces();
 				
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override
@@ -297,7 +298,6 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 				if (_game.isValid(m, p)) {
 					p.sendMove(m);
 					clearPossible();
-					_board.resetPieces();
 				} else {
 					_hover.incorrect();
 					_mode = Mode.HOVER;
