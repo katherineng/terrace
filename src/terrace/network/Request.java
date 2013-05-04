@@ -20,4 +20,7 @@ public class Request {
 		}
 		return s.substring(0, s.length() - 2);
 	}
+	public int getNumberOfPlayers(){
+		return _playerNames.size();
+	}
 }

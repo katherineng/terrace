@@ -1,17 +1,25 @@
 package terrace.gui;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -19,11 +27,11 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.SpringLayout;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import terrace.network.Request;
-
 
 public class HostNetworkScreen extends JPanel {
 	private TerraceFrame _frame;
@@ -39,9 +47,10 @@ public class HostNetworkScreen extends JPanel {
 	private static final Font headerFont = new Font("Verdana", Font.BOLD, 30);
 	private static final Font defaultFont = new Font("Verdana", Font.BOLD, 16);
 	
-	private JList<String> requestList;
+	//private JList<String> requestList;
 	private JButton addButton;
-	private DefaultListModel<String> requestListModel;
+	//private DefaultListModel<String> requestListModel;
+	private Map<String, Request> acceptedRequests;
 	
 	private DefaultListModel<String> currentListModel;
 	private JList<String> currentList;
@@ -49,18 +58,20 @@ public class HostNetworkScreen extends JPanel {
 	
 	public HostNetworkScreen(TerraceFrame frame) {
 		_frame = frame;
+		acceptedRequests = new HashMap<>();
 		setBackground(backgroundColor);
 		setLayout(new GridBagLayout());
+		
 	}
-	
 	public void removeRequest(Request r) {
-		//TODO Not sure how to remove from the defaultListmodel
+		if (!_requestListModel.removeElement(r)) {
+			acceptedRequests.remove(r.toString());
+			currentListModel.removeElement(r.toString());
+		}
 	}
-	
 	public void addRequest(Request r) {
 		_requestListModel.addElement(r);
 	}
-	
 	public void setPlayerNames(List<String> names) {
 		_numPlayers = names.size();
 		_playerNames = names;
@@ -68,12 +79,29 @@ public class HostNetworkScreen extends JPanel {
 		_localPlayers.addAll(names);
 		addComponents();
 	}
-	
 	private void addComponents() {
-		_requestListModel = new DefaultListModel<>();
-		_requests = new JList<>(_requestListModel);
-		JScrollPane requestScroll = new JScrollPane(_requests);
+		List<String> names1 = new ArrayList<>();
+		names1.add("name1");
+		names1.add("name2");
+		names1.add("name3");
 		
+		List<String> names2 = new ArrayList<>();
+		names2.add("longNameldkjsfd");
+		
+		List<String> names3 = new ArrayList<>();
+		names3.add("name");
+		
+		_requestListModel = new DefaultListModel<>();
+		_requestListModel.addElement(new Request(names1));
+		_requestListModel.addElement(new Request(names2));
+		_requestListModel.addElement(new Request(names3));
+		_requests = new JList<>(_requestListModel);
+		_requests.addListSelectionListener(new AcceptRequestListener());
+		JScrollPane requestScroll = new JScrollPane(_requests);
+		GridBagConstraints scrollConstraints = new GridBagConstraints();
+		scrollConstraints.gridx  = 1;
+		scrollConstraints.gridy = 1;
+		requestScroll.setPreferredSize(new Dimension(300, 300));
 		
 		JLabel currentLabel = new JLabel("Current Players");
 		currentLabel.setForeground(headerColor);
@@ -93,6 +121,7 @@ public class HostNetworkScreen extends JPanel {
 		currentList.setFont(defaultFont);
 		JScrollPane currListScrollPane = new JScrollPane(currentList);
 		
+
 		GridBagConstraints currScrollConstraints = new GridBagConstraints();
 		currScrollConstraints.gridx  = 0;
 		currScrollConstraints.gridy = 1;
@@ -124,7 +153,7 @@ public class HostNetworkScreen extends JPanel {
 		requestLabel.setForeground(headerColor);
 		requestConst.insets = new Insets(0, 0, 20, 0);
 
-		requestListModel = new DefaultListModel<>();
+		/*requestListModel = new DefaultListModel<>();
 		requestListModel.addElement("john, joe");
 		requestListModel.addElement("dlasfjkldafj");
 		requestListModel.addElement("dlasfjsdfasdfdsfdsfdsafsfakldafj");
@@ -141,17 +170,17 @@ public class HostNetworkScreen extends JPanel {
 		GridBagConstraints scrollConstraints = new GridBagConstraints();
 		scrollConstraints.gridx  = 1;
 		scrollConstraints.gridy = 1;
-		listScrollPane.setPreferredSize(new Dimension(300, 300));
+		listScrollPane.setPreferredSize(new Dimension(300, 300));*/
 		
 		add(currListScrollPane, currScrollConstraints);
-		add(listScrollPane, scrollConstraints);
+		add(requestScroll, scrollConstraints);
 		add(addButton, addConst);
 		add(removeButton, removeConst);
 		add(currentLabel, currLabelConst);
 		add(requestLabel, requestConst);
 	}
-	
 	class CurrListListener implements ListSelectionListener {
+
 		@Override
 		public void valueChanged(ListSelectionEvent e) {
 			if (currentList.getSelectedIndex() == -1) {
@@ -165,28 +194,32 @@ public class HostNetworkScreen extends JPanel {
 			}
 		}
 	}
-	
 	class RemoveButtonListener implements ActionListener {
+
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			String line = (String) currentList.getSelectedValue();
 			currentListModel.remove(currentList.getSelectedIndex());
-			requestListModel.addElement(line);
+			_requestListModel.addElement(acceptedRequests.get(line));
+			acceptedRequests.remove(line);
+			addButton.setEnabled(true);
 			if (_numPlayers <= _localPlayers.size()) {
 				removeButton.setEnabled(false);
 			}
 		}
+		
 	}
-	
 	class AcceptRequestListener implements ListSelectionListener {
+
 		@Override
 		public void valueChanged(ListSelectionEvent e) {
-			String line = (String) requestList.getSelectedValue();
-			if (line == null) {
+			Request r = (Request) _requests.getSelectedValue();
+			if (r == null) {
 				return;
 			}
-			String[] names = line.split(", ");
-			if (requestList.getSelectedIndex() == -1) {
+			String[] names = r.toString().split(", ");
+			System.out.println(_numPlayers + names.length);
+			if (_requests.getSelectedIndex() == -1) {
 				addButton.setEnabled(false);
 			} else if (_numPlayers +  names.length > 4) {
 				addButton.setEnabled(false);
@@ -197,22 +230,19 @@ public class HostNetworkScreen extends JPanel {
 			}
 		}
 	}
-	
 	class AddButtonListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			String line = (String) requestList.getSelectedValue();
-			String[] names = line.split(", ");
-			int index = requestList.getSelectedIndex();
-			currentListModel.addElement(line);
-			for(String name : names) {
-				_playerNames.add(name);
-			}
+			Request r = (Request) _requests.getSelectedValue();
+			String[] names = r.toString().split(", ");//TODO change this later
+			int index = _requests.getSelectedIndex();
+			currentListModel.addElement(r.toString());
+			acceptedRequests.put(r.toString(), r);
 			_numPlayers += names.length;
 			if (_numPlayers == 4) {
 				addButton.setEnabled(false);
 			}
-			requestListModel.remove(index);
+			_requestListModel.remove(index);
 		}
 		
 	}
