@@ -394,6 +394,7 @@ public class LocalGameSetup extends JPanel {
 	private void resetScreen() {
 		switch (_networkType) {
 		case LOCAL: standard.setSelected(true);
+					player1.setText("Player 1");
 					onePlayer.setSelected(true);
 					p2.setText("CPU");
 					player2.setText("CPU");
@@ -404,12 +405,15 @@ public class LocalGameSetup extends JPanel {
 					player3.setVisible(false);
 					player4.setVisible(false);
 					break;
-		default :	standard.setSelected(true);
+		default :	player1.setText("Player 1");
+					standard.setSelected(true);
 					onePlayer.setSelected(true);
 					player2.setVisible(false);
+					player2.setText("Player 2");
 					player2.setEnabled(false);
 					p2.setVisible(false);
 					player3.setEnabled(false);
+					player3.setText("Player 3");
 					p3.setVisible(false);
 					player3.setVisible(false);
 					break;
@@ -423,7 +427,6 @@ public class LocalGameSetup extends JPanel {
 			_frame.changeCard("Setup");
 			resetScreen();
 		}
-		
 	}
 	class LengthListener implements ActionListener {
 
@@ -437,7 +440,6 @@ public class LocalGameSetup extends JPanel {
 		}
 		
 	}
-	//[^,]+
 	class NameLengthListener implements KeyListener {
 
 		@Override
