@@ -97,7 +97,6 @@ public abstract class GUIBoard implements Drawable {
 		_foundation.draw(gl);	
 		for (BoardTile[] tileArray : _boardTiles)
 			for (BoardTile tile : tileArray) tile.draw(gl);
-		
 		for (GamePiece piece : _gamePieces) piece.draw(gl);
 	}
 }

@@ -44,7 +44,7 @@ public class GameScreen extends JPanel {
 		topBar.setBorder(new EmptyBorder(5, 20, 5, 5));
 		
 		_status = new JLabel();
-		_status.setFont(new Font("Dialog", Font.BOLD, 16));
+		//_status.setFont(new Font("Dialog", Font.BOLD, 16));
 		
 		JButton mainMenu = new JButton("Main Menu");
 		mainMenu.addActionListener(new ActionListener() {
@@ -105,7 +105,8 @@ public class GameScreen extends JPanel {
 	
 	public void setCurrPlayer(Player player) {
 		_status.setText(player.getName() + "'s turn");
-		_status.setForeground(player.getColor().toColor());
+		Color color = player.getColor().toColor().darker();
+		_status.setForeground(color);
 	}
 	
 	public void setWinner(Player player) {
