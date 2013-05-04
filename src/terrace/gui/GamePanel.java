@@ -1,8 +1,6 @@
 package terrace.gui;
 
-import java.awt.Color;
 import java.awt.Frame;
-import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -18,7 +16,6 @@ import javax.media.opengl.GLEventListener;
 import javax.media.opengl.GLProfile;
 import javax.media.opengl.awt.GLJPanel;
 import javax.media.opengl.glu.GLU;
-import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.vecmath.Vector2d;
 import javax.vecmath.Vector3d;
@@ -26,7 +23,6 @@ import javax.vecmath.Vector3d;
 import terrace.GameServer;
 import terrace.GameState;
 import terrace.Move;
-import terrace.NetworkType;
 import terrace.Piece;
 import terrace.Player;
 import terrace.util.Callback;
@@ -34,7 +30,6 @@ import terrace.util.Callback;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.jogamp.opengl.util.Animator;
-import com.jogamp.opengl.util.awt.Overlay;
 
 
 public class GamePanel extends GLJPanel implements MouseWheelListener, MouseListener, MouseMotionListener{
@@ -84,8 +79,11 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 			@Override
 			public void call(GameState state) {
 				_game = state;
-				_screen.setCurrPlayer(_game.getActivePlayer());
 				_board.resetPieces();
+				
+				if (!_game.getWinner().isPresent()) {
+					_screen.setCurrPlayer(_game.getActivePlayer());
+				}
 				
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override

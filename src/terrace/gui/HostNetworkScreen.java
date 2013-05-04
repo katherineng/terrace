@@ -12,8 +12,11 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.swing.BoxLayout;
@@ -28,7 +31,7 @@ import javax.swing.SpringLayout;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import message.Request;
+import terrace.network.Request;
 
 public class HostNetworkScreen extends JPanel {
 	private TerraceFrame _frame;
@@ -44,9 +47,12 @@ public class HostNetworkScreen extends JPanel {
 	private static final Font headerFont = new Font("Verdana", Font.BOLD, 30);
 	private static final Font defaultFont = new Font("Verdana", Font.BOLD, 16);
 	
-	private JList<String> requestList;
+	//private JList<String> requestList;
 	private JButton addButton;
-	private DefaultListModel<String> requestListModel;
+	//private DefaultListModel<String> requestListModel;
+	private Map<String, Request> acceptedRequests;
+	
+	private JLabel error;
 	
 	private DefaultListModel<String> currentListModel;
 	private JList<String> currentList;
@@ -54,12 +60,19 @@ public class HostNetworkScreen extends JPanel {
 	
 	public HostNetworkScreen(TerraceFrame frame) {
 		_frame = frame;
+		acceptedRequests = new HashMap<>();
 		setBackground(backgroundColor);
 		setLayout(new GridBagLayout());
-		
+		_requestListModel = new DefaultListModel<>();
+		currentListModel = new DefaultListModel<>();
+		removeButton = new JButton();
+		addButton = new JButton();
 	}
 	public void removeRequest(Request r) {
-		//TODO Not sure how to remove from the defaultListmodel
+		if (!_requestListModel.removeElement(r)) {
+			acceptedRequests.remove(r.toString());
+			currentListModel.removeElement(r.toString());
+		}
 	}
 	public void addRequest(Request r) {
 		_requestListModel.addElement(r);
@@ -69,19 +82,33 @@ public class HostNetworkScreen extends JPanel {
 		_playerNames = names;
 		_localPlayers = new HashSet<>();
 		_localPlayers.addAll(names);
+		for(String name : names) {
+			currentListModel.addElement(name);
+		}
 		addComponents();
 	}
 	private void addComponents() {
+		List<String> names1 = new ArrayList<>();
+		names1.add("name1");
+		names1.add("name2");
+		names1.add("name3");
 		
-		requestListModel = new DefaultListModel();
-		_requests = new JList(requestListModel);
+		List<String> names2 = new ArrayList<>();
+		names2.add("longNameldkjsfd");
 		
-		JPanel currentPlayers = new JPanel(new GridBagLayout());
-		//currentPlayers.setBackground(backgroundColor);
-		GridBagConstraints currConstraints = new GridBagConstraints();
-		currConstraints.gridx = 0;
-		currConstraints.gridy = 1;
-		//currConstraints.insets = new Insets(0, 0, 0, 0);
+		List<String> names3 = new ArrayList<>();
+		names3.add("name");
+		
+		_requests  = new JList<>(_requestListModel);
+		_requestListModel.addElement(new Request(names1));
+		_requestListModel.addElement(new Request(names2));
+		_requestListModel.addElement(new Request(names3));
+		_requests.addListSelectionListener(new AcceptRequestListener());
+		JScrollPane requestScroll = new JScrollPane(_requests);
+		GridBagConstraints scrollConstraints = new GridBagConstraints();
+		scrollConstraints.gridx  = 1;
+		scrollConstraints.gridy = 1;
+		requestScroll.setPreferredSize(new Dimension(300, 300));
 		
 		JLabel currentLabel = new JLabel("Current Players");
 		currentLabel.setForeground(headerColor);
@@ -92,7 +119,6 @@ public class HostNetworkScreen extends JPanel {
 		currLabelConst.gridy = 0;
 		currLabelConst.insets = new Insets(0, 0, 20, 0);
 		
-		currentListModel = new DefaultListModel<>();
 		currentList = new JList<String>(currentListModel);
 		currentList.addListSelectionListener(new CurrListListener());
 		currentList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -107,10 +133,6 @@ public class HostNetworkScreen extends JPanel {
 		currScrollConstraints.gridy = 1;
 		currScrollConstraints.insets = new Insets(0, 0, 0, 20);
 		currListScrollPane.setPreferredSize(new Dimension(300, 300));
-		
-		for(String s: _playerNames) {
-			currentListModel.addElement(s);
-		}
 		
 		removeButton = new JButton("remove from game");
 		removeButton.addActionListener(new RemoveButtonListener());
@@ -133,8 +155,32 @@ public class HostNetworkScreen extends JPanel {
 		requestLabel.setForeground(headerColor);
 		requestConst.insets = new Insets(0, 0, 20, 0);
 
+		error = new JLabel();
+		GridBagConstraints errorConst = new GridBagConstraints();
+		errorConst.gridx = 0;
+		errorConst.gridy = 4;
+		errorConst.gridwidth = 2;
+		errorConst.insets = new Insets(20, 0, 0, 0);
+		error.setFont(defaultFont);
+		error.setVisible(false);
 		
-		requestListModel = new DefaultListModel<>();
+		JButton backButton = new JButton("Back");
+		GridBagConstraints backConst = new GridBagConstraints();
+		backConst.gridx  = 0;
+		backConst.gridy = 3;
+		backConst.insets = new Insets(20, 0, 0, 0);
+		backButton.addActionListener(new BackListener());
+		
+		JButton goButton = new JButton("Start Game");
+		GridBagConstraints goConst = new GridBagConstraints();
+		goConst.gridx = 2;
+		goConst.gridy = 3;
+		goConst.insets = new Insets(20, 0, 0, 0);
+		goButton.addActionListener(new GoListener());
+		//error.setBackground(backgroundColor);
+		//error.setForeground(Color.RED);
+		
+		/*requestListModel = new DefaultListModel<>();
 		requestListModel.addElement("john, joe");
 		requestListModel.addElement("dlasfjkldafj");
 		requestListModel.addElement("dlasfjsdfasdfdsfdsfdsafsfakldafj");
@@ -151,14 +197,24 @@ public class HostNetworkScreen extends JPanel {
 		GridBagConstraints scrollConstraints = new GridBagConstraints();
 		scrollConstraints.gridx  = 1;
 		scrollConstraints.gridy = 1;
-		listScrollPane.setPreferredSize(new Dimension(300, 300));
+		listScrollPane.setPreferredSize(new Dimension(300, 300));*/
 		
 		add(currListScrollPane, currScrollConstraints);
-		add(listScrollPane, scrollConstraints);
+		add(requestScroll, scrollConstraints);
 		add(addButton, addConst);
 		add(removeButton, removeConst);
 		add(currentLabel, currLabelConst);
 		add(requestLabel, requestConst);
+		add(error, errorConst);
+		add(backButton, backConst);
+	}
+	class GoListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			//TODO not sure what to start
+		}
+		
 	}
 	class CurrListListener implements ListSelectionListener {
 
@@ -166,63 +222,73 @@ public class HostNetworkScreen extends JPanel {
 		public void valueChanged(ListSelectionEvent e) {
 			if (currentList.getSelectedIndex() == -1) {
 				removeButton.setEnabled(false);
-			} else if(_localPlayers.size() > currentList.getSelectedIndex()) {
-				removeButton.setEnabled(false);
 			} else {
-				if (_numPlayers >= _localPlayers.size()) {
-					removeButton.setEnabled(true);
-				}	
+				removeButton.setEnabled(true);
 			}
 		}
+	}
+	class BackListener implements ActionListener {//TODO add a popup
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			_frame.changeCard("Setup");
+			_requestListModel.clear();
+			currentListModel.removeAllElements();
+			acceptedRequests.clear();
+		}
+		
 	}
 	class RemoveButtonListener implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			String line = (String) currentList.getSelectedValue();
-			currentListModel.remove(currentList.getSelectedIndex());
-			requestListModel.addElement(line);
-			if (_numPlayers <= _localPlayers.size()) {
-				removeButton.setEnabled(false);
+			int index = currentList.getSelectedIndex();
+			if (index < _localPlayers.size()) {
+				error.setText("Cannot remove local players from game");
+				error.setVisible(true);
+			} else {
+				currentListModel.remove(index);
+				_numPlayers -= acceptedRequests.get(line).getNumberOfPlayers();
+				_requestListModel.addElement(acceptedRequests.get(line));
+				acceptedRequests.remove(line);
+				if (currentListModel.size() != 0){
+					currentList.setSelectedIndex(0);
+				}
+				error.setVisible(false);
 			}
 		}
-		
 	}
 	class AcceptRequestListener implements ListSelectionListener {
 
 		@Override
 		public void valueChanged(ListSelectionEvent e) {
-			String line = (String) requestList.getSelectedValue();
-			if (line == null) {
-				return;
-			}
-			String[] names = line.split(", ");
-			if (requestList.getSelectedIndex() == -1) {
-				addButton.setEnabled(false);
-			} else if (_numPlayers +  names.length > 4) {
+			if (_requests.getSelectedIndex() == -1) {
 				addButton.setEnabled(false);
 			} else {
-				if (_numPlayers != 4) {
-					addButton.setEnabled(true);
-				}	
+				addButton.setEnabled(true);
 			}
 		}
 	}
 	class AddButtonListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			String line = (String) requestList.getSelectedValue();
-			String[] names = line.split(", ");
-			int index = requestList.getSelectedIndex();
-			currentListModel.addElement(line);
-			for(String name : names) {
-				_playerNames.add(name);
+			Request r = (Request) _requests.getSelectedValue();
+			int index = _requests.getSelectedIndex();
+			if (_numPlayers + r.getNumberOfPlayers() > 4) {
+				System.out.println("error");
+				error.setText("Game cannot have more than 4 players");
+				error.setVisible(true);
+			} else {
+				currentListModel.addElement(r.toString());
+				acceptedRequests.put(r.toString(), r);
+				_numPlayers += r.getNumberOfPlayers();
+				if (_requestListModel.size() != 0){
+					_requests.setSelectedIndex(0);
+				}
+				_requestListModel.remove(index);
+				error.setVisible(false);
 			}
-			_numPlayers += names.length;
-			if (_numPlayers == 4) {
-				addButton.setEnabled(false);
-			}
-			requestListModel.remove(index);
 		}
 		
 	}

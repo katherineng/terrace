@@ -18,7 +18,26 @@ public class GUITriangleBoard extends GUIBoard {
 		
 		setUpBoard();
 	}
+	
+	private boolean orientedDown(Posn pos){
+		if (pos.y % 2 == 0) return true;
+		return false;
+	}
 
+	@Override
+	double getRowShift(Posn p){
+		double toRet = 1.0/getWidth()*p.x;;
+		if (!orientedDown(p)) toRet +=  1.0/getWidth();
+		return toRet;
+	}
+
+	@Override
+	double getColShift(Posn p){
+		double toRet = 1.0/getWidth()/2*p.y;
+		if (!orientedDown(p)) toRet +=  1.0/getWidth();
+		return toRet;
+	}
+	
 	@Override
 	public double getShiftFactor() {
 		return 0;
@@ -28,14 +47,10 @@ public class GUITriangleBoard extends GUIBoard {
 	protected void setUpBoard() {
 		//needed because translation is relative to center of shape, not the corner
 		Board gameBoard = _panel._game.getBoard();
-//		System.out.println("Elevations");
-//		System.out.println(gameBoard.elevationsToString());
-//		System.out.println("=====================================");
 		for (int y = 0; y < gameBoard.getHeight(); y++){
 			for (int x = 0; x < gameBoard.getWidth(); x++){
 				Posn pos = new Posn(x, y);
-				double height = gameBoard.getElevation(pos)/10.;
-				System.out.println(gameBoard.elevationsToString());
+				double height = gameBoard.getElevation(pos)/30.;
 				// set up _boardPiece
 				BoardTile tile = new TriangleTile(
 						this,

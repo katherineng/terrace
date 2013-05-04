@@ -20,7 +20,12 @@ public class LocalPlayer extends Player {
 	
 	@Override
 	public Optional<Move> getMove(int timeout) {
-		return moves.tryGet(timeout, TimeUnit.SECONDS);
+		try {
+			return moves.tryGet(timeout, TimeUnit.SECONDS);
+		} catch (IOException e) {
+			System.err.println("LOG: " + e.getLocalizedMessage());
+			return Optional.absent();
+		}
 	}
 	
 	public void sendMove(Move move) {

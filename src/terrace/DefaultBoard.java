@@ -22,6 +22,19 @@ public class DefaultBoard extends Board {
 		_variant = variant;
 		setUp();
 	}
+
+	@Override
+	public Board copy() {
+		Board copy = new DefaultBoard(_dimensions, _variant);
+		for (int x = 0; x < getWidth(); x++) {
+			for (int y = 0; y < getHeight(); y++) {
+				if (_board[x][y] != null) {
+					copy._board[x][y] = _board[x][y].copy();
+				}
+			}
+		}
+		return copy;
+	}
 	
 	/**
 	 * Fills in the elevations array with the appropriate elevations for each position
@@ -267,20 +280,6 @@ public class DefaultBoard extends Board {
 	@Override
 	public int getHeight() {
 		return _dimensions;
-	}
-	
-	@Override
-	public Board copyBoard() {
-		Board copy = new DefaultBoard(_dimensions, _variant);
-		for (int i = 0; i < _dimensions; i++) {
-			for (int j = 0; j < _dimensions; j++) {
-				Piece p = _board[i][j];
-				if (p != null) {
-					copy.setPieceAt(new Posn(p.getPosn().x, p.getPosn().y), p.copy());
-				}
-			}
-		}
-		return copy;
 	}
 	
 	public int getDimensions() {

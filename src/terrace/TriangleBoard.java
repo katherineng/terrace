@@ -212,20 +212,6 @@ public class TriangleBoard extends Board {
 	}
 	
 	@Override
-	public TriangleBoard copyBoard() {
-		TriangleBoard copy = new TriangleBoard(_dimensions);
-		for (int i = 0; i < _dimensions; i++) {
-			for (int j = 0; j < _dimensions*2; j++) {
-				Piece p = _board[i][j];
-				if (p != null) {
-					copy.setPieceAt(p.getPosn(), p.copy());
-				}
-			}
-		}
-		return copy;
-	}
-	
-	@Override
 	public int getElevation(Posn p) {
 		return _elevationsMap.get(_dimensions)[p.getX()][p.getY()];
 	}
@@ -242,5 +228,16 @@ public class TriangleBoard extends Board {
 		}
 		
 		return elevations;
+	}
+	
+	@Override
+	public Board copy() {
+		Board copy = new TriangleBoard(_dimensions);
+		for (int x = 0; x < getWidth(); x++) {
+			for (int y = 0; y < getHeight(); y++) {
+				copy._board[x][y] = _board[x][y].copy();
+			}
+		}
+		return copy;
 	}
 }
