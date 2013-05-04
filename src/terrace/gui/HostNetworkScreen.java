@@ -28,7 +28,7 @@ import javax.swing.SpringLayout;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-//import message.Request;
+import message.Request;
 
 public class HostNetworkScreen extends JPanel {
 	private TerraceFrame _frame;
