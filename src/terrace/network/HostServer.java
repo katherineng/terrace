@@ -33,9 +33,16 @@ public class HostServer implements Runnable, Closeable {
 	}
 	
 	@Override
-	public void close() throws IOException {
+	public void close() {
 		_closed = true;
 		
-		for (ClientConnection c : _clients) c.close();
+		for (ClientConnection c : _clients) {
+			try {
+				c.close();
+			} catch (IOException e) {
+				System.err.println("LOG: " + e.getLocalizedMessage());
+				// Swallow
+			}
+		}
 	}
 }

@@ -1,7 +1,6 @@
 package terrace;
 
 import java.io.Closeable;
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -80,7 +79,7 @@ public class GameServer implements Closeable {
 	}
 	
 	@Override
-	public void close() throws IOException {
+	public void close() {
 		_closed = true;
 	}
 }
