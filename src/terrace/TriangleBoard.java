@@ -235,7 +235,9 @@ public class TriangleBoard extends Board {
 		Board copy = new TriangleBoard(_dimensions);
 		for (int x = 0; x < getWidth(); x++) {
 			for (int y = 0; y < getHeight(); y++) {
-				copy._board[x][y] = _board[x][y].copy();
+				if (_board[x][y] != null) {
+					copy._board[x][y] = _board[x][y].copy();
+				}
 			}
 		}
 		return copy;

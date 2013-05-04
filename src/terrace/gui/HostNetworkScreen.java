@@ -1,10 +1,14 @@
 package terrace.gui;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -22,6 +27,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.SpringLayout;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -163,35 +169,16 @@ public class HostNetworkScreen extends JPanel {
 		backConst.gridx  = 0;
 		backConst.gridy = 3;
 		backConst.insets = new Insets(20, 0, 0, 0);
+		backConst.anchor = GridBagConstraints.WEST;
 		backButton.addActionListener(new BackListener());
 		
 		JButton goButton = new JButton("Start Game");
 		GridBagConstraints goConst = new GridBagConstraints();
-		goConst.gridx = 2;
+		goConst.gridx = 1;
 		goConst.gridy = 3;
 		goConst.insets = new Insets(20, 0, 0, 0);
+		goConst.anchor = GridBagConstraints.EAST;
 		goButton.addActionListener(new GoListener());
-		//error.setBackground(backgroundColor);
-		//error.setForeground(Color.RED);
-		
-		/*requestListModel = new DefaultListModel<>();
-		requestListModel.addElement("john, joe");
-		requestListModel.addElement("dlasfjkldafj");
-		requestListModel.addElement("dlasfjsdfasdfdsfdsfdsafsfakldafj");
-		requestListModel.addElement("dlasfjkldafj");
-		requestListModel.addElement("dlasfjkldafj");
-		requestListModel.addElement("dlasfjkldafj");
-		requestList = new JList<String>(requestListModel);
-		requestList.addListSelectionListener(new AcceptRequestListener());
-		requestList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		requestList.setSelectedIndex(0);
-		requestList.setVisibleRowCount(5);
-		requestList.setFont(defaultFont);
-		JScrollPane listScrollPane = new JScrollPane(requestList);
-		GridBagConstraints scrollConstraints = new GridBagConstraints();
-		scrollConstraints.gridx  = 1;
-		scrollConstraints.gridy = 1;
-		listScrollPane.setPreferredSize(new Dimension(300, 300));*/
 		
 		add(currListScrollPane, currScrollConstraints);
 		add(requestScroll, scrollConstraints);
@@ -201,6 +188,7 @@ public class HostNetworkScreen extends JPanel {
 		add(requestLabel, requestConst);
 		add(error, errorConst);
 		add(backButton, backConst);
+		add(goButton, goConst);
 	}
 	class GoListener implements ActionListener {
 
@@ -225,10 +213,11 @@ public class HostNetworkScreen extends JPanel {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			_frame.changeCard("Setup");
+			_frame.changeCard("networked game setup");
 			_requestListModel.clear();
 			currentListModel.removeAllElements();
 			acceptedRequests.clear();
+			error.setVisible(false);
 		}
 		
 	}
@@ -269,8 +258,10 @@ public class HostNetworkScreen extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			Request r = (Request) _requests.getSelectedValue();
 			int index = _requests.getSelectedIndex();
+			if (r == null) {
+				return;
+			}
 			if (_numPlayers + r.getNumberOfPlayers() > 4) {
-				System.out.println("error");
 				error.setText("Game cannot have more than 4 players");
 				error.setVisible(true);
 			} else {

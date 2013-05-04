@@ -1,10 +1,8 @@
 package terrace;
 
-import java.util.Objects;
+import terrace.util.Posn;
 
 import com.google.common.base.Optional;
-
-import terrace.util.Posn;
 
 public class Move {
 	private final Piece _piece;
@@ -34,7 +32,6 @@ public class Move {
 	public Optional<Piece> getCapturedPiece() {
 		return _captured;
 	}
-	
 	
 	@Override
 	public boolean equals(Object obj) {

@@ -1,17 +1,23 @@
 package terrace;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.LinkedList;
 import java.util.List;
 
 import terrace.ai.AI;
 import terrace.gui.LocalPlayer;
+import terrace.network.Request;
 import terrace.util.Callback;
 
 public class GameBuilder {
 	private int totalPlayers;
 	private int localPlayers;
 	private int networkPlayers;
-	private GameType type;
+	private GameType _type;
 	private Variant _variant;
 	private int _size = 8;
 	
@@ -44,10 +50,36 @@ public class GameBuilder {
 		_size = size;
 	}
 	public void localGame() {
-		type = GameType.Local;
+		_type = GameType.Local;
 	}
-	public void hostGame() {
+	public void hostGame(
+			final int port,
+			Callback<Request> newRequest,
+			Callback<Request> requestDropped
+	) {
+		_type = GameType.Host;
 		
+		new Thread() {
+			@Override
+			public void run() {
+				try {
+					ServerSocket server = new ServerSocket(port);
+					
+					while (true) {
+						final Socket client = server.accept();
+						
+						new Thread() {
+							@Override
+							public void run() {
+								dispatchClient(client);
+							}
+						}.start();
+					}
+				} catch (IOException e) {
+					System.err.println("LOG: " + e.getLocalizedMessage());
+				}
+			}
+		}.start();
 	}
 	public GameServer startGame() {
 		List<Player> players = new LinkedList<>();
@@ -56,8 +88,7 @@ public class GameBuilder {
 		
 		for (int i = 0; i < localPlayers; i++) {
 			players.add(new LocalPlayer(PlayerColor.values()[playerNum]));
-			playerNum++;// TODO Auto-generated method stub
-			
+			playerNum++;
 		}
 		for (int i = 0; i < getNumAIPlayers(); i++) {
 			players.add(new AI(PlayerColor.values()[playerNum]));
@@ -86,7 +117,7 @@ public class GameBuilder {
 				try {
 					s.run();
 				} catch (Throwable t) {
-					System.err.println(t.getLocalizedMessage());
+					t.printStackTrace();
 				}
 			}
 		}.start();
@@ -100,5 +131,22 @@ public class GameBuilder {
 	
 	public void setPlayerNames(List<String> names) {
 		_names = names;
+	}
+	
+	private void dispatchClient(Socket client) {
+		try {
+			client.getOutputStream().write("TERRACE-Server\n".getBytes());
+			
+			BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
+			
+			if (!"TERRACE-Client".equals(in.readLine())) {
+				System.err.println("LOG: Bad client. Dropping.");
+				return;
+			}
+			
+			
+		} catch (IOException e) {
+			 System.err.println("LOG: " + e.getLocalizedMessage());
+		}
 	}
 }
