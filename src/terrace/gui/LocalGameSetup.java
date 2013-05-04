@@ -55,6 +55,10 @@ public class LocalGameSetup extends JPanel {
 	private JTextField player4;
 	private JRadioButton standard;
 	private JRadioButton onePlayer;
+	private JRadioButton twoPlayer;
+	private JRadioButton threePlayer;
+	private JRadioButton fourPlayer;
+	
 	private final static int MAX_NAME_LENGTH = 15;
 	private int boardSize = 1;// 0 if small 1 if large
 	private final String regexp = "[^,]+";
@@ -284,7 +288,7 @@ public class LocalGameSetup extends JPanel {
 		oneConst.gridx = 0;
 		oneConst.gridy = 0;
 
-		JRadioButton twoPlayer = new JRadioButton("2");
+		twoPlayer = new JRadioButton("2");
 		twoPlayer.setActionCommand("2");
 		twoPlayer.setBackground(backgroundColor);
 		twoPlayer.setForeground(defaultColor);
@@ -294,7 +298,7 @@ public class LocalGameSetup extends JPanel {
 		twoConst.gridx = 1;
 		twoConst.gridy = 0;
 		
-		JRadioButton threePlayer = new JRadioButton("3");
+		threePlayer = new JRadioButton("3");
 		threePlayer.setActionCommand("3");
 		threePlayer.setBackground(backgroundColor);
 		threePlayer.setForeground(defaultColor);
@@ -387,7 +391,7 @@ public class LocalGameSetup extends JPanel {
 			player4.setVisible(false);
 			playerNames.add(player4, player4Const);
 			
-			JRadioButton fourPlayer = new JRadioButton("4");
+			fourPlayer = new JRadioButton("4");
 			fourPlayer.setActionCommand("4");
 			fourPlayer.setBackground(backgroundColor);
 			fourPlayer.setForeground(defaultColor);
@@ -597,6 +601,22 @@ public class LocalGameSetup extends JPanel {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			v = Variant.valueOf(e.getActionCommand());
+			if (v == Variant.TRIANGLE) {
+				player3.setVisible(false);
+				player4.setVisible(false);
+				p3.setVisible(false);
+				p4.setVisible(false);
+				onePlayer.setSelected(true);
+				threePlayer.setEnabled(false);
+				if (_networkType == NetworkType.LOCAL) {
+					fourPlayer.setEnabled(false);
+				}
+			} else {
+				threePlayer.setEnabled(true);
+				if (_networkType == NetworkType.LOCAL) {
+					fourPlayer.setEnabled(true);
+				}
+			}
 		}
 		
 	}
@@ -609,7 +629,6 @@ public class LocalGameSetup extends JPanel {
 		}
 		
 	}
-	
 	class NumPlayerListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
