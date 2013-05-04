@@ -1,11 +1,7 @@
 package terrace;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -13,6 +9,7 @@ import java.util.concurrent.Executors;
 
 import terrace.ai.AI;
 import terrace.gui.LocalPlayer;
+import terrace.network.ClientConnection;
 import terrace.network.Request;
 import terrace.util.Callback;
 
@@ -73,14 +70,7 @@ public class GameBuilder {
 					ServerSocket server = new ServerSocket(port);
 					
 					while (true) {
-						final Socket client = server.accept();
-						
-						es.submit(new Runnable() {
-							@Override
-							public void run() {
-								dispatchClient(client);
-							}
-						});
+						es.submit(new ClientConnection(server.accept()));
 					}
 				} catch (IOException e) {
 					System.err.println("LOG: " + e.getLocalizedMessage());
@@ -138,39 +128,5 @@ public class GameBuilder {
 	
 	public void setPlayerNames(List<String> names) {
 		_names = names;
-	}
-	
-	private void dispatchClient(Socket client) {
-		try {
-			client.getOutputStream().write("TERRACE-Server\n".getBytes());
-			PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-			BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
-			
-			out.println("TERRACE-Server");
-			
-			if (!"TERRACE-Client".equals(in.readLine())) {
-				System.err.println("LOG: Bad client. Dropping.");
-				return;
-			}
-			
-			List<String> names = new LinkedList<>();
-			
-			while (true) {
-				String line = in.readLine();
-				
-				if (line == null) {
-					return;
-				} else if (line.equals("")) {
-					break;
-				} else {
-					names.add(line);
-				}
-			}
-			if (localPlayers + networkPlayers + names.size() > 4) {
-				out.println("Too many players");
-			}
-		} catch (IOException e) {
-			 System.err.println("LOG: " + e.getLocalizedMessage());
-		}
 	}
 }
