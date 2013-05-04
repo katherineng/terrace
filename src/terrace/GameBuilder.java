@@ -46,6 +46,9 @@ public class GameBuilder {
 	public void setVariant(Variant variant) {
 		_variant = variant;
 	}
+	public Variant getVariant() {
+		return _variant;
+	}
 	public void setSize(int size) {
 		_size = size;
 	}
