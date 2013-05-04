@@ -336,7 +336,7 @@ public class LocalGameSetup extends JPanel {
 		errorConst.gridx = 1;
 		errorConst.gridy = 6;
 		//errorConst.gridwidth = 2;
-		JLabel portLabel = new JLabel("Port");
+		JLabel portLabel = new JLabel("Port ");
 		portLabel.setFont(defaultFont);
 		portLabel.setVisible(false);
 		
@@ -418,7 +418,8 @@ public class LocalGameSetup extends JPanel {
 		
 		
 	}
-	private void resetScreen() {
+	public void resetScreen() {
+		System.out.println("called");
 		switch (_networkType) {
 		case LOCAL: standard.setSelected(true);//TODO if field is empty when focus is lost, reset to "player _"
 					player1.setText("Player 1");
@@ -452,7 +453,6 @@ public class LocalGameSetup extends JPanel {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			_frame.changeCard("Setup");
-			resetScreen();
 		}
 	}
 	class LengthListener implements ActionListener {

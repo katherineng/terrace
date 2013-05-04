@@ -31,6 +31,9 @@ public class TerraceFrame extends JFrame {
 	private GamePanel _currentGame;
 	private HostNetworkScreen _networkScreen;
 	private GameScreen _currentGameScreen;
+	private LocalGameSetup _localSetup;
+	private LocalGameSetup _hostSetup;
+	private LocalGameSetup _joinSetup;
 	
 	public TerraceFrame() {
 		setPreferredSize(new Dimension(1200, 1200));
@@ -38,6 +41,9 @@ public class TerraceFrame extends JFrame {
 		_cards = new JPanel(new CardLayout());
 		
 		_networkScreen = new HostNetworkScreen(this);
+		_localSetup = new LocalGameSetup(this, NetworkType.LOCAL);
+		_hostSetup = new LocalGameSetup(this, NetworkType.HOST);
+		_joinSetup = new LocalGameSetup(this, NetworkType.JOIN);
 		
 		setExtendedState(getExtendedState() | MAXIMIZED_BOTH);
 		getContentPane().setLayout(new CardLayout());
@@ -45,9 +51,9 @@ public class TerraceFrame extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		_cards.add(new StartScreen(this), START_SCREEN);
-		_cards.add(new LocalGameSetup(this, NetworkType.LOCAL), LOCAL_SETUP);
-		_cards.add(new LocalGameSetup(this, NetworkType.HOST), NETWORK_SETUP);
-		_cards.add(new LocalGameSetup(this, NetworkType.JOIN), JOIN_SETUP);
+		_cards.add(_localSetup, LOCAL_SETUP);
+		_cards.add(_hostSetup, NETWORK_SETUP);
+		_cards.add(_joinSetup, JOIN_SETUP);
 		_cards.add(new HelpScreen(this), HELP_SCREEN);
 		_cards.add(_networkScreen, HOST_GAME);
 		_cards.add(new JoinNetworkScreen(this), JOIN_NETWORK);
@@ -55,13 +61,15 @@ public class TerraceFrame extends JFrame {
 	}
 	
 	public void changeCard(String cardName) {
-		System.out.println(cardName);
 		if (cardName.equals(START_SCREEN)) {
 			if (_currentGameScreen != null) {
 				_cards.remove(_currentGameScreen);
 				_currentGameScreen = null;
 				_currentGame = null;
 			}
+			_localSetup.resetScreen();
+			_joinSetup.resetScreen();
+			_hostSetup.resetScreen();
 			
 		} else if (cardName.equals(GAME)) {
 			if (_currentGameScreen != null) _cards.remove(_currentGameScreen);
