@@ -53,7 +53,8 @@ public abstract class Board implements Copyable<Board> {
 		Posn from = move.getPiece().getPosn();
 		Posn to = move.getTo();
 		Piece piece = _board[from.getX()][from.getY()];
-		
+
+		assert _board[from.getX()][from.getY()] != null;
 		_board[from.getX()][from.getY()] = null;
 		piece.updatePosn(move.getTo());
 		_board[to.getX()][to.getY()] = piece;

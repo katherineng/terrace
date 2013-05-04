@@ -75,8 +75,9 @@ public class GameState implements Copyable<GameState> {
 						_players.remove(p.getPlayer());
 						_board.removePlayer(p.getPlayer());
 						
-						if (_players.size() == 1 && playerWon != null) {
-							playerWon.call(_players.get(0));
+						if (_players.size() == 1) {
+							_winner = _players.get(0);
+							if (playerWon != null) playerWon.call(_players.get(0));
 						} else if (playerLost != null) {
 							playerLost.call(p.getPlayer());
 						}
