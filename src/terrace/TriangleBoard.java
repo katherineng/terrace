@@ -163,9 +163,9 @@ public class TriangleBoard extends Board {
 			);
 		} else {
 			edgeNeighbors = Arrays.asList(
-					new Posn(posn.getX() - 1, posn.getY() - 1),
 					new Posn(posn.getX(), posn.getY() - 1),
-					new Posn(posn.getX(), posn.getY() + 1)
+					new Posn(posn.getX(), posn.getY() + 1),
+					new Posn(posn.getX() + 1, posn.getY() - 1)
 			);
 		}
 		return new LinkedList<>(Collections2.filter(edgeNeighbors, new Predicate<Posn>() {
