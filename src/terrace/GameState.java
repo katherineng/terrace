@@ -100,7 +100,7 @@ public class GameState implements Copyable<GameState> {
 	
 	@Override
 	public GameState copy() {
-		GameState copy = new GameState(_board.copyBoard(), new ArrayList<>(_players), _active);
+		GameState copy = new GameState(_board.copy(), new ArrayList<>(_players), _active);
 		copy._winner = _winner;
 		return copy;
 	}

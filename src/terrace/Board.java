@@ -3,8 +3,9 @@ package terrace;
 import java.util.*;
 import java.util.List;
 import terrace.util.Posn;
+import terrace.util.Copyable;
 
-public abstract class Board{
+public abstract class Board implements Copyable<Board> {
 
 	protected Piece[][] _board;
 	
@@ -56,12 +57,6 @@ public abstract class Board{
 		move.getPiece().updatePosn(move.getTo());
 		_board[to.getX()][to.getY()] = move.getPiece();
 	}
-	
-	/**
-	 * Creates a deep copy of the board for an AIPlayer to use to score future states
-	 * @return A deep copy of the board
-	 */
-	public abstract Board copyBoard();
 	
 	/**
 	 * Given a position on the board, finds its elevation
