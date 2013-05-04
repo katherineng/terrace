@@ -16,7 +16,7 @@ import terrace.exception.IllegalMoveException;
 public class TerraceFrame extends JFrame {
 	private static final long serialVersionUID = 641801362474775997L;
 	
-	private static final String START_SCREEN = "Setup";
+	static final String START_SCREEN = "Setup";
 	private static final String GAME = "Game";
 	private static final String LOCAL_SETUP = "local game setup";
 	private static final String NETWORK_SETUP = "networked game setup";

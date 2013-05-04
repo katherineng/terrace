@@ -2,16 +2,12 @@ package terrace;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import terrace.ai.AI;
 import terrace.gui.LocalPlayer;
 import terrace.util.Callback;
 
 public class GameBuilder {
-	private ExecutorService es = Executors.newCachedThreadPool();
-	
 	private int totalPlayers;
 	private int localPlayers;
 	private int networkPlayers;
@@ -84,7 +80,7 @@ public class GameBuilder {
 			p.setName(_names.get(i++));
 		}
 		
-		es.submit(new Runnable() {
+		new Thread() {
 			@Override
 			public void run() {
 				try {
@@ -93,7 +89,7 @@ public class GameBuilder {
 					System.err.println(t.getLocalizedMessage());
 				}
 			}
-		});
+		}.start();
 		
 		return s;
 	}
