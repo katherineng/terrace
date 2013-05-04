@@ -186,8 +186,8 @@ public class BoardFactory {
 			
 			board.setPieceAt(new Posn(i, 0), p1PieceEdge);
 			board.setPieceAt(new Posn(i, 1), p1Piece);
-			board.setPieceAt(new Posn(i, board.getHeight() - 2), p2PieceEdge);
-			board.setPieceAt(new Posn(i, board.getHeight() - 1), p2Piece);
+			board.setPieceAt(new Posn(i, board.getHeight() - 1), p2PieceEdge);
+			board.setPieceAt(new Posn(i, board.getHeight() - 2), p2Piece);
 			
 		}
 		

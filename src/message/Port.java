@@ -27,7 +27,6 @@ public class Port<M> implements Closeable {
 			public void send(M msg) throws IOException, InterruptedException {
 				if (_closed) throw new IOException("Channel closed.");
 				if (Port.this._closed) throw new IOException("Port closed.");
-				
 				_queue.put(msg);
 			}
 			@Override
