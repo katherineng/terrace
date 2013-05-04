@@ -1,14 +1,10 @@
 package terrace.gui;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,7 +12,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -24,7 +19,6 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
-import javax.swing.SpringLayout;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -56,14 +50,16 @@ public class HostNetworkScreen extends JPanel {
 		_frame = frame;
 		setBackground(backgroundColor);
 		setLayout(new GridBagLayout());
-		
 	}
+	
 	public void removeRequest(Request r) {
 		//TODO Not sure how to remove from the defaultListmodel
 	}
+	
 	public void addRequest(Request r) {
 		_requestListModel.addElement(r);
 	}
+	
 	public void setPlayerNames(List<String> names) {
 		_numPlayers = names.size();
 		_playerNames = names;
@@ -71,8 +67,8 @@ public class HostNetworkScreen extends JPanel {
 		_localPlayers.addAll(names);
 		addComponents();
 	}
+	
 	private void addComponents() {
-		
 		_requestListModel = new DefaultListModel<>();
 		_requests = new JList<>(_requestListModel);
 		JScrollPane requestScroll = new JScrollPane(_requests);
@@ -96,7 +92,6 @@ public class HostNetworkScreen extends JPanel {
 		currentList.setFont(defaultFont);
 		JScrollPane currListScrollPane = new JScrollPane(currentList);
 		
-
 		GridBagConstraints currScrollConstraints = new GridBagConstraints();
 		currScrollConstraints.gridx  = 0;
 		currScrollConstraints.gridy = 1;
@@ -154,8 +149,8 @@ public class HostNetworkScreen extends JPanel {
 		add(currentLabel, currLabelConst);
 		add(requestLabel, requestConst);
 	}
+	
 	class CurrListListener implements ListSelectionListener {
-
 		@Override
 		public void valueChanged(ListSelectionEvent e) {
 			if (currentList.getSelectedIndex() == -1) {
@@ -169,8 +164,8 @@ public class HostNetworkScreen extends JPanel {
 			}
 		}
 	}
+	
 	class RemoveButtonListener implements ActionListener {
-
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			String line = (String) currentList.getSelectedValue();
@@ -180,10 +175,9 @@ public class HostNetworkScreen extends JPanel {
 				removeButton.setEnabled(false);
 			}
 		}
-		
 	}
+	
 	class AcceptRequestListener implements ListSelectionListener {
-
 		@Override
 		public void valueChanged(ListSelectionEvent e) {
 			String line = (String) requestList.getSelectedValue();
@@ -202,6 +196,7 @@ public class HostNetworkScreen extends JPanel {
 			}
 		}
 	}
+	
 	class AddButtonListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
