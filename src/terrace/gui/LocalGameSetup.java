@@ -534,7 +534,7 @@ public class LocalGameSetup extends JPanel {
 				if (boardSize == 0) {
 					_frame._builder.setSize(4);
 				} else {
-					_frame._builder.setSize(3);
+					_frame._builder.setSize(5);
 				}
 			} else {
 				if (boardSize == 0) {

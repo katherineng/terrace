@@ -55,7 +55,6 @@ public class GameState implements Copyable<GameState> {
 			Callback<Player> playerWon
 	) throws IllegalMoveException {
 		try {
-			System.out.println("Making move");
 			if(isValid(m, getActivePlayer())) {
 				_board.makeMove(m);
 				
@@ -63,6 +62,7 @@ public class GameState implements Copyable<GameState> {
 				if (piece instanceof TPiece && ((TPiece)piece).isAtGoal()) {
 					_winner = piece.getPlayer();
 					if (playerWon != null) playerWon.call(_winner);
+					System.out.println("GameState: GAME!");
 					return;
 				}
 				
@@ -86,25 +86,22 @@ public class GameState implements Copyable<GameState> {
 				throw new IllegalMoveException("Bad move");
 			}
 		} finally {
-			System.out.println(getBoard().piecesToString());
 			endTurn();
 		}
 	}
 	
 	public boolean isValid(Move m, Player activePlayer) {
 		if (!m.getPiece().getPlayer().equals(activePlayer)) return false;
-		
+		//System.out.println(m.getPiece().getPosn().x + " " + m.getPiece().getPosn().y + " => " + m.getTo().x + " " + m.getTo().x);
+		//System.out.println(_board.piecesToString());
 		List<Move> allowed = _board.getMoves(m.getPiece());
-		
 		return allowed.contains(m);
 	}
 	
 	@Override
 	public GameState copy() {
-		return new GameState(
-				_board.copyBoard(),
-				new ArrayList<>(_players),
-				_active
-		);
+		GameState copy = new GameState(_board.copyBoard(), new ArrayList<>(_players), _active);
+		copy._winner = _winner;
+		return copy;
 	}
 }

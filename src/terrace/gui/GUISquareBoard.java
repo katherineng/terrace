@@ -17,6 +17,16 @@ public class GUISquareBoard extends GUIBoard {
 	}
 
 	@Override
+	public double getRowShift(Posn p){
+		return 1.0/getHeight()*p.y;
+	}
+	
+	@Override
+	public double getColShift(Posn p){
+		return 1.0/getWidth()*p.x;
+	}
+	
+	@Override
 	public double getShiftFactor() {
 		return 1.0/_panel._game.getBoard().getWidth()/2;
 	}
