@@ -52,10 +52,11 @@ public abstract class Board implements Copyable<Board> {
 	public void makeMove(Move move) {
 		Posn from = move.getPiece().getPosn();
 		Posn to = move.getTo();
+		Piece piece = _board[from.getX()][from.getY()];
 		
 		_board[from.getX()][from.getY()] = null;
-		move.getPiece().updatePosn(move.getTo());
-		_board[to.getX()][to.getY()] = move.getPiece();
+		piece.updatePosn(move.getTo());
+		_board[to.getX()][to.getY()] = piece;
 	}
 	
 	/**

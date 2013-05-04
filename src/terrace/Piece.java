@@ -30,8 +30,7 @@ public class Piece implements Comparable<Piece>, Copyable<Piece> {
 	}
 	
 	public void setPosn(Posn p) {
-		_posn.x = p.x;
-		_posn.y = p.y;
+		_posn = new Posn(p.x, p.y);
 	}
 	
 	public PlayerColor getColor() {
