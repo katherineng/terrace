@@ -28,6 +28,7 @@ public class GameScreen extends JPanel {
 	private GamePanel _panel;
 	private GameBuilder _builder;
 	private JLabel _status;
+	private JLabel _variant;
 	private boolean _gameOver = false;
 	
 	public GameScreen(GameBuilder builder, TerraceFrame frame) {
@@ -83,9 +84,11 @@ public class GameScreen extends JPanel {
 			}
 		});
 		JButton pause = new JButton("Pause");
+		_variant = new JLabel("Game Variant: " + _builder.getVariant() +" ");
 		
 		topBar.add(_status);
 		topBar.add(Box.createHorizontalGlue());
+		topBar.add(_variant);
 		topBar.add(pause);
 		topBar.add(Box.createRigidArea(new Dimension(5, 1)));
 		topBar.add(mainMenu);
