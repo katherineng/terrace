@@ -7,8 +7,8 @@ import java.util.concurrent.Executors;
 
 import terrace.ai.AI;
 import terrace.gui.LocalPlayer;
+import terrace.network.ClientConnection;
 import terrace.network.HostServer;
-import terrace.network.Request;
 import terrace.util.Callback;
 
 public class GameBuilder {
@@ -56,12 +56,11 @@ public class GameBuilder {
 	}
 	public void hostGame(
 			final int port,
-			Callback<Request> newRequest,
-			Callback<Request> requestDropped
+			Callback<ClientConnection> newRequest
 	) {
 		_type = GameType.Host;
 		
-		_es.submit(new HostServer(port, _es));
+		_es.submit(new HostServer(port, _es, newRequest));
 	}
 	public GameServer startGame() {
 		List<Player> players = new LinkedList<>();

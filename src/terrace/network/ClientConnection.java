@@ -9,11 +9,26 @@ import java.net.Socket;
 import java.util.LinkedList;
 import java.util.List;
 
+import terrace.util.Callback;
+
 public class ClientConnection implements Closeable, Runnable {
 	private final Socket _conn;
+	private final Callback<ClientConnection> _onReady;
 	
-	public ClientConnection(Socket conn) {
+	private final List<String> _names = new LinkedList<>();
+	
+	public ClientConnection(Socket conn, Callback<ClientConnection> onReady) {
 		_conn = conn;
+		_onReady = onReady;
+	}
+	
+	/**
+	 * It is illegal to call this before the onReady callback has been executed.
+	 * 
+	 * @return The players' names.
+	 */
+	public List<String> getPlayerNames(){
+		return _names;
 	}
 	
 	@Override
@@ -34,8 +49,6 @@ public class ClientConnection implements Closeable, Runnable {
 				return;
 			}
 			
-			List<String> names = new LinkedList<>();
-			
 			while (true) {
 				String line = in.readLine();
 				
@@ -44,11 +57,28 @@ public class ClientConnection implements Closeable, Runnable {
 				} else if (line.equals("")) {
 					break;
 				} else {
-					names.add(line);
+					_names.add(line);
 				}
 			}
 		} catch (IOException e) {
 			 System.err.println("LOG: " + e.getLocalizedMessage());
 		}
+	}
+	
+	@Override
+	public String toString() {
+		String result  = "";
+		
+		boolean first = true;
+		for (String name : _names) {
+			if (first) {
+				first = false;
+			} else {
+				result += ", ";
+			}
+			result += name;
+		}
+		
+		return result;
 	}
 }
