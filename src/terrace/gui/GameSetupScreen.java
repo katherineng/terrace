@@ -16,6 +16,7 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -34,16 +35,22 @@ import terrace.gui.controls.TerraceButtonGroup;
 
 public class GameSetupScreen extends TerracePanel {
 	private static final long serialVersionUID = 1L;
-	private TerraceFrame _frame;
-	private NetworkType _networkType;
+	
+	private static final Pattern validName = Pattern.compile("[^,]+");
+	
 	private static final Font headerFont = new Font("Verdana", Font.BOLD, 30);
 	private static final Font defaultFont = new Font("Verdana", Font.BOLD, 24);
-	private Integer numPlayers = 1;
-	private Variant v = Variant.STANDARD;
+	
 	private static final Color backgroundColor = Color.DARK_GRAY;
 	private static final Color headerColor = Color.WHITE;
 	private static final Color defaultColor = new Color(255, 255, 255);
 	private static final Color fadedColor = Color.LIGHT_GRAY;
+	
+	private Integer numPlayers = 1;
+	private Variant v = Variant.STANDARD;
+	
+	private TerraceFrame _frame;
+	private NetworkType _networkType;
 	private JLabel p1;
 	private JLabel p2;
 	private JLabel p3;
@@ -62,7 +69,6 @@ public class GameSetupScreen extends TerracePanel {
 	
 	private final static int MAX_NAME_LENGTH = 15;
 	private int boardSize = 1;// 0 if small 1 if large
-	private final String regexp = "[^,]+";
 	private JLabel error;
 	
 	public GameSetupScreen(TerraceFrame frame, NetworkType networkType) {
@@ -531,14 +537,14 @@ public class GameSetupScreen extends TerracePanel {
 	}
 	
 	public int checkRegexp() {
-		if (!player1.getText().matches(regexp)) {
+		if (!validName.matcher(player1.getText()).matches()) {
 			return 1;
-		} else if (!player2.getText().matches(regexp)) {
+		} else if (!validName.matcher(player2.getText()).matches()) {
 			return 2;
-		} else if (!player3.getText().matches(regexp)) {
+		} else if (!validName.matcher(player3.getText()).matches()) {
 			return 3;
 		} else if (_networkType == NetworkType.LOCAL) {
-			if (!player4.getText().matches(regexp)) {
+			if (!validName.matcher(player4.getText()).matches()) {
 				return 4;
 			}
 		}
