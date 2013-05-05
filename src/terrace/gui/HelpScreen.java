@@ -11,14 +11,13 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import terrace.IllegalMoveException;
-
 //TODO redo for the new background
 public class HelpScreen extends TerracePanel {
+	private static final long serialVersionUID = -6419195153812519273L;
+	
 	private TerraceFrame _frame;
 	private JTextArea textArea;
 	private JLabel terraceLabel;
@@ -38,8 +37,8 @@ public class HelpScreen extends TerracePanel {
 		setLayout(new GridBagLayout());
 		addComponents();
 	}
+	
 	private void addComponents() {
-		
 		terraceLabel = new JLabel("TERRACE");
 		terraceLabel.setFont(headerFont);
 		terraceLabel.setBackground(backgroundColor);
@@ -84,12 +83,11 @@ public class HelpScreen extends TerracePanel {
 		add(scroll, textConst);
 		add(backButton, backConst);
 	}
+	
 	class BackListener implements ActionListener {
-
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			_frame.changeCard("Setup");
 		}
-		
 	}
 }
