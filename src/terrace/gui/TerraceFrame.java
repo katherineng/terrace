@@ -2,17 +2,13 @@ package terrace.gui;
 
 import java.awt.CardLayout;
 import java.awt.Dimension;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import terrace.GameBuilder;
-import terrace.IllegalMoveException;
 import terrace.NetworkType;
-import terrace.gui.game.GamePanel;
 
 public class TerraceFrame extends JFrame {
 	private static final long serialVersionUID = 641801362474775997L;
@@ -29,7 +25,6 @@ public class TerraceFrame extends JFrame {
 	final GameBuilder _builder = new GameBuilder();
 	private JPanel _cards;
 	private List<String> _playerNames;
-	private GamePanel _currentGame;
 	private HostNetworkScreen _networkScreen;
 	private GameScreen _currentGameScreen;
 	private GameSetupScreen _localSetup;
@@ -66,22 +61,16 @@ public class TerraceFrame extends JFrame {
 			if (_currentGameScreen != null) {
 				_cards.remove(_currentGameScreen);
 				_currentGameScreen = null;
-				_currentGame = null;
 			}
 			_localSetup.resetScreen();
 			_joinSetup.resetScreen();
 			_hostSetup.resetScreen();
-			
 		} else if (cardName.equals(GAME)) {
 			if (_currentGameScreen != null) _cards.remove(_currentGameScreen);
 			
 			_builder.setPlayerNames(_playerNames);
-			
 			_currentGameScreen = new GameScreen(_builder, this);
-			_currentGame = _currentGameScreen.getGame();
-			
 			_cards.add(_currentGameScreen, GAME);
-			
 		} else if (cardName == HOST_GAME) {
 			_networkScreen.setPlayerNames(_playerNames);
 		}
@@ -92,7 +81,6 @@ public class TerraceFrame extends JFrame {
 	
 	void setPlayerNames(List<String> names) {
 		_playerNames = names;
-		
 	}
 	
 	GameBuilder getBuilder() {

@@ -503,25 +503,14 @@ public class GameSetupScreen extends TerracePanel {
 		}
 	}
 	
-	class BackListener implements ActionListener {
+	private class BackListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			_frame.changeCard("Setup");
 		}
 	}
 	
-	class LengthListener implements ActionListener {
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			JTextField source = (JTextField) e.getSource();
-			String word = source.getText();
-			
-			if (word.length() > MAX_NAME_LENGTH) {
-				source.setText(word.substring(0, MAX_NAME_LENGTH));
-			}
-		}
-	}
-	class LengthLimit extends PlainDocument {
+	private class LengthLimit extends PlainDocument {
 		private static final long serialVersionUID = 1159717759453623084L;
 		
 		private int limit;
@@ -531,6 +520,7 @@ public class GameSetupScreen extends TerracePanel {
 			this.limit = limit;
 		}
 		
+		@Override
 		public void insertString(int offset, String str, AttributeSet attr) throws BadLocationException {
 			if (str == null) return;
 			
@@ -560,7 +550,7 @@ public class GameSetupScreen extends TerracePanel {
 		error.setVisible(true);
 	}
 	
-	class GoListener implements ActionListener {
+	private class GoListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			error.setVisible(false);
@@ -628,7 +618,7 @@ public class GameSetupScreen extends TerracePanel {
 
 	}
 	
-	class VariantTypeListener implements MouseListener {
+	private class VariantTypeListener implements MouseListener {
 		Variant _var;
 		
 		VariantTypeListener(Variant var) {
@@ -701,7 +691,7 @@ public class GameSetupScreen extends TerracePanel {
 
 	}
 
-	class NumPlayerListener implements MouseListener {
+	private class NumPlayerListener implements MouseListener {
 		private int _num;
 		
 		NumPlayerListener(int num) {
