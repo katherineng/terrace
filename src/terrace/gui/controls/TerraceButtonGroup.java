@@ -3,21 +3,15 @@ package terrace.gui.controls;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.swing.AbstractButton;
-import javax.swing.ButtonModel;
-
 public class TerraceButtonGroup {
-
-	private List<TerraceButton> buttons;
-	
+	private final List<TerraceButton> buttons = new LinkedList<>();
 	private TerraceButton currentButton;
 	
-	public TerraceButtonGroup() {
-		buttons = new LinkedList<>();
-	}
+	public TerraceButtonGroup() {}
 	
 	public void add(TerraceButton b) {
 		buttons.add(b);
+		
 		if (b == null) {
 			return;
 		}
@@ -45,6 +39,7 @@ public class TerraceButtonGroup {
 	public void setSelected(TerraceButton button, boolean b) {
         if (b && button != null && button != currentButton) {
             TerraceButton oldSelection = currentButton;
+            
             if (oldSelection != null) {
                 oldSelection.setSelected(false, false);
             }
