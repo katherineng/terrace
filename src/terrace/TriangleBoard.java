@@ -130,19 +130,21 @@ public class TriangleBoard extends Board {
 					new Posn(posn.getX() + 1, posn.getY()),
 					new Posn(posn.getX() - 1, posn.getY() + 2), 
 					new Posn(posn.getX(), posn.getY() + 2), 
-					new Posn(posn.getX() - 1, posn.getY() + 3)
+					new Posn(posn.getX() - 1, posn.getY() + 3),
+					new Posn(posn.getX() - 1, posn.getY() - 1)
 			);
 		} else {
 			cornerNeighbors = Arrays.asList(
 					new Posn(posn.getX() + 1, posn.getY() - 3),
 					new Posn(posn.getX(), posn.getY() - 2),
 					new Posn(posn.getX() + 1, posn.getY() - 2),
-					new Posn(posn.getX() + 1, posn.getY() - 1),
+					//new Posn(posn.getX() + 1, posn.getY() - 1),
 					new Posn(posn.getX() - 1, posn.getY()),
 					new Posn(posn.getX() + 1, posn.getY()),
 					new Posn(posn.getX() + 1, posn.getY() + 1),
 					new Posn(posn.getX() - 1, posn.getY() + 2), 
-					new Posn(posn.getX(), posn.getY() + 2)
+					new Posn(posn.getX(), posn.getY() + 2),
+					new Posn(posn.getX() - 1, posn.getY() + 1)
 			);
 		}
 		return new LinkedList<>(Collections2.filter(cornerNeighbors, new Predicate<Posn>() {
@@ -192,21 +194,36 @@ public class TriangleBoard extends Board {
 		Posn currentPosn = piece.getPosn();
 		
 		for(Posn to : edgeNeighbors) {
-			if(getPieceAt(to) == null) {
+			/*if(getPieceAt(to) == null) {
 				possibleMoves.add(new Move(piece, to));
 			} else {
 				if((getElevationAt(to)<= getElevationAt(currentPosn)) 
 						&& (getPieceAt(to).compareTo(piece) <= 0)) {
 					possibleMoves.add(new Move(piece, to, getPieceAt(to)));
 				}
+			}*/
+			
+			int elevationDiff = getElevationAt(currentPosn) - getElevationAt(to);
+			if (getPieceAt(to) == null) {
+				if (elevationDiff == 0 || elevationDiff == 1) {
+					possibleMoves.add(new Move(piece, to));
+				}
+			} else if (getPieceAt(to).compareTo(piece) <= 0 && elevationDiff == 1) {
+				possibleMoves.add(new Move(piece, to, getPieceAt(to)));
 			}
 		}
 		
 		for(Posn to : cornerNeighbors) {
-			if((getElevationAt(to) == getElevationAt(currentPosn)) && (getPieceAt(to) != null)
+			int elevationDiff = getElevationAt(currentPosn) - getElevationAt(to);
+			
+			if ((elevationDiff == 0 || elevationDiff == -1) && getPieceAt(to) == null) {
+					possibleMoves.add(new Move(piece, to, getPieceAt(to)));
+			}
+			
+			/*if((getElevationAt(to) == getElevationAt(currentPosn)) && (getPieceAt(to) != null)
 					&& (getPieceAt(to).compareTo(piece) <= 0)) {
 				possibleMoves.add(new Move(piece, to, getPieceAt(to)));
-			}
+			}*/
 		}
 		return possibleMoves;			
 	}
