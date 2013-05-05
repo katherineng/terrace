@@ -8,7 +8,6 @@ import java.util.Map;
 import javax.media.opengl.GL2;
 import javax.vecmath.Vector3d;
 
-import terrace.Piece;
 import terrace.Player;
 import terrace.PlayerColor;
 import terrace.util.Posn;
@@ -71,7 +70,7 @@ public abstract class GUIBoard implements Drawable {
 		
 		List<Player> players =  _panel._game.getPlayers();
 		for (int i = 0; i < players.size(); i++){
-			switch(i){
+			switch (i) {
 			case 0:
 				_playerColors.put(players.get(i).getColor(), new Vector3d(51/255., 255/255., 204/255.));
 				break;
@@ -85,7 +84,7 @@ public abstract class GUIBoard implements Drawable {
 				_playerColors.put(players.get(i).getColor(), new Vector3d(38/255.,153/255., 0/255.));
 				break;
 			default: //shouldn't get here
-				assert(false);
+				assert false;
 			}
 		}
 	}
@@ -94,9 +93,10 @@ public abstract class GUIBoard implements Drawable {
 	
 	@Override
 	public void draw(GL2 gl) {
-		_foundation.draw(gl);	
-		for (BoardTile[] tileArray : _boardTiles)
+		_foundation.draw(gl);
+		for (BoardTile[] tileArray : _boardTiles) {
 			for (BoardTile tile : tileArray) tile.draw(gl);
+		}
 		
 		synchronized (_gamePieces) {
 			for (GamePiece piece : _gamePieces) piece.draw(gl);
