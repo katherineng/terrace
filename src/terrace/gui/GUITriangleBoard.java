@@ -67,16 +67,20 @@ public class GUITriangleBoard extends GUIBoard {
 	}
 	
 	@Override
-	public void resetPieces() {	
-		_gamePieces.clear();
-		//needed because translation is relative to center of shape, not the corner
-		for (int row = 0; row < _panel._game.getBoard().getWidth(); row++)
-			for (int col = 0; col < _panel._game.getBoard().getHeight(); col++){
-				// set up _gamePiece
-				Piece piece = _panel._game.getBoard().getPieceAt(new Posn(row,  col));
-				if (piece != null) {
-					_gamePieces.add(new TriangleGamePiece(this, piece));
+	public void resetPieces() {
+		synchronized (_gamePieces) {
+			_gamePieces.clear();
+			
+			//needed because translation is relative to center of shape, not the corner
+			for (int row = 0; row < _panel._game.getBoard().getWidth(); row++) {
+				for (int col = 0; col < _panel._game.getBoard().getHeight(); col++){
+					// set up _gamePiece
+					Piece piece = _panel._game.getBoard().getPieceAt(new Posn(row,  col));
+					if (piece != null) {
+						_gamePieces.add(new TriangleGamePiece(this, piece));
+					}
 				}
 			}
+		}
 	}
 }
