@@ -32,9 +32,9 @@ public class TerraceFrame extends JFrame {
 	private GamePanel _currentGame;
 	private HostNetworkScreen _networkScreen;
 	private GameScreen _currentGameScreen;
-	private LocalGameSetup _localSetup;
-	private LocalGameSetup _hostSetup;
-	private LocalGameSetup _joinSetup;
+	private GameSetupScreen _localSetup;
+	private GameSetupScreen _hostSetup;
+	private GameSetupScreen _joinSetup;
 	
 	public TerraceFrame() {
 		setPreferredSize(new Dimension(1200, 1200));
@@ -42,9 +42,9 @@ public class TerraceFrame extends JFrame {
 		_cards = new JPanel(new CardLayout());
 		
 		_networkScreen = new HostNetworkScreen(this);
-		_localSetup = new LocalGameSetup(this, NetworkType.LOCAL);
-		_hostSetup = new LocalGameSetup(this, NetworkType.HOST);
-		_joinSetup = new LocalGameSetup(this, NetworkType.JOIN);
+		_localSetup = new GameSetupScreen(this, NetworkType.LOCAL);
+		_hostSetup = new GameSetupScreen(this, NetworkType.HOST);
+		_joinSetup = new GameSetupScreen(this, NetworkType.JOIN);
 		
 		setExtendedState(getExtendedState() | MAXIMIZED_BOTH);
 		getContentPane().setLayout(new CardLayout());

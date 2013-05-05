@@ -32,7 +32,7 @@ import terrace.Variant;
 import terrace.gui.controls.TerraceButton;
 import terrace.gui.controls.TerraceButtonGroup;
 
-public class LocalGameSetup extends TerracePanel {
+public class GameSetupScreen extends TerracePanel {
 	private static final long serialVersionUID = 1L;
 	private TerraceFrame _frame;
 	private NetworkType _networkType;
@@ -65,7 +65,7 @@ public class LocalGameSetup extends TerracePanel {
 	private final String regexp = "[^,]+";
 	private JLabel error;
 	
-	public LocalGameSetup(TerraceFrame frame, NetworkType networkType) {
+	public GameSetupScreen(TerraceFrame frame, NetworkType networkType) {
 		super(frame);
 		_frame = frame;
 		_networkType = networkType;
