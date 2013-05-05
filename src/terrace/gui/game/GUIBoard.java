@@ -60,6 +60,12 @@ public abstract class GUIBoard implements Drawable {
 		return toRet;
 	}
 	
+	public void clearMoves() {
+		for (BoardTile[] tileArray : _boardTiles) {
+			for (BoardTile tile : tileArray) tile.setMoveColor(null);
+		}
+	}
+	
 	public abstract void resetPieces();
 	
 	/**
