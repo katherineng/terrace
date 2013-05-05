@@ -199,6 +199,8 @@ public class LocalGameSetup extends TerracePanel {
 		GridBagConstraints playerNamesConst = new GridBagConstraints();
 		playerNamesConst.gridx = 2;
 		playerNamesConst.gridy = 3;
+		playerNamesConst.ipady = 10;
+		playerNamesConst.ipadx = 10;
 		playerNamesConst.anchor = GridBagConstraints.NORTH;
 		playerNames.setLayout(new GridBagLayout());
 
@@ -468,7 +470,6 @@ public class LocalGameSetup extends TerracePanel {
 	}
 
 	public void resetScreen() {
-		System.out.println("called");
 		switch (_networkType) {
 		case LOCAL:
 			standard.setSelected(true);// TODO if field is empty when focus is
@@ -485,11 +486,20 @@ public class LocalGameSetup extends TerracePanel {
 			p4.setVisible(false);
 			player3.setVisible(false);
 			player4.setVisible(false);
+			threePlayer.setEnabled(true);
+			fourPlayer.setEnabled(true);
+			v = Variant.STANDARD;
+			numPlayers = 1;
+			boardSize = 1;
 			break;
 		default:
 			player1.setText("Player 1");
 			standard.setSelected(true);
+			v = Variant.STANDARD;
+			numPlayers = 1;
+			boardSize = 1;
 			onePlayer.setSelected(true);
+			threePlayer.setEnabled(true);
 			large.setSelected(true);
 			player2.setVisible(false);
 			player2.setText("Player 2");
@@ -645,7 +655,10 @@ public class LocalGameSetup extends TerracePanel {
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			v = _var;
-			if (_var == Variant.TRIANGLE) {
+			if (!((TerraceButton)e.getSource()).isEnabled()) {
+				return;
+			} else if (_var == Variant.TRIANGLE) {
+				
 				player3.setVisible(false);
 				p3.setVisible(false);
 				p4.setVisible(false);
@@ -687,6 +700,9 @@ public class LocalGameSetup extends TerracePanel {
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
+			if (!((TerraceButton)e.getSource()).isEnabled()) {
+				return;
+			}
 			boardSize = _size;
 			
 		}
@@ -715,6 +731,9 @@ public class LocalGameSetup extends TerracePanel {
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
+			if (!((TerraceButton)e.getSource()).isEnabled()) {
+				return;
+			}
 			numPlayers = _num;
 			switch (_networkType) {
 			case LOCAL: // TODO resets names when numPlayers changes

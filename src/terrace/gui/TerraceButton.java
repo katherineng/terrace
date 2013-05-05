@@ -21,14 +21,15 @@ public class TerraceButton extends JPanel implements MouseListener {
 
 	private Color background = Color.DARK_GRAY;
 	private Color unselectedColor = Color.GRAY;
-	private Color selectedColor = Color.BLACK;
-	private Color hoverColor = new Color(100, 100, 100);
+	private Color selectedColor = Color.WHITE;
+	private Color hoverColor = new Color(180, 180, 180);
 	private Color currentColor;
 	private Dimension size;
 	public Dimension arc;
 	private String _text;
 	private Font defaultFont = new Font("Verdana", Font.BOLD, 20);
 	private boolean isSelected;
+	private boolean isEnabled;
 	private JLabel label;
 	private TerraceButtonGroup buttonGroup;
 	
@@ -46,6 +47,7 @@ public class TerraceButton extends JPanel implements MouseListener {
 		size = new Dimension(getWidth(), getHeight());
 		arc = new Dimension((int)Math.sqrt(size.width), (int)Math.sqrt(size.height));
 		isSelected = false;
+		isEnabled = true;
 		currentColor = unselectedColor;
 		add(label);
 	}
@@ -86,7 +88,18 @@ public class TerraceButton extends JPanel implements MouseListener {
 		}
 		label.setForeground(currentColor);
 	}
-	
+	@Override
+	public void setEnabled(boolean enabled) {
+		super.setEnabled(enabled);
+		System.out.println();
+		isEnabled = enabled;
+		if (!enabled) {
+			setSelected(false);
+			label.setForeground(background);
+		} else {
+			label.setForeground(unselectedColor);
+		}
+	}
 	@Override
 	public void setBackground(Color c) {
 		super.setBackground(c);
@@ -101,7 +114,9 @@ public class TerraceButton extends JPanel implements MouseListener {
 	
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		if (!isSelected) {
+		if (!isEnabled) {
+			return;
+		} else if (!isSelected) {
 			setSelected(true);
 		}
 	}
@@ -114,14 +129,18 @@ public class TerraceButton extends JPanel implements MouseListener {
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		if (!isSelected) {
+		if (!isEnabled) {
+			return;
+		} else if (!isSelected) {
 			label.setForeground(hoverColor);
 		}
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		if (!isSelected) {
+		if (!isEnabled) {
+			return;
+		} else if (!isSelected) {
 			label.setForeground(currentColor);
 		}	
 	}
