@@ -13,6 +13,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -24,7 +26,6 @@ import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
@@ -53,12 +54,14 @@ public class LocalGameSetup extends TerracePanel {
 	private JTextField player2;
 	private JTextField player3;
 	private JTextField player4;
-	private JRadioButton standard;
-	private JRadioButton onePlayer;
-	private JRadioButton twoPlayer;
-	private JRadioButton threePlayer;
-	private JRadioButton fourPlayer;
+	private TerraceButton standard;
+	private TerraceButton onePlayer;
+	private TerraceButton twoPlayer;
+	private TerraceButton threePlayer;
+	private TerraceButton fourPlayer;
 
+	private TerraceButton large;
+	
 	private final static int MAX_NAME_LENGTH = 15;
 	private int boardSize = 1;// 0 if small 1 if large
 	private final String regexp = "[^,]+";
@@ -105,24 +108,22 @@ public class LocalGameSetup extends TerracePanel {
 		sizeLabelConst.gridy = 2;
 		sizeLabelConst.insets = new Insets(20, 0, 20, 0);
 
-		JRadioButton small = new JRadioButton("small");
-		small.setActionCommand("0");
-		small.addActionListener(new BoardTypeListener());
+		TerraceButton small = new TerraceButton("small");
+		small.addMouseListener(new BoardTypeListener(0));
 		small.setFont(defaultFont);
 		small.setAlignmentX(CENTER_ALIGNMENT);
 		small.setForeground(defaultColor);
 		small.setBackground(backgroundColor);
 
-		JRadioButton large = new JRadioButton("large");
-		large.setActionCommand("1");
-		large.addActionListener(new BoardTypeListener());
+		large = new TerraceButton("large");
+		large.addMouseListener(new BoardTypeListener(1));
 		large.setFont(defaultFont);
 		large.setAlignmentX(CENTER_ALIGNMENT);
 		large.setForeground(defaultColor);
 		large.setBackground(backgroundColor);
 		large.setSelected(true);
 
-		ButtonGroup sizeGroup = new ButtonGroup();
+		TerraceButtonGroup sizeGroup = new TerraceButtonGroup();
 		sizeGroup.add(small);
 		sizeGroup.add(large);
 
@@ -152,40 +153,36 @@ public class LocalGameSetup extends TerracePanel {
 		boardLabelConst.gridy = 2;
 		boardLabelConst.insets = new Insets(20, 0, 20, 0);
 
-		JRadioButton triangle = new JRadioButton("triangle");
-		triangle.setActionCommand("TRIANGLE");
-		triangle.addActionListener(new VariantTypeListener());
+		TerraceButton triangle = new TerraceButton("triangle");
+		triangle.addMouseListener(new VariantTypeListener(Variant.TRIANGLE));
 		triangle.setFont(defaultFont);
 		triangle.setAlignmentX(Component.CENTER_ALIGNMENT);
 		triangle.setForeground(defaultColor);
 		triangle.setBackground(backgroundColor);
 		
-		standard = new JRadioButton("square - standard rules");
-		standard.setActionCommand("STANDARD");
-		standard.addActionListener(new VariantTypeListener());
+		standard = new TerraceButton("square - standard rules");
+		standard.addMouseListener(new VariantTypeListener(Variant.STANDARD));
 		standard.setFont(defaultFont);
 		standard.setBackground(backgroundColor);
 		standard.setForeground(defaultColor);
 		standard.setAlignmentX(Component.CENTER_ALIGNMENT);
 		standard.setSelected(true);
 
-		JRadioButton downhill = new JRadioButton("square - downhill rules");
-		downhill.setActionCommand("DOWNHILL");
-		downhill.addActionListener(new VariantTypeListener());
+		TerraceButton downhill = new TerraceButton("square - downhill rules");
+		downhill.addMouseListener(new VariantTypeListener(Variant.DOWNHILL));
 		downhill.setFont(defaultFont);
 		downhill.setBackground(backgroundColor);
 		downhill.setForeground(defaultColor);
 		downhill.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-		JRadioButton aggressive = new JRadioButton("square - aggresive rules");
-		aggressive.setActionCommand("AGGRESSIVE");
-		aggressive.addActionListener(new VariantTypeListener());
+		TerraceButton aggressive = new TerraceButton("square - aggresive rules");
+		aggressive.addMouseListener(new VariantTypeListener(Variant.AGGRESSIVE));
 		aggressive.setFont(defaultFont);
 		aggressive.setBackground(backgroundColor);
 		aggressive.setForeground(defaultColor);
 		aggressive.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
-		ButtonGroup options = new ButtonGroup();
+		TerraceButtonGroup options = new TerraceButtonGroup();
 		options.add(triangle);
 		options.add(standard);
 		options.add(downhill);
@@ -202,6 +199,8 @@ public class LocalGameSetup extends TerracePanel {
 		GridBagConstraints playerNamesConst = new GridBagConstraints();
 		playerNamesConst.gridx = 2;
 		playerNamesConst.gridy = 3;
+		playerNamesConst.ipady = 10;
+		playerNamesConst.ipadx = 10;
 		playerNamesConst.anchor = GridBagConstraints.NORTH;
 		playerNames.setLayout(new GridBagLayout());
 
@@ -251,6 +250,7 @@ public class LocalGameSetup extends TerracePanel {
 		
 		//text fields for player names
 		player1 = new JTextField(10);
+		player1.setCaretColor(fadedColor);
 		player1.setDocument(new LengthLimit(MAX_NAME_LENGTH));
 		GridBagConstraints player1Const = new GridBagConstraints();
 		player1Const.gridx = 1;
@@ -262,6 +262,7 @@ public class LocalGameSetup extends TerracePanel {
 		player1.setText("Player 1");
 
 		player2 = new JTextField(10);
+		player2.setCaretColor(fadedColor);
 		player2.setDocument(new LengthLimit(MAX_NAME_LENGTH));
 		GridBagConstraints player2Const = new GridBagConstraints();
 		player2Const.gridx = 1;
@@ -275,6 +276,7 @@ public class LocalGameSetup extends TerracePanel {
 		player2.setVisible(false);
 		
 		player3 = new JTextField(10);
+		player3.setCaretColor(fadedColor);
 		player3.setDocument(new LengthLimit(MAX_NAME_LENGTH));
 		GridBagConstraints player3Const = new GridBagConstraints();
 		player3Const.gridx = 1;
@@ -313,41 +315,40 @@ public class LocalGameSetup extends TerracePanel {
 		JPanel numPlayersOptions = new JPanel();
 		numPlayersOptions.setLayout(new GridBagLayout());
 
-		onePlayer = new JRadioButton("1");
-		onePlayer.setActionCommand("1");
+		onePlayer = new TerraceButton("1");
 		onePlayer.setBackground(backgroundColor);
 		onePlayer.setForeground(defaultColor);
 		onePlayer.setFont(defaultFont);
 		onePlayer.setSelected(true);
-		onePlayer.addActionListener(new NumPlayerListener());
+		onePlayer.addMouseListener(new NumPlayerListener(1));
 		GridBagConstraints oneConst = new GridBagConstraints();
 		oneConst.gridx = 0;
 		oneConst.gridy = 0;
 
-		twoPlayer = new JRadioButton("2");
-		twoPlayer.setActionCommand("2");
+		twoPlayer = new TerraceButton("2");
 		twoPlayer.setBackground(backgroundColor);
 		twoPlayer.setForeground(defaultColor);
 		twoPlayer.setFont(defaultFont);
-		twoPlayer.addActionListener(new NumPlayerListener());
+		twoPlayer.addMouseListener(new NumPlayerListener(2));
 		GridBagConstraints twoConst = new GridBagConstraints();
 		twoConst.gridx = 1;
 		twoConst.gridy = 0;
 		
-		threePlayer = new JRadioButton("3");
-		threePlayer.setActionCommand("3");
+		threePlayer = new TerraceButton("3");
 		threePlayer.setBackground(backgroundColor);
 		threePlayer.setForeground(defaultColor);
 		threePlayer.setFont(defaultFont);
-		threePlayer.addActionListener(new NumPlayerListener());
+		threePlayer.addMouseListener(new NumPlayerListener(3));
 		GridBagConstraints threeConst = new GridBagConstraints();
 		threeConst.gridx = 0;
 		threeConst.gridy = 1;sizeLabelPanel.setVisible(false);
 		
-		ButtonGroup numPlayersButtons = new ButtonGroup();
+		TerraceButtonGroup numPlayersButtons = new TerraceButtonGroup();
 		numPlayersButtons.add(onePlayer);
 		numPlayersButtons.add(twoPlayer);
 		numPlayersButtons.add(threePlayer);
+		
+		
 		
 		numPlayersPanel.add(onePlayer, oneConst);
 		numPlayersPanel.add(twoPlayer, twoConst);
@@ -383,6 +384,7 @@ public class LocalGameSetup extends TerracePanel {
 		portLabel.setVisible(false);
 		
 		JTextField portField = new JTextField(10);
+		portField.setCaretColor(fadedColor);
 		portField.setFont(defaultFont);
 		portField.setBackground(backgroundColor);
 		portField.setForeground(fadedColor);
@@ -420,6 +422,7 @@ public class LocalGameSetup extends TerracePanel {
 			player2.setText("CPU");
 			
 			player4 = new JTextField(10);
+			player4.setCaretColor(fadedColor);
 			player4.setDocument(new LengthLimit(MAX_NAME_LENGTH));
 			GridBagConstraints player4Const = new GridBagConstraints();
 			player4Const.gridx = 1;
@@ -433,12 +436,11 @@ public class LocalGameSetup extends TerracePanel {
 			player4.setVisible(false);
 			playerNames.add(player4, player4Const);
 			
-			fourPlayer = new JRadioButton("4");
-			fourPlayer.setActionCommand("4");
+			fourPlayer = new TerraceButton("4");
 			fourPlayer.setBackground(backgroundColor);
 			fourPlayer.setForeground(defaultColor);
 			fourPlayer.setFont(defaultFont);
-			fourPlayer.addActionListener(new NumPlayerListener());
+			fourPlayer.addMouseListener(new NumPlayerListener(4));
 			GridBagConstraints fourConst = new GridBagConstraints();
 			fourConst.gridx = 1;
 			fourConst.gridy = 1;
@@ -468,13 +470,14 @@ public class LocalGameSetup extends TerracePanel {
 	}
 
 	public void resetScreen() {
-		System.out.println("called");
 		switch (_networkType) {
 		case LOCAL:
 			standard.setSelected(true);// TODO if field is empty when focus is
 										// lost, reset to "player _"
 			player1.setText("Player 1");
 			onePlayer.setSelected(true);
+			standard.setSelected(true);
+			large.setSelected(true);
 			p2.setText("CPU");
 			player2.setText("CPU");
 			player3.setEnabled(false);
@@ -483,11 +486,21 @@ public class LocalGameSetup extends TerracePanel {
 			p4.setVisible(false);
 			player3.setVisible(false);
 			player4.setVisible(false);
+			threePlayer.setEnabled(true);
+			fourPlayer.setEnabled(true);
+			v = Variant.STANDARD;
+			numPlayers = 1;
+			boardSize = 1;
 			break;
 		default:
 			player1.setText("Player 1");
 			standard.setSelected(true);
+			v = Variant.STANDARD;
+			numPlayers = 1;
+			boardSize = 1;
 			onePlayer.setSelected(true);
+			threePlayer.setEnabled(true);
+			large.setSelected(true);
 			player2.setVisible(false);
 			player2.setText("Player 2");
 			player2.setEnabled(false);
@@ -631,12 +644,21 @@ public class LocalGameSetup extends TerracePanel {
 
 	}
 
-	class VariantTypeListener implements ActionListener {
-
+	class VariantTypeListener implements MouseListener {
+		
+		Variant _var;
+		
+		VariantTypeListener(Variant var) {
+			_var = var;
+		}
+		
 		@Override
-		public void actionPerformed(ActionEvent e) {
-			v = Variant.valueOf(e.getActionCommand());
-			if (v == Variant.TRIANGLE) {
+		public void mouseClicked(MouseEvent e) {
+			v = _var;
+			if (!((TerraceButton)e.getSource()).isEnabled()) {
+				return;
+			} else if (_var == Variant.TRIANGLE) {
+				
 				player3.setVisible(false);
 				p3.setVisible(false);
 				p4.setVisible(false);
@@ -651,24 +673,68 @@ public class LocalGameSetup extends TerracePanel {
 				if (_networkType == NetworkType.LOCAL) {
 					fourPlayer.setEnabled(true);
 				}
+			}			
+		}
+
+		@Override
+		public void mousePressed(MouseEvent e) {}
+
+		@Override
+		public void mouseReleased(MouseEvent e) {}
+
+		@Override
+		public void mouseEntered(MouseEvent e) {}
+
+		@Override
+		public void mouseExited(MouseEvent e) {}
+
+	}
+
+	class BoardTypeListener implements MouseListener {
+		
+		private int _size;
+		
+		BoardTypeListener(int size) {
+			_size = size;
+		}
+
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			if (!((TerraceButton)e.getSource()).isEnabled()) {
+				return;
 			}
+			boardSize = _size;
+			
 		}
+
+		@Override
+		public void mousePressed(MouseEvent e) {}
+
+		@Override
+		public void mouseReleased(MouseEvent e) {}
+
+		@Override
+		public void mouseEntered(MouseEvent e) {}
+
+		@Override
+		public void mouseExited(MouseEvent e) {}
 
 	}
 
-	class BoardTypeListener implements ActionListener {
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			boardSize = Integer.parseInt(e.getActionCommand());
+	class NumPlayerListener implements MouseListener {
+		
+		private int _num;
+		
+		NumPlayerListener(int num) {
+			_num = num;
 		}
 
-	}
-
-	class NumPlayerListener implements ActionListener {
 		@Override
-		public void actionPerformed(ActionEvent e) {
-			numPlayers = Integer.parseInt(e.getActionCommand());
+		public void mouseClicked(MouseEvent e) {
+			if (!((TerraceButton)e.getSource()).isEnabled()) {
+				return;
+			}
+			numPlayers = _num;
 			switch (_networkType) {
 			case LOCAL: // TODO resets names when numPlayers changes
 				switch (numPlayers) {
@@ -752,6 +818,18 @@ public class LocalGameSetup extends TerracePanel {
 				}
 			}
 		}
+
+		@Override
+		public void mousePressed(MouseEvent e) {}
+
+		@Override
+		public void mouseReleased(MouseEvent e) {}
+
+		@Override
+		public void mouseEntered(MouseEvent e) {}
+
+		@Override
+		public void mouseExited(MouseEvent e) {}
 	}
 
 }
