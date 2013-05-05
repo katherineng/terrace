@@ -32,7 +32,8 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
 
 import terrace.*;
-import terrace.exception.IllegalMoveException;
+import terrace.gui.controls.TerraceButton;
+import terrace.gui.controls.TerraceButtonGroup;
 
 public class LocalGameSetup extends TerracePanel {
 	private static final long serialVersionUID = 1L;

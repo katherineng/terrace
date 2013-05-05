@@ -18,6 +18,7 @@ import javax.swing.border.EmptyBorder;
 import terrace.GameBuilder;
 import terrace.NetworkType;
 import terrace.Player;
+import terrace.gui.game.GamePanel;
 
 public class GameScreen extends JPanel {
 	private static final long serialVersionUID = -3415367755182469262L;

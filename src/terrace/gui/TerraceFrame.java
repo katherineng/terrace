@@ -10,8 +10,9 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import terrace.GameBuilder;
+import terrace.IllegalMoveException;
 import terrace.NetworkType;
-import terrace.exception.IllegalMoveException;
+import terrace.gui.game.GamePanel;
 
 public class TerraceFrame extends JFrame {
 	private static final long serialVersionUID = 641801362474775997L;

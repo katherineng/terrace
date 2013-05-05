@@ -4,7 +4,6 @@ import java.io.Closeable;
 import java.util.LinkedList;
 import java.util.List;
 
-import terrace.exception.IllegalMoveException;
 import terrace.util.Callback;
 
 import com.google.common.base.Optional;

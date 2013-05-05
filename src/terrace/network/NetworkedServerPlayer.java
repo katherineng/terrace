@@ -4,11 +4,11 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import message.Channel;
-import message.Port;
 import terrace.Move;
 import terrace.Player;
 import terrace.PlayerColor;
+import terrace.message.Channel;
+import terrace.message.Port;
 
 import com.google.common.base.Optional;
 

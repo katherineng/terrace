@@ -7,7 +7,6 @@ import java.util.PriorityQueue;
 import com.google.common.base.Optional;
 
 import terrace.*;
-import terrace.exception.IllegalMoveException;
 import terrace.util.Posn;
 
 public class AI extends Player {

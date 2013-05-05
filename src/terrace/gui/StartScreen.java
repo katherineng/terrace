@@ -21,7 +21,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import terrace.exception.IllegalMoveException;
+import terrace.IllegalMoveException;
 
 public class StartScreen extends TerracePanel {
 	private TerraceFrame _frame;

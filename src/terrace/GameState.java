@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.google.common.base.Optional;
 
-import terrace.exception.IllegalMoveException;
 import terrace.util.Callback;
 import terrace.util.Copyable;
 

@@ -1,4 +1,4 @@
-package terrace.gui;
+package terrace.gui.game;
 
 import java.awt.Frame;
 import java.awt.event.MouseEvent;
@@ -25,6 +25,7 @@ import terrace.GameState;
 import terrace.Move;
 import terrace.Piece;
 import terrace.Player;
+import terrace.gui.GameScreen;
 import terrace.util.Callback;
 import terrace.util.Posn;
 

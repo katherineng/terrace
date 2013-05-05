@@ -1,4 +1,4 @@
-package terrace.exception;
+package terrace;
 
 public class IllegalMoveException extends Exception {
 

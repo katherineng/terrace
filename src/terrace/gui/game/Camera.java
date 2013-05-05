@@ -1,8 +1,8 @@
-package terrace.gui;
+package terrace.gui.game;
 
 import javax.vecmath.*;
 
-class Camera {
+public class Camera {
 	double zoom;
 	double fovx;
 	double theta;

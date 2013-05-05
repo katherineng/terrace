@@ -1,4 +1,4 @@
-package terrace.gui;
+package terrace.gui.game;
 
 import java.util.HashMap;
 import java.util.LinkedList;

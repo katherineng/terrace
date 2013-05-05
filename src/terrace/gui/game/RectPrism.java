@@ -1,6 +1,7 @@
-package terrace.gui;
+package terrace.gui.game;
 
 import javax.media.opengl.*;
+
 
 /**
  * Draws rectangles because opengl doesn't have a fucking gluCube or

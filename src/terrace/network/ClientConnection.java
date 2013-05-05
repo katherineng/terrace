@@ -60,6 +60,9 @@ public class ClientConnection implements Closeable, Runnable {
 					_names.add(line);
 				}
 			}
+			_onReady.call(this);
+			
+			
 		} catch (IOException e) {
 			 System.err.println("LOG: " + e.getLocalizedMessage());
 		}

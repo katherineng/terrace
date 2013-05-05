@@ -1,4 +1,4 @@
-package terrace.gui;
+package terrace.gui.controls;
 
 import java.util.LinkedList;
 import java.util.List;

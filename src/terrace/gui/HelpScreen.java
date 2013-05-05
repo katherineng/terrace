@@ -15,7 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import terrace.exception.IllegalMoveException;
+import terrace.IllegalMoveException;
 
 //TODO redo for the new background
 public class HelpScreen extends TerracePanel {

@@ -1,4 +1,4 @@
-package message;
+package terrace.message;
 
 import static org.junit.Assert.*;
 
