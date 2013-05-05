@@ -37,6 +37,7 @@ public class GameSetupScreen extends TerracePanel {
 	private static final long serialVersionUID = 1L;
 	
 	private static final Pattern validName = Pattern.compile("[^,]+");
+	private final static int MAX_NAME_LENGTH = 15;
 	
 	private static final Font headerFont = new Font("Verdana", Font.BOLD, 30);
 	private static final Font defaultFont = new Font("Verdana", Font.BOLD, 24);
@@ -46,30 +47,28 @@ public class GameSetupScreen extends TerracePanel {
 	private static final Color defaultColor = new Color(255, 255, 255);
 	private static final Color fadedColor = Color.LIGHT_GRAY;
 	
-	private Integer numPlayers = 1;
+	private Integer _numPlayers = 1;
 	private Variant v = Variant.STANDARD;
 	
 	private TerraceFrame _frame;
 	private NetworkType _networkType;
-	private JLabel p1;
-	private JLabel p2;
-	private JLabel p3;
-	private JLabel p4;
-	private JTextField player1;
-	private JTextField player2;
-	private JTextField player3;
-	private JTextField player4;
-	private TerraceButton standard;
-	private TerraceButton onePlayer;
-	private TerraceButton twoPlayer;
-	private TerraceButton threePlayer;
-	private TerraceButton fourPlayer;
+	private JLabel _p1;
+	private JLabel _p2;
+	private JLabel _p3;
+	private JLabel _p4;
+	private JTextField _player1;
+	private JTextField _player2;
+	private JTextField _player3;
+	private JTextField _player4;
+	private TerraceButton _standard;
+	private TerraceButton _onePlayer;
+	private TerraceButton _twoPlayer;
+	private TerraceButton _threePlayer;
+	private TerraceButton _fourPlayer;
+	private JLabel _error;
+	private TerraceButton _large;
 	
-	private TerraceButton large;
-	
-	private final static int MAX_NAME_LENGTH = 15;
-	private int boardSize = 1;// 0 if small 1 if large
-	private JLabel error;
+	private boolean _isLarge = true; // 0 if small 1 if large
 	
 	public GameSetupScreen(TerraceFrame frame, NetworkType networkType) {
 		super(frame);
@@ -113,26 +112,26 @@ public class GameSetupScreen extends TerracePanel {
 		sizeLabelConst.insets = new Insets(20, 0, 20, 0);
 		
 		TerraceButton small = new TerraceButton("small");
-		small.addMouseListener(new BoardTypeListener(0));
+		small.addMouseListener(new BoardTypeListener(false));
 		small.setFont(defaultFont);
 		small.setAlignmentX(CENTER_ALIGNMENT);
 		small.setForeground(defaultColor);
 		small.setBackground(backgroundColor);
 		
-		large = new TerraceButton("large");
-		large.addMouseListener(new BoardTypeListener(1));
-		large.setFont(defaultFont);
-		large.setAlignmentX(CENTER_ALIGNMENT);
-		large.setForeground(defaultColor);
-		large.setBackground(backgroundColor);
-		large.setSelected(true);
+		_large = new TerraceButton("large");
+		_large.addMouseListener(new BoardTypeListener(true));
+		_large.setFont(defaultFont);
+		_large.setAlignmentX(CENTER_ALIGNMENT);
+		_large.setForeground(defaultColor);
+		_large.setBackground(backgroundColor);
+		_large.setSelected(true);
 		
 		TerraceButtonGroup sizeGroup = new TerraceButtonGroup();
 		sizeGroup.add(small);
-		sizeGroup.add(large);
+		sizeGroup.add(_large);
 		
 		boardSize.add(small);
-		boardSize.add(large);
+		boardSize.add(_large);
 		
 		//board type panel
 		JPanel boardOptions = new JPanel();
@@ -164,13 +163,13 @@ public class GameSetupScreen extends TerracePanel {
 		triangle.setForeground(defaultColor);
 		triangle.setBackground(backgroundColor);
 		
-		standard = new TerraceButton("square - standard rules");
-		standard.addMouseListener(new VariantTypeListener(Variant.STANDARD));
-		standard.setFont(defaultFont);
-		standard.setBackground(backgroundColor);
-		standard.setForeground(defaultColor);
-		standard.setAlignmentX(Component.CENTER_ALIGNMENT);
-		standard.setSelected(true);
+		_standard = new TerraceButton("square - standard rules");
+		_standard.addMouseListener(new VariantTypeListener(Variant.STANDARD));
+		_standard.setFont(defaultFont);
+		_standard.setBackground(backgroundColor);
+		_standard.setForeground(defaultColor);
+		_standard.setAlignmentX(Component.CENTER_ALIGNMENT);
+		_standard.setSelected(true);
 		
 		TerraceButton downhill = new TerraceButton("square - downhill rules");
 		downhill.addMouseListener(new VariantTypeListener(Variant.DOWNHILL));
@@ -188,10 +187,10 @@ public class GameSetupScreen extends TerracePanel {
 		
 		TerraceButtonGroup options = new TerraceButtonGroup();
 		options.add(triangle);
-		options.add(standard);
+		options.add(_standard);
 		options.add(downhill);
 		options.add(aggressive);
-		boardOptions.add(standard);sizeLabelPanel.setVisible(false);
+		boardOptions.add(_standard);sizeLabelPanel.setVisible(false);
 		boardOptions.add(downhill);
 		boardOptions.add(aggressive);
 		boardOptions.add(triangle);
@@ -221,85 +220,85 @@ public class GameSetupScreen extends TerracePanel {
 		nameHeader.setForeground(headerColor);
 		
 		//lables for player textfields
-		p1 = new JLabel("Player 1");
+		_p1 = new JLabel("Player 1");
 		GridBagConstraints p1Const = new GridBagConstraints();
 		p1Const.gridx = 0;
 		p1Const.gridy = 1;
-		p1.setForeground(defaultColor);
-		p1.setFont(defaultFont);
+		_p1.setForeground(defaultColor);
+		_p1.setFont(defaultFont);
 		
-		p2 = new JLabel("Player 2");
+		_p2 = new JLabel("Player 2");
 		GridBagConstraints p2Const = new GridBagConstraints();
 		p2Const.gridx = 0;
 		p2Const.gridy = 2;
-		p2.setFont(defaultFont);
-		p2.setForeground(defaultColor);
-		p2.setVisible(false);
+		_p2.setFont(defaultFont);
+		_p2.setForeground(defaultColor);
+		_p2.setVisible(false);
 		
-		p3 = new JLabel("Player 3");
+		_p3 = new JLabel("Player 3");
 		GridBagConstraints p3Const = new GridBagConstraints();
 		p3Const.gridx = 0;
 		p3Const.gridy = 3;
-		p3.setFont(defaultFont);
-		p3.setForeground(defaultColor);
-		p3.setVisible(false);
+		_p3.setFont(defaultFont);
+		_p3.setForeground(defaultColor);
+		_p3.setVisible(false);
 		
-		p4 = new JLabel("Player 4");
+		_p4 = new JLabel("Player 4");
 		GridBagConstraints p4Const = new GridBagConstraints();
 		p4Const.gridx = 0;
 		p4Const.gridy = 4;
-		p4.setFont(defaultFont);
-		p4.setForeground(defaultColor);
-		p4.setVisible(false);
+		_p4.setFont(defaultFont);
+		_p4.setForeground(defaultColor);
+		_p4.setVisible(false);
 		
 		//text fields for player names
-		player1 = new JTextField(10);
-		player1.setCaretColor(fadedColor);
-		player1.setDocument(new LengthLimit(MAX_NAME_LENGTH));
+		_player1 = new JTextField(10);
+		_player1.setCaretColor(fadedColor);
+		_player1.setDocument(new LengthLimit(MAX_NAME_LENGTH));
 		GridBagConstraints player1Const = new GridBagConstraints();
 		player1Const.gridx = 1;
 		player1Const.gridy = 1;
 		player1Const.insets = new Insets(0, 4, 0, 0);
-		player1.setBackground(backgroundColor);
-		player1.setForeground(fadedColor);
-		player1.setFont(defaultFont);
-		player1.setText("Player 1");
+		_player1.setBackground(backgroundColor);
+		_player1.setForeground(fadedColor);
+		_player1.setFont(defaultFont);
+		_player1.setText("Player 1");
 		
-		player2 = new JTextField(10);
-		player2.setCaretColor(fadedColor);
-		player2.setDocument(new LengthLimit(MAX_NAME_LENGTH));
+		_player2 = new JTextField(10);
+		_player2.setCaretColor(fadedColor);
+		_player2.setDocument(new LengthLimit(MAX_NAME_LENGTH));
 		GridBagConstraints player2Const = new GridBagConstraints();
 		player2Const.gridx = 1;
 		player2Const.gridy = 2;
 		player2Const.insets = new Insets(0, 4, 0, 0);
-		player2.setBackground(backgroundColor);
-		player2.setForeground(fadedColor);
-		player2.setFont(defaultFont);
-		player2.setText("Player 2");
-		player2.setEnabled(false);
-		player2.setVisible(false);
+		_player2.setBackground(backgroundColor);
+		_player2.setForeground(fadedColor);
+		_player2.setFont(defaultFont);
+		_player2.setText("Player 2");
+		_player2.setEnabled(false);
+		_player2.setVisible(false);
 		
-		player3 = new JTextField(10);
-		player3.setCaretColor(fadedColor);
-		player3.setDocument(new LengthLimit(MAX_NAME_LENGTH));
+		_player3 = new JTextField(10);
+		_player3.setCaretColor(fadedColor);
+		_player3.setDocument(new LengthLimit(MAX_NAME_LENGTH));
 		GridBagConstraints player3Const = new GridBagConstraints();
 		player3Const.gridx = 1;
 		player3Const.gridy = 3;
 		player3Const.insets = new Insets(0, 4, 0, 0);
-		player3.setBackground(backgroundColor);
-		player3.setForeground(fadedColor);sizeLabelPanel.setVisible(false);
-		player3.setFont(defaultFont);
-		player3.setText("Player 3");
-		player3.setEnabled(false);
-		player3.setVisible(false);
+		_player3.setBackground(backgroundColor);
+		_player3.setForeground(fadedColor);sizeLabelPanel.setVisible(false);
+		_player3.setFont(defaultFont);
+		_player3.setText("Player 3");
+		_player3.setEnabled(false);
+		_player3.setVisible(false);
 		
-		playerNames.add(p1, p1Const);
-		playerNames.add(p2, p2Const);
-		playerNames.add(p3, p3Const);
-		playerNames.add(p4, p4Const);
-		playerNames.add(player1, player1Const);
-		playerNames.add(player2, player2Const);
-		playerNames.add(player3, player3Const);
+		playerNames.add(_p1, p1Const);
+		playerNames.add(_p2, p2Const);
+		playerNames.add(_p3, p3Const);
+		playerNames.add(_p4, p4Const);
+		playerNames.add(_player1, player1Const);
+		playerNames.add(_player2, player2Const);
+		playerNames.add(_player3, player3Const);
 		
 		//Number of players panel
 		JPanel numPlayersPanel = new JPanel();
@@ -319,42 +318,42 @@ public class GameSetupScreen extends TerracePanel {
 		JPanel numPlayersOptions = new JPanel();
 		numPlayersOptions.setLayout(new GridBagLayout());
 		
-		onePlayer = new TerraceButton("1");
-		onePlayer.setBackground(backgroundColor);
-		onePlayer.setForeground(defaultColor);
-		onePlayer.setFont(defaultFont);
-		onePlayer.setSelected(true);
-		onePlayer.addMouseListener(new NumPlayerListener(1));
+		_onePlayer = new TerraceButton("1");
+		_onePlayer.setBackground(backgroundColor);
+		_onePlayer.setForeground(defaultColor);
+		_onePlayer.setFont(defaultFont);
+		_onePlayer.setSelected(true);
+		_onePlayer.addMouseListener(new NumPlayerListener(1));
 		GridBagConstraints oneConst = new GridBagConstraints();
 		oneConst.gridx = 0;
 		oneConst.gridy = 0;
 		
-		twoPlayer = new TerraceButton("2");
-		twoPlayer.setBackground(backgroundColor);
-		twoPlayer.setForeground(defaultColor);
-		twoPlayer.setFont(defaultFont);
-		twoPlayer.addMouseListener(new NumPlayerListener(2));
+		_twoPlayer = new TerraceButton("2");
+		_twoPlayer.setBackground(backgroundColor);
+		_twoPlayer.setForeground(defaultColor);
+		_twoPlayer.setFont(defaultFont);
+		_twoPlayer.addMouseListener(new NumPlayerListener(2));
 		GridBagConstraints twoConst = new GridBagConstraints();
 		twoConst.gridx = 1;
 		twoConst.gridy = 0;
 		
-		threePlayer = new TerraceButton("3");
-		threePlayer.setBackground(backgroundColor);
-		threePlayer.setForeground(defaultColor);
-		threePlayer.setFont(defaultFont);
-		threePlayer.addMouseListener(new NumPlayerListener(3));
+		_threePlayer = new TerraceButton("3");
+		_threePlayer.setBackground(backgroundColor);
+		_threePlayer.setForeground(defaultColor);
+		_threePlayer.setFont(defaultFont);
+		_threePlayer.addMouseListener(new NumPlayerListener(3));
 		GridBagConstraints threeConst = new GridBagConstraints();
 		threeConst.gridx = 0;
 		threeConst.gridy = 1;sizeLabelPanel.setVisible(false);
 		
 		TerraceButtonGroup numPlayersButtons = new TerraceButtonGroup();
-		numPlayersButtons.add(onePlayer);
-		numPlayersButtons.add(twoPlayer);
-		numPlayersButtons.add(threePlayer);
+		numPlayersButtons.add(_onePlayer);
+		numPlayersButtons.add(_twoPlayer);
+		numPlayersButtons.add(_threePlayer);
 		
-		numPlayersPanel.add(onePlayer, oneConst);
-		numPlayersPanel.add(twoPlayer, twoConst);
-		numPlayersPanel.add(threePlayer, threeConst);
+		numPlayersPanel.add(_onePlayer, oneConst);
+		numPlayersPanel.add(_twoPlayer, twoConst);
+		numPlayersPanel.add(_threePlayer, threeConst);
 		
 		JButton goButton = new JButton();
 		GridBagConstraints goConst = new GridBagConstraints();
@@ -372,11 +371,11 @@ public class GameSetupScreen extends TerracePanel {
 		backConst.insets = new Insets(30, 0, 0,0);
 		backConst.anchor = GridBagConstraints.WEST;
 		
-		error = new JLabel("");
-		error.setPreferredSize(new Dimension(250, 50));
+		_error = new JLabel("");
+		_error.setPreferredSize(new Dimension(250, 50));
 		GridBagConstraints errorConst = new GridBagConstraints();
-		error.setVisible(false);
-		error.setForeground(defaultColor);
+		_error.setVisible(false);
+		_error.setForeground(defaultColor);
 		errorConst.gridx = 0;
 		errorConst.gridy = 6;
 		errorConst.gridwidth = 2;
@@ -413,40 +412,40 @@ public class GameSetupScreen extends TerracePanel {
 		pane.add(numPlayersPanel, numPlayersConst);
 		pane.add(backButton, backConst);
 		pane.add(portPanel, portPanelConst);
-		playerNames.add(error, errorConst);
+		playerNames.add(_error, errorConst);
 		
 		if(_networkType == NetworkType.LOCAL) {
-			player2.setEnabled(true);
-			player2.setVisible(true);
-			p2.setVisible(true);
-			p2.setText("CPU");
-			player2.setText("CPU");
+			_player2.setEnabled(true);
+			_player2.setVisible(true);
+			_p2.setVisible(true);
+			_p2.setText("CPU");
+			_player2.setText("CPU");
 			
-			player4 = new JTextField(10);
-			player4.setCaretColor(fadedColor);
-			player4.setDocument(new LengthLimit(MAX_NAME_LENGTH));
+			_player4 = new JTextField(10);
+			_player4.setCaretColor(fadedColor);
+			_player4.setDocument(new LengthLimit(MAX_NAME_LENGTH));
 			GridBagConstraints player4Const = new GridBagConstraints();
 			player4Const.gridx = 1;
 			player4Const.gridy = 4;
 			player4Const.insets = new Insets(0, 4, 0, 0);
-			player4.setBackground(backgroundColor);
-			player4.setForeground(fadedColor);
-			player4.setFont(defaultFont);
-			player4.setText("Player 4");
-			player4.setEnabled(false);
-			player4.setVisible(false);
-			playerNames.add(player4, player4Const);
+			_player4.setBackground(backgroundColor);
+			_player4.setForeground(fadedColor);
+			_player4.setFont(defaultFont);
+			_player4.setText("Player 4");
+			_player4.setEnabled(false);
+			_player4.setVisible(false);
+			playerNames.add(_player4, player4Const);
 			
-			fourPlayer = new TerraceButton("4");
-			fourPlayer.setBackground(backgroundColor);
-			fourPlayer.setForeground(defaultColor);
-			fourPlayer.setFont(defaultFont);
-			fourPlayer.addMouseListener(new NumPlayerListener(4));
+			_fourPlayer = new TerraceButton("4");
+			_fourPlayer.setBackground(backgroundColor);
+			_fourPlayer.setForeground(defaultColor);
+			_fourPlayer.setFont(defaultFont);
+			_fourPlayer.addMouseListener(new NumPlayerListener(4));
 			GridBagConstraints fourConst = new GridBagConstraints();
 			fourConst.gridx = 1;
 			fourConst.gridy = 1;
-			numPlayersButtons.add(fourPlayer);
-			numPlayersPanel.add(fourPlayer, fourConst);
+			numPlayersButtons.add(_fourPlayer);
+			numPlayersPanel.add(_fourPlayer, fourConst);
 			
 			goButton.setText("Start Game");
 		} else if(_networkType == NetworkType.HOST) {
@@ -468,43 +467,43 @@ public class GameSetupScreen extends TerracePanel {
 	public void resetScreen() {
 		switch (_networkType) {
 		case LOCAL:
-			standard.setSelected(true);// TODO if field is empty when focus is
+			_standard.setSelected(true);// TODO if field is empty when focus is
 										// lost, reset to "player _"
-			player1.setText("Player 1");
-			onePlayer.setSelected(true);
-			standard.setSelected(true);
-			large.setSelected(true);
-			p2.setText("CPU");
-			player2.setText("CPU");
-			player3.setEnabled(false);
-			player4.setEnabled(false);
-			p3.setVisible(false);
-			p4.setVisible(false);
-			player3.setVisible(false);
-			player4.setVisible(false);
-			threePlayer.setEnabled(true);
-			fourPlayer.setEnabled(true);
+			_player1.setText("Player 1");
+			_onePlayer.setSelected(true);
+			_standard.setSelected(true);
+			_large.setSelected(true);
+			_p2.setText("CPU");
+			_player2.setText("CPU");
+			_player3.setEnabled(false);
+			_player4.setEnabled(false);
+			_p3.setVisible(false);
+			_p4.setVisible(false);
+			_player3.setVisible(false);
+			_player4.setVisible(false);
+			_threePlayer.setEnabled(true);
+			_fourPlayer.setEnabled(true);
 			v = Variant.STANDARD;
-			numPlayers = 1;
-			boardSize = 1;
+			_numPlayers = 1;
+			_isLarge = true;
 			break;
 		default:
-			player1.setText("Player 1");
-			standard.setSelected(true);
+			_player1.setText("Player 1");
+			_standard.setSelected(true);
 			v = Variant.STANDARD;
-			numPlayers = 1;
-			boardSize = 1;
-			onePlayer.setSelected(true);
-			threePlayer.setEnabled(true);
-			large.setSelected(true);
-			player2.setVisible(false);
-			player2.setText("Player 2");
-			player2.setEnabled(false);
-			p2.setVisible(false);
-			player3.setEnabled(false);
-			player3.setText("Player 3");
-			p3.setVisible(false);
-			player3.setVisible(false);
+			_numPlayers = 1;
+			_isLarge = true;
+			_onePlayer.setSelected(true);
+			_threePlayer.setEnabled(true);
+			_large.setSelected(true);
+			_player2.setVisible(false);
+			_player2.setText("Player 2");
+			_player2.setEnabled(false);
+			_p2.setVisible(false);
+			_player3.setEnabled(false);
+			_player3.setText("Player 3");
+			_p3.setVisible(false);
+			_player3.setVisible(false);
 			break;
 		}
 	}
@@ -537,14 +536,14 @@ public class GameSetupScreen extends TerracePanel {
 	}
 	
 	public int checkRegexp() {
-		if (!validName.matcher(player1.getText()).matches()) {
+		if (!validName.matcher(_player1.getText()).matches()) {
 			return 1;
-		} else if (!validName.matcher(player2.getText()).matches()) {
+		} else if (!validName.matcher(_player2.getText()).matches()) {
 			return 2;
-		} else if (!validName.matcher(player3.getText()).matches()) {
+		} else if (!validName.matcher(_player3.getText()).matches()) {
 			return 3;
 		} else if (_networkType == NetworkType.LOCAL) {
-			if (!validName.matcher(player4.getText()).matches()) {
+			if (!validName.matcher(_player4.getText()).matches()) {
 				return 4;
 			}
 		}
@@ -552,18 +551,18 @@ public class GameSetupScreen extends TerracePanel {
 	}
 	
 	public void setErrorMsg(String msg) {
-		error.setText(msg);
-		error.setVisible(true);
+		_error.setText(msg);
+		_error.setVisible(true);
 	}
 	
 	private class GoListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			error.setVisible(false);
+			_error.setVisible(false);
 			
 			int n;
 			if ((n = checkRegexp()) != 0) {
-				if (numPlayers - n == 1) {
+				if (_numPlayers - n == 1) {
 					setErrorMsg("<html>CPU's name may not contain commas (,)</html>");
 				} else {
 					setErrorMsg("<html>Player " + n + "'s name may not contain commas (,)</html>");
@@ -575,38 +574,38 @@ public class GameSetupScreen extends TerracePanel {
 				System.out.println("daslfkjdasfkljdak");// DEBUG
 				_frame.changeCard("join networked game");
 			} else {
-				_frame._builder.setNumLocalPlayers(numPlayers);
+				_frame._builder.setNumLocalPlayers(_numPlayers);
 				List<String> playerNames = new ArrayList<>();
 				if (_networkType == NetworkType.LOCAL) {
-					if (numPlayers > 2) {
-						playerNames.add(player4.getText());
-						playerNames.add(player3.getText());
-						playerNames.add(player2.getText());
-						playerNames.add(player1.getText());
+					if (_numPlayers > 2) {
+						playerNames.add(_player4.getText());
+						playerNames.add(_player3.getText());
+						playerNames.add(_player2.getText());
+						playerNames.add(_player1.getText());
 					} else {
-						playerNames.add(player2.getText());
-						playerNames.add(player1.getText());
+						playerNames.add(_player2.getText());
+						playerNames.add(_player1.getText());
 					}
 				} else {
-					switch (numPlayers) {
+					switch (_numPlayers) {
 					case 3:
-						playerNames.add(player3.getText());
+						playerNames.add(_player3.getText());
 					case 2:
-						playerNames.add(player2.getText());
+						playerNames.add(_player2.getText());
 					case 1:
-						playerNames.add(player1.getText());
+						playerNames.add(_player1.getText());
 					}
 				}
 				Collections.reverse(playerNames);
 				_frame.setPlayerNames(playerNames);
 				if (v == Variant.TRIANGLE) {
-					if (boardSize == 0) {
+					if (!_isLarge) {
 						_frame._builder.setSize(4);
 					} else {
 						_frame._builder.setSize(5);
 					}
 				} else {
-					if (boardSize == 0) {
+					if (!_isLarge) {
 						_frame._builder.setSize(6);
 					} else {
 						_frame._builder.setSize(8);
@@ -638,19 +637,19 @@ public class GameSetupScreen extends TerracePanel {
 				return;
 			} else if (_var == Variant.TRIANGLE) {
 				
-				player3.setVisible(false);
-				p3.setVisible(false);
-				p4.setVisible(false);
-				onePlayer.setSelected(true);
-				threePlayer.setEnabled(false);
+				_player3.setVisible(false);
+				_p3.setVisible(false);
+				_p4.setVisible(false);
+				_onePlayer.setSelected(true);
+				_threePlayer.setEnabled(false);
 				if (_networkType == NetworkType.LOCAL) {
-					fourPlayer.setEnabled(false);
-					player4.setVisible(false);
+					_fourPlayer.setEnabled(false);
+					_player4.setVisible(false);
 				}
 			} else {
-				threePlayer.setEnabled(true);
+				_threePlayer.setEnabled(true);
 				if (_networkType == NetworkType.LOCAL) {
-					fourPlayer.setEnabled(true);
+					_fourPlayer.setEnabled(true);
 				}
 			}			
 		}
@@ -669,10 +668,10 @@ public class GameSetupScreen extends TerracePanel {
 	}
 	
 	class BoardTypeListener implements MouseListener {
-		private int _size;
+		private boolean _large;
 		
-		BoardTypeListener(int size) {
-			_size = size;
+		BoardTypeListener(boolean large) {
+			_large = large;
 		}
 		
 		@Override
@@ -680,23 +679,22 @@ public class GameSetupScreen extends TerracePanel {
 			if (!((TerraceButton)e.getSource()).isEnabled()) {
 				return;
 			}
-			boardSize = _size;
+			_isLarge = _large;
 		}
 		
 		@Override
 		public void mousePressed(MouseEvent e) {}
-
+		
 		@Override
 		public void mouseReleased(MouseEvent e) {}
-
+		
 		@Override
 		public void mouseEntered(MouseEvent e) {}
-
+		
 		@Override
 		public void mouseExited(MouseEvent e) {}
-
 	}
-
+	
 	private class NumPlayerListener implements MouseListener {
 		private int _num;
 		
@@ -709,86 +707,86 @@ public class GameSetupScreen extends TerracePanel {
 			if (!((TerraceButton)e.getSource()).isEnabled()) {
 				return;
 			}
-			numPlayers = _num;
+			_numPlayers = _num;
 			switch (_networkType) {
 			case LOCAL: // TODO resets names when numPlayers changes
-				switch (numPlayers) {
+				switch (_numPlayers) {
 				case 1:
-					p2.setText("CPU");
-					player2.setText("CPU");
-					player3.setEnabled(false);
-					player4.setEnabled(false);
-					p3.setVisible(false);
-					p4.setVisible(false);
-					player3.setVisible(false);
-					player4.setVisible(false);
+					_p2.setText("CPU");
+					_player2.setText("CPU");
+					_player3.setEnabled(false);
+					_player4.setEnabled(false);
+					_p3.setVisible(false);
+					_p4.setVisible(false);
+					_player3.setVisible(false);
+					_player4.setVisible(false);
 					break;
 				case 2:
-					p2.setText("Player 2");
-					player2.setText("Player 2");
-					player3.setEnabled(false);
-					player4.setEnabled(false);
-					player3.setVisible(false);
-					player4.setVisible(false);
-					p3.setVisible(false);
-					p4.setVisible(false);
+					_p2.setText("Player 2");
+					_player2.setText("Player 2");
+					_player3.setEnabled(false);
+					_player4.setEnabled(false);
+					_player3.setVisible(false);
+					_player4.setVisible(false);
+					_p3.setVisible(false);
+					_p4.setVisible(false);
 					break;
 				case 3:
-					p2.setText("Player 2");
-					player2.setText("Player 2");
-					p3.setText("Player 3");
-					player3.setText("Player 3");
-					player3.setEnabled(true);
-					p4.setText("CPU");
-					player4.setText("CPU");
-					player4.setEnabled(true);
-					player3.setVisible(true);
-					player4.setVisible(true);
-					p3.setVisible(true);
-					p4.setVisible(true);
+					_p2.setText("Player 2");
+					_player2.setText("Player 2");
+					_p3.setText("Player 3");
+					_player3.setText("Player 3");
+					_player3.setEnabled(true);
+					_p4.setText("CPU");
+					_player4.setText("CPU");
+					_player4.setEnabled(true);
+					_player3.setVisible(true);
+					_player4.setVisible(true);
+					_p3.setVisible(true);
+					_p4.setVisible(true);
 					break;
 				case 4:
-					p2.setText("Player 2");
-					player2.setText("Player 2");
-					p3.setText("Player 3");
-					player3.setText("Player 3");
-					player3.setEnabled(true);
-					p4.setText("Player 4");
-					player4.setText("Player 4");
-					player4.setEnabled(true);
-					player4.setEnabled(true);
-					player3.setVisible(true);
-					player4.setVisible(true);
-					p3.setVisible(true);
-					p4.setVisible(true);
+					_p2.setText("Player 2");
+					_player2.setText("Player 2");
+					_p3.setText("Player 3");
+					_player3.setText("Player 3");
+					_player3.setEnabled(true);
+					_p4.setText("Player 4");
+					_player4.setText("Player 4");
+					_player4.setEnabled(true);
+					_player4.setEnabled(true);
+					_player3.setVisible(true);
+					_player4.setVisible(true);
+					_p3.setVisible(true);
+					_p4.setVisible(true);
 					break;
 				}
 				break;
 			default:
-				switch (numPlayers) {
+				switch (_numPlayers) {
 				case 1:
-					player2.setEnabled(false);
-					player2.setVisible(false);
-					player3.setEnabled(false);
-					p2.setVisible(false);
-					p3.setVisible(false);
-					player3.setVisible(false);
+					_player2.setEnabled(false);
+					_player2.setVisible(false);
+					_player3.setEnabled(false);
+					_p2.setVisible(false);
+					_p3.setVisible(false);
+					_player3.setVisible(false);
 					break;
 				case 2:
-					player2.setEnabled(true);
-					player2.setVisible(true);
-					player3.setEnabled(false);
-					p2.setVisible(true);
-					p3.setVisible(false);
-					player3.setVisible(false);
+					_player2.setEnabled(true);
+					_player2.setVisible(true);
+					_player3.setEnabled(false);
+					_p2.setVisible(true);
+					_p3.setVisible(false);
+					_player3.setVisible(false);
 					break;
 				case 3:
-					player2.setEnabled(true);
-					player2.setVisible(true);
-					player3.setEnabled(true);
-					p2.setVisible(true);
-					p3.setVisible(true);
-					player3.setVisible(true);
+					_player2.setEnabled(true);
+					_player2.setVisible(true);
+					_player3.setEnabled(true);
+					_p2.setVisible(true);
+					_p3.setVisible(true);
+					_player3.setVisible(true);
 					break;
 				}
 			}
