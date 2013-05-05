@@ -7,25 +7,34 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 
+import terrace.util.Callback;
+
 public class HostServer implements Runnable, Closeable {
 	private final int _port;
 	private final ExecutorService _es;
+	private final Callback<ClientConnection> _newRequest;
+	
 	private boolean _closed = false;
 	private Set<ClientConnection> _clients = new HashSet<>();
 	
-	public HostServer(int port, ExecutorService es) {
+	public HostServer(
+			int port,
+			ExecutorService es,
+			Callback<ClientConnection> newRequest
+	) {
 		_port = port;
 		_es = es;
+		_newRequest = newRequest;
 	}
 	
 	@Override
 	public void run() {
 		try (ServerSocket server = new ServerSocket(_port)) {
 			while (!_closed) {
-				ClientConnection _conn = new ClientConnection(server.accept()); 
+				final ClientConnection conn = new ClientConnection(server.accept(), _newRequest);
 				
-				_clients.add(_conn);
-				_es.submit(_conn);
+				_clients.add(conn);
+				_es.submit(conn);
 			}
 		} catch (IOException e) {
 			System.err.println("LOG: " + e.getLocalizedMessage());

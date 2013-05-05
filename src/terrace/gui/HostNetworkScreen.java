@@ -34,15 +34,16 @@ import javax.swing.SpringLayout;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import terrace.network.Request;
+import terrace.network.ClientConnection;
+import terrace.network.ClientConnection;
 
 public class HostNetworkScreen extends TerracePanel {
 	private TerraceFrame _frame;
 	private int _numPlayers;
 	private List<String> _playerNames;
 	private Set<String> _localPlayers;
-	private DefaultListModel<Request> _requestListModel;
-	private JList<Request> _requests;
+	private DefaultListModel<ClientConnection> _requestListModel;
+	private JList<ClientConnection> _requests;
 	private static final Color backgroundColor = Color.DARK_GRAY;
 	private static final Color headerColor = Color.WHITE;
 	private static final Color defaultColor = Color.WHITE;
@@ -54,7 +55,7 @@ public class HostNetworkScreen extends TerracePanel {
 	//private JList<String> requestList;
 	private JButton addButton;
 	//private DefaultListModel<String> requestListModel;
-	private Map<String, Request> acceptedRequests;
+	private Map<String, ClientConnection> acceptedClientConnections;
 	
 	private JLabel error;
 	
@@ -65,7 +66,7 @@ public class HostNetworkScreen extends TerracePanel {
 	public HostNetworkScreen(TerraceFrame frame) {
 		super(frame);
 		_frame = frame;
-		acceptedRequests = new HashMap<>();
+		acceptedClientConnections = new HashMap<>();
 		setBackground(backgroundColor);
 		setLayout(new GridBagLayout());
 		_requestListModel = new DefaultListModel<>();
@@ -73,13 +74,13 @@ public class HostNetworkScreen extends TerracePanel {
 		removeButton = new JButton();
 		addButton = new JButton();
 	}
-	public void removeRequest(Request r) {
+	public void removeClientConnection(ClientConnection r) {
 		if (!_requestListModel.removeElement(r)) {
-			acceptedRequests.remove(r.toString());
+			acceptedClientConnections.remove(r.toString());
 			currentListModel.removeElement(r.toString());
 		}
 	}
-	public void addRequest(Request r) {
+	public void addClientConnection(ClientConnection r) {
 		_requestListModel.addElement(r);
 	}
 	public void setPlayerNames(List<String> names) {
@@ -110,10 +111,7 @@ public class HostNetworkScreen extends TerracePanel {
 		names3.add("name");
 		
 		_requests  = new JList<>(_requestListModel);
-		_requestListModel.addElement(new Request(names1));
-		_requestListModel.addElement(new Request(names2));
-		_requestListModel.addElement(new Request(names3));
-		_requests.addListSelectionListener(new AcceptRequestListener());
+		_requests.addListSelectionListener(new AcceptClientConnectionListener());
 		JScrollPane requestScroll = new JScrollPane(_requests);
 		_requests.setBackground(fadedColor);
 		_requests.setForeground(defaultColor);
@@ -163,7 +161,7 @@ public class HostNetworkScreen extends TerracePanel {
 		addConst.gridy = 2;
 		addButton.addActionListener(new AddButtonListener());
 
-		JLabel requestLabel = new JLabel("Requests to Join");
+		JLabel requestLabel = new JLabel("ClientConnections to Join");
 		GridBagConstraints requestConst = new GridBagConstraints();
 		requestConst.gridx = 1;
 		requestConst.gridy = 0;
@@ -233,7 +231,7 @@ public class HostNetworkScreen extends TerracePanel {
 			_frame.changeCard("networked game setup");
 			_requestListModel.clear();
 			currentListModel.removeAllElements();
-			acceptedRequests.clear();
+			acceptedClientConnections.clear();
 			error.setVisible(false);
 		}
 		
@@ -259,9 +257,9 @@ public class HostNetworkScreen extends TerracePanel {
 				error.setVisible(true);
 			} else {
 				currentListModel.remove(index);
-				_numPlayers -= acceptedRequests.get(line).getNumberOfPlayers();
-				_requestListModel.addElement(acceptedRequests.get(line));
-				acceptedRequests.remove(line);
+				_numPlayers -= acceptedClientConnections.get(line).getPlayerNames().size();
+				_requestListModel.addElement(acceptedClientConnections.get(line));
+				acceptedClientConnections.remove(line);
 				if (currentListModel.size() != 0){
 					currentList.setSelectedIndex(0);
 				}
@@ -269,7 +267,7 @@ public class HostNetworkScreen extends TerracePanel {
 			}
 		}
 	}
-	class AcceptRequestListener implements ListSelectionListener {
+	class AcceptClientConnectionListener implements ListSelectionListener {
 
 		@Override
 		public void valueChanged(ListSelectionEvent e) {
@@ -283,18 +281,18 @@ public class HostNetworkScreen extends TerracePanel {
 	class AddButtonListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			Request r = (Request) _requests.getSelectedValue();
+			ClientConnection r = (ClientConnection) _requests.getSelectedValue();
 			int index = _requests.getSelectedIndex();
 			if (r == null) {
 				return;
 			}
-			if (_numPlayers + r.getNumberOfPlayers() > 4) {
+			if (_numPlayers + r.getPlayerNames().size() > 4) {
 				error.setText("Game cannot have more than 4 players");
 				error.setVisible(true);
 			} else {
 				currentListModel.addElement(r.toString());
-				acceptedRequests.put(r.toString(), r);
-				_numPlayers += r.getNumberOfPlayers();
+				acceptedClientConnections.put(r.toString(), r);
+				_numPlayers += r.getPlayerNames().size();
 				if (_requestListModel.size() != 0){
 					_requests.setSelectedIndex(0);
 				}
