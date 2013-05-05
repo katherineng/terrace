@@ -11,18 +11,14 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -31,7 +27,8 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
 
-import terrace.*;
+import terrace.NetworkType;
+import terrace.Variant;
 import terrace.gui.controls.TerraceButton;
 import terrace.gui.controls.TerraceButtonGroup;
 
@@ -60,14 +57,14 @@ public class LocalGameSetup extends TerracePanel {
 	private TerraceButton twoPlayer;
 	private TerraceButton threePlayer;
 	private TerraceButton fourPlayer;
-
+	
 	private TerraceButton large;
 	
 	private final static int MAX_NAME_LENGTH = 15;
 	private int boardSize = 1;// 0 if small 1 if large
 	private final String regexp = "[^,]+";
 	private JLabel error;
-
+	
 	public LocalGameSetup(TerraceFrame frame, NetworkType networkType) {
 		super(frame);
 		_frame = frame;
@@ -82,7 +79,7 @@ public class LocalGameSetup extends TerracePanel {
 		outerPanel.add(infoPanel);
 		add(outerPanel);
 	}
-
+	
 	private void addComponents(Container pane) {
 		setLayout(new GridBagLayout());
 		//board size panel
@@ -108,14 +105,14 @@ public class LocalGameSetup extends TerracePanel {
 		sizeLabelConst.gridx = 0;
 		sizeLabelConst.gridy = 2;
 		sizeLabelConst.insets = new Insets(20, 0, 20, 0);
-
+		
 		TerraceButton small = new TerraceButton("small");
 		small.addMouseListener(new BoardTypeListener(0));
 		small.setFont(defaultFont);
 		small.setAlignmentX(CENTER_ALIGNMENT);
 		small.setForeground(defaultColor);
 		small.setBackground(backgroundColor);
-
+		
 		large = new TerraceButton("large");
 		large.addMouseListener(new BoardTypeListener(1));
 		large.setFont(defaultFont);
@@ -123,14 +120,14 @@ public class LocalGameSetup extends TerracePanel {
 		large.setForeground(defaultColor);
 		large.setBackground(backgroundColor);
 		large.setSelected(true);
-
+		
 		TerraceButtonGroup sizeGroup = new TerraceButtonGroup();
 		sizeGroup.add(small);
 		sizeGroup.add(large);
-
+		
 		boardSize.add(small);
 		boardSize.add(large);
-
+		
 		//board type panel
 		JPanel boardOptions = new JPanel();
 		boardOptions.setBackground(backgroundColor);
@@ -153,7 +150,7 @@ public class LocalGameSetup extends TerracePanel {
 		boardLabelConst.gridx = 1;
 		boardLabelConst.gridy = 2;
 		boardLabelConst.insets = new Insets(20, 0, 20, 0);
-
+		
 		TerraceButton triangle = new TerraceButton("triangle");
 		triangle.addMouseListener(new VariantTypeListener(Variant.TRIANGLE));
 		triangle.setFont(defaultFont);
@@ -168,14 +165,14 @@ public class LocalGameSetup extends TerracePanel {
 		standard.setForeground(defaultColor);
 		standard.setAlignmentX(Component.CENTER_ALIGNMENT);
 		standard.setSelected(true);
-
+		
 		TerraceButton downhill = new TerraceButton("square - downhill rules");
 		downhill.addMouseListener(new VariantTypeListener(Variant.DOWNHILL));
 		downhill.setFont(defaultFont);
 		downhill.setBackground(backgroundColor);
 		downhill.setForeground(defaultColor);
 		downhill.setAlignmentX(Component.CENTER_ALIGNMENT);
-
+		
 		TerraceButton aggressive = new TerraceButton("square - aggresive rules");
 		aggressive.addMouseListener(new VariantTypeListener(Variant.AGGRESSIVE));
 		aggressive.setFont(defaultFont);
@@ -192,7 +189,7 @@ public class LocalGameSetup extends TerracePanel {
 		boardOptions.add(downhill);
 		boardOptions.add(aggressive);
 		boardOptions.add(triangle);
-
+		
 		//player name panel
 		JPanel playerNames = new JPanel();
 		playerNames.setBorder(BorderFactory.createLineBorder(Color.WHITE));
@@ -204,7 +201,7 @@ public class LocalGameSetup extends TerracePanel {
 		playerNamesConst.ipadx = 10;
 		playerNamesConst.anchor = GridBagConstraints.NORTH;
 		playerNames.setLayout(new GridBagLayout());
-
+		
 		JPanel namesLabelPanel = new JPanel();
 		//namesLabelPanel.setBorder(BorderFactory.createLineBorder(Color.WHITE));
 		namesLabelPanel.setBackground(backgroundColor);
@@ -261,7 +258,7 @@ public class LocalGameSetup extends TerracePanel {
 		player1.setForeground(fadedColor);
 		player1.setFont(defaultFont);
 		player1.setText("Player 1");
-
+		
 		player2 = new JTextField(10);
 		player2.setCaretColor(fadedColor);
 		player2.setDocument(new LengthLimit(MAX_NAME_LENGTH));
@@ -312,10 +309,10 @@ public class LocalGameSetup extends TerracePanel {
 		numPlayersConst.gridy = 0;
 		numPlayersConst.gridwidth = 4;
 		numPlayersConst.insets = new Insets(0, 0, 0, 20);
-
+		
 		JPanel numPlayersOptions = new JPanel();
 		numPlayersOptions.setLayout(new GridBagLayout());
-
+		
 		onePlayer = new TerraceButton("1");
 		onePlayer.setBackground(backgroundColor);
 		onePlayer.setForeground(defaultColor);
@@ -325,7 +322,7 @@ public class LocalGameSetup extends TerracePanel {
 		GridBagConstraints oneConst = new GridBagConstraints();
 		oneConst.gridx = 0;
 		oneConst.gridy = 0;
-
+		
 		twoPlayer = new TerraceButton("2");
 		twoPlayer.setBackground(backgroundColor);
 		twoPlayer.setForeground(defaultColor);
@@ -348,8 +345,6 @@ public class LocalGameSetup extends TerracePanel {
 		numPlayersButtons.add(onePlayer);
 		numPlayersButtons.add(twoPlayer);
 		numPlayersButtons.add(threePlayer);
-		
-		
 		
 		numPlayersPanel.add(onePlayer, oneConst);
 		numPlayersPanel.add(twoPlayer, twoConst);
@@ -415,7 +410,6 @@ public class LocalGameSetup extends TerracePanel {
 		playerNames.add(error, errorConst);
 		
 		if(_networkType == NetworkType.LOCAL) {
-			
 			player2.setEnabled(true);
 			player2.setVisible(true);
 			p2.setVisible(true);
@@ -449,9 +443,6 @@ public class LocalGameSetup extends TerracePanel {
 			numPlayersPanel.add(fourPlayer, fourConst);
 			
 			goButton.setText("Start Game");
-			
-			
-			
 		} else if(_networkType == NetworkType.HOST) {
 			portField.setVisible(true);
 			portLabel.setVisible(true);
@@ -466,10 +457,8 @@ public class LocalGameSetup extends TerracePanel {
 			pane.add(boardOptions, boardOptionsConst);
 			pane.add(boardSize, boardSizeConst);
 		}
-		
-		
 	}
-
+	
 	public void resetScreen() {
 		switch (_networkType) {
 		case LOCAL:
@@ -512,48 +501,45 @@ public class LocalGameSetup extends TerracePanel {
 			player3.setVisible(false);
 			break;
 		}
-
 	}
-
+	
 	class BackListener implements ActionListener {
-
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			_frame.changeCard("Setup");
 		}
 	}
-
+	
 	class LengthListener implements ActionListener {
-
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			JTextField source = (JTextField) e.getSource();
 			String word = source.getText();
+			
 			if (word.length() > MAX_NAME_LENGTH) {
 				source.setText(word.substring(0, MAX_NAME_LENGTH));
 			}
 		}
-
 	}
 	class LengthLimit extends PlainDocument {
+		private static final long serialVersionUID = 1159717759453623084L;
+		
 		private int limit;
-
+		
 		LengthLimit(int limit) {
 			super();
 			this.limit = limit;
 		}
-
-		public void insertString(int offset, String str, AttributeSet attr)
-				throws BadLocationException {
-			if (str == null)
-				return;
-
+		
+		public void insertString(int offset, String str, AttributeSet attr) throws BadLocationException {
+			if (str == null) return;
+			
 			if ((getLength() + str.length()) <= limit) {
 				super.insertString(offset, str, attr);
 			}
 		}
 	}
-
+	
 	public int checkRegexp() {
 		if (!player1.getText().matches(regexp)) {
 			return 1;
@@ -566,32 +552,29 @@ public class LocalGameSetup extends TerracePanel {
 				return 4;
 			}
 		}
-
 		return 0;
 	}
-
+	
 	public void setErrorMsg(String msg) {
 		error.setText(msg);
 		error.setVisible(true);
 	}
-
+	
 	class GoListener implements ActionListener {
-
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			error.setVisible(false);
-
+			
 			int n;
 			if ((n = checkRegexp()) != 0) {
 				if (numPlayers - n == 1) {
 					setErrorMsg("<html>CPU's name may not contain commas (,)</html>");
 				} else {
-					setErrorMsg("<html>Player " + n
-							+ "'s name may not contain commas (,)</html>");
+					setErrorMsg("<html>Player " + n + "'s name may not contain commas (,)</html>");
 				}
 				return;
 			}
-
+			
 			if (_networkType == NetworkType.JOIN) {
 				System.out.println("daslfkjdasfkljdak");// DEBUG
 				_frame.changeCard("join networked game");
@@ -634,7 +617,7 @@ public class LocalGameSetup extends TerracePanel {
 					}
 				}
 				_frame._builder.setVariant(v);
-
+				
 				if (_networkType == NetworkType.HOST) {
 					_frame.changeCard("host networked game");
 				} else {
@@ -644,9 +627,8 @@ public class LocalGameSetup extends TerracePanel {
 		}
 
 	}
-
+	
 	class VariantTypeListener implements MouseListener {
-		
 		Variant _var;
 		
 		VariantTypeListener(Variant var) {
@@ -676,38 +658,35 @@ public class LocalGameSetup extends TerracePanel {
 				}
 			}			
 		}
-
+		
 		@Override
 		public void mousePressed(MouseEvent e) {}
-
+		
 		@Override
 		public void mouseReleased(MouseEvent e) {}
-
+		
 		@Override
 		public void mouseEntered(MouseEvent e) {}
-
+		
 		@Override
 		public void mouseExited(MouseEvent e) {}
-
 	}
-
+	
 	class BoardTypeListener implements MouseListener {
-		
 		private int _size;
 		
 		BoardTypeListener(int size) {
 			_size = size;
 		}
-
+		
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			if (!((TerraceButton)e.getSource()).isEnabled()) {
 				return;
 			}
 			boardSize = _size;
-			
 		}
-
+		
 		@Override
 		public void mousePressed(MouseEvent e) {}
 
@@ -723,13 +702,12 @@ public class LocalGameSetup extends TerracePanel {
 	}
 
 	class NumPlayerListener implements MouseListener {
-		
 		private int _num;
 		
 		NumPlayerListener(int num) {
 			_num = num;
 		}
-
+		
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			if (!((TerraceButton)e.getSource()).isEnabled()) {
@@ -819,18 +797,17 @@ public class LocalGameSetup extends TerracePanel {
 				}
 			}
 		}
-
+		
 		@Override
 		public void mousePressed(MouseEvent e) {}
-
+		
 		@Override
 		public void mouseReleased(MouseEvent e) {}
-
+		
 		@Override
 		public void mouseEntered(MouseEvent e) {}
-
+		
 		@Override
 		public void mouseExited(MouseEvent e) {}
 	}
-
 }
