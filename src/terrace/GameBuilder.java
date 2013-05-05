@@ -16,7 +16,7 @@ public class GameBuilder {
 	
 	private int _localPlayers;
 	private int _networkPlayers = 0;
-	private GameType _type;
+	private NetworkType _type;
 	private Variant _variant;
 	private int _size = 8;
 	
@@ -52,13 +52,13 @@ public class GameBuilder {
 		_size = size;
 	}
 	public void localGame() {
-		_type = GameType.Local;
+		_type = NetworkType.LOCAL;
 	}
 	public void hostGame(
 			final int port,
 			Callback<ClientConnection> newRequest
 	) {
-		_type = GameType.Host;
+		_type = NetworkType.HOST;
 		
 		_es.submit(new HostServer(port, _es, newRequest));
 	}
@@ -108,9 +108,5 @@ public class GameBuilder {
 	
 	public void setPlayerNames(List<String> names) {
 		_names = names;
-	}
-	
-	private enum GameType {
-		Local, Host, Client
 	}
 }
