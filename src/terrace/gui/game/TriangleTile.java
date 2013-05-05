@@ -2,10 +2,10 @@ package terrace.gui.game;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
-import javax.vecmath.Vector2d;
-import javax.vecmath.Vector3d;
 
 import terrace.util.Posn;
+import terrace.util.Vector2d;
+import terrace.util.Vector3d;
 
 public class TriangleTile extends BoardTile{
 

@@ -1,9 +1,9 @@
 package terrace.gui.game;
 
 import javax.media.opengl.*;
-import javax.vecmath.*;
 
 import terrace.util.Posn;
+import terrace.util.Vector3d;
 
 /**
  * The squares that lay atop the board w/ different elevations
@@ -11,7 +11,6 @@ import terrace.util.Posn;
  *
  */
 public abstract class BoardTile implements Drawable {
-
 	protected static final Vector3d HOVER_COLOR = new Vector3d(.2,.2,.2);
 	protected int _incorrect_timing = 0;
 	protected double _height;
@@ -21,7 +20,7 @@ public abstract class BoardTile implements Drawable {
 	protected boolean _selected;	/** Whether this tile is being hovered over **/
 	protected boolean _correct;	/** Whether this is a valid move when the user clicks on it **/
 	Vector3d _moveColor;		/** The color of the tile if the move is possible. Corresponds to the current user **/
-
+	
 	public BoardTile(GUIBoard board, double height, Posn pos, int level){
 		_height = height;
 		_level = level;

@@ -2,26 +2,23 @@ package terrace.util;
 
 import java.util.Objects;
 
-import javax.vecmath.*;
-
-@SuppressWarnings("serial")
-public class Posn extends Point3i {
-
+public class Posn {
+	public final int x, y;
+	
 	public Posn(int x, int y) {
-		super(x, y, 0);
+		this.x = x;
+		this.y = y;
 	}
 	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
+	public int getX() {return x;}
+	
+	public int getY() {return y;}
+	
 	@Override
 	public int hashCode() {
 		return Objects.hash(x, y);
 	}
 	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

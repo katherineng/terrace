@@ -6,11 +6,11 @@ import java.util.List;
 import java.util.Map;
 
 import javax.media.opengl.GL2;
-import javax.vecmath.Vector3d;
 
 import terrace.Player;
 import terrace.PlayerColor;
 import terrace.util.Posn;
+import terrace.util.Vector3d;
 
 public abstract class GUIBoard implements Drawable {
 	protected RectPrism _foundation;				/** The foundation of the board **/

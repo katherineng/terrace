@@ -17,8 +17,6 @@ import javax.media.opengl.GLProfile;
 import javax.media.opengl.awt.GLJPanel;
 import javax.media.opengl.glu.GLU;
 import javax.swing.SwingUtilities;
-import javax.vecmath.Vector2d;
-import javax.vecmath.Vector3d;
 
 import terrace.GameServer;
 import terrace.GameState;
@@ -27,7 +25,8 @@ import terrace.Piece;
 import terrace.Player;
 import terrace.gui.GameScreen;
 import terrace.util.Callback;
-import terrace.util.Posn;
+import terrace.util.Vector2d;
+import terrace.util.Vector3d;
 
 import com.google.common.base.Function;
 import com.google.common.base.Optional;

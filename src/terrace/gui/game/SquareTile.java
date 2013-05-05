@@ -1,9 +1,10 @@
 package terrace.gui.game;
 
 import javax.media.opengl.*;
-import javax.vecmath.*;
 
 import terrace.util.Posn;
+import terrace.util.Vector2d;
+import terrace.util.Vector3d;
 
 public class SquareTile extends BoardTile{
 
