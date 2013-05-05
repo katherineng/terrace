@@ -32,9 +32,10 @@ import javax.swing.event.ListSelectionListener;
 import terrace.network.ClientConnection;
 
 public class HostNetworkScreen extends TerracePanel {
+	private static final long serialVersionUID = -1281313334499999359L;
+	
 	private TerraceFrame _frame;
 	private int _numPlayers;
-	private List<String> _playerNames;
 	private Set<String> _localPlayers;
 	private DefaultListModel<ClientConnection> _requestListModel;
 	private JList<ClientConnection> _requests;
@@ -68,30 +69,35 @@ public class HostNetworkScreen extends TerracePanel {
 		removeButton = new JButton();
 		addButton = new JButton();
 	}
+	
 	public void removeClientConnection(ClientConnection r) {
 		if (!_requestListModel.removeElement(r)) {
 			acceptedClientConnections.remove(r.toString());
 			currentListModel.removeElement(r.toString());
 		}
 	}
+	
 	public void addClientConnection(ClientConnection r) {
 		_requestListModel.addElement(r);
 	}
+	
 	public void setPlayerNames(List<String> names) {
 		removeAll();
 		_numPlayers = names.size();
-		_playerNames = names;
 		_localPlayers = new HashSet<>();
 		_localPlayers.addAll(names);
+		
 		for(String name : names) {
 			currentListModel.addElement(name);
 		}
+		
 		JPanel infoPanel = new JPanel(new GridBagLayout());
 		infoPanel.setBackground(backgroundColor);
 		infoPanel.setBorder(BorderFactory.createLineBorder(defaultColor));
 		addComponents(infoPanel);
 		add(infoPanel);
 	}
+	
 	private void addComponents(Container pane) {
 		List<String> names1 = new ArrayList<>();
 		names1.add("name1");
@@ -199,16 +205,15 @@ public class HostNetworkScreen extends TerracePanel {
 		pane.add(backButton, backConst);
 		pane.add(goButton, goConst);
 	}
-	class GoListener implements ActionListener {
-
+	
+	private class GoListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			//TODO not sure what to start
 		}
-		
 	}
-	class CurrListListener implements ListSelectionListener {
-
+	
+	private class CurrListListener implements ListSelectionListener {
 		@Override
 		public void valueChanged(ListSelectionEvent e) {
 			if (currentList.getSelectedIndex() == -1) {
@@ -218,8 +223,8 @@ public class HostNetworkScreen extends TerracePanel {
 			}
 		}
 	}
-	class BackListener implements ActionListener {//TODO add a popup
-
+	
+	private class BackListener implements ActionListener {//TODO add a popup
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			_frame.changeCard("networked game setup");
@@ -228,24 +233,34 @@ public class HostNetworkScreen extends TerracePanel {
 			acceptedClientConnections.clear();
 			error.setVisible(false);
 		}
-		
 	}
-	public class ListSelectionRenderer extends DefaultListCellRenderer {
-	     @Override
-	     public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+	
+	private class ListSelectionRenderer extends DefaultListCellRenderer {
+		private static final long serialVersionUID = -4558741714060548611L;
+		
+		@Override
+	     public Component getListCellRendererComponent(
+	    		 JList<?> list,
+	    		 Object value,
+	    		 int index,
+	    		 boolean isSelected,
+	    		 boolean cellHasFocus
+	    ) {
 	         Component c = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+	         
 	         if (isSelected) {
 	             c.setBackground(highlightColor);
 	         }
 	         return c;
 	     }
 	}
-	class RemoveButtonListener implements ActionListener {
-
+	
+	private class RemoveButtonListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			String line = (String) currentList.getSelectedValue();
 			int index = currentList.getSelectedIndex();
+			
 			if (index < _localPlayers.size()) {
 				error.setText("Cannot remove local players from game");
 				error.setVisible(true);
@@ -254,6 +269,7 @@ public class HostNetworkScreen extends TerracePanel {
 				_numPlayers -= acceptedClientConnections.get(line).getPlayerNames().size();
 				_requestListModel.addElement(acceptedClientConnections.get(line));
 				acceptedClientConnections.remove(line);
+				
 				if (currentListModel.size() != 0){
 					currentList.setSelectedIndex(0);
 				}
@@ -261,8 +277,8 @@ public class HostNetworkScreen extends TerracePanel {
 			}
 		}
 	}
-	class AcceptClientConnectionListener implements ListSelectionListener {
-
+	
+	private class AcceptClientConnectionListener implements ListSelectionListener {
 		@Override
 		public void valueChanged(ListSelectionEvent e) {
 			if (_requests.getSelectedIndex() == -1) {
@@ -272,11 +288,13 @@ public class HostNetworkScreen extends TerracePanel {
 			}
 		}
 	}
-	class AddButtonListener implements ActionListener {
+	
+	private class AddButtonListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			ClientConnection r = (ClientConnection) _requests.getSelectedValue();
 			int index = _requests.getSelectedIndex();
+			
 			if (r == null) {
 				return;
 			}
@@ -287,6 +305,7 @@ public class HostNetworkScreen extends TerracePanel {
 				currentListModel.addElement(r.toString());
 				acceptedClientConnections.put(r.toString(), r);
 				_numPlayers += r.getPlayerNames().size();
+				
 				if (_requestListModel.size() != 0){
 					_requests.setSelectedIndex(0);
 				}
@@ -294,6 +313,5 @@ public class HostNetworkScreen extends TerracePanel {
 				error.setVisible(false);
 			}
 		}
-		
 	}
 }
