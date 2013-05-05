@@ -82,6 +82,7 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 			public void call(GameState state) {
 				_game = state;
 				_board.resetPieces();
+				_board.clearMoves();
 				
 				if (!_game.getWinner().isPresent()) {
 					_screen.setCurrPlayer(_game.getActivePlayer());
