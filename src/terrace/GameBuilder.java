@@ -37,7 +37,7 @@ public class GameBuilder {
 	}
 	
 	public int getNumAIPlayers() {
-		switch (_localPlayers) {
+		switch (_localPlayers + _networkPlayers) {
 		case 1: return 1;
 		case 2: return 0;
 		case 3: return 1;
@@ -84,11 +84,12 @@ public class GameBuilder {
 		}
 		for (ClientConnection conn : clients) {
 			for (String name : conn.getPlayerNames()) {
+				_names.add(name);
 				players.add(new NetworkedServerPlayer(conn, name, PlayerColor.values()[playerNum]));
+				_networkPlayers++;
 				playerNum++;
 			}
 		}
-		
 		for (int i = 0; i < getNumAIPlayers(); i++) {
 			aiPlayers.add(new AI(PlayerColor.values()[playerNum]));
 		}
@@ -120,9 +121,10 @@ public class GameBuilder {
 		}
 		
 		int i = 0;
+		int numHuman = _names.size();
 		for (final Player p : players) {
-			if (i >= _names.size()) {
-				p.setName("CPU " + (i -_names.size() + 1));
+			if (i >= numHuman) {
+				p.setName("CPU " + (i - numHuman + 1));
 			} else {
 				p.setName(_names.get(i));
 			}
