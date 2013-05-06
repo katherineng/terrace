@@ -70,8 +70,8 @@ public class HostNetworkScreen extends TerracePanel {
 	public Callback<ClientConnection> getNewRequestCallback() {
 		return new Callback<ClientConnection>() {
 			@Override
-			public void call(ClientConnection val) {
-				_requestListModel.addElement(val);
+			public void call(ClientConnection conn) {
+				_requestListModel.addElement(conn);
 			}
 		};
 	}
@@ -79,8 +79,8 @@ public class HostNetworkScreen extends TerracePanel {
 	public Callback<ClientConnection> getConnectionDroppedCallback() {
 		return new Callback<ClientConnection>() {
 			@Override
-			public void call(ClientConnection val) {
-				_requestListModel.removeElement(val);
+			public void call(ClientConnection conn) {
+				removeClientConnection(conn);
 			}
 		};
 	}
@@ -89,6 +89,7 @@ public class HostNetworkScreen extends TerracePanel {
 		if (!_requestListModel.removeElement(r)) {
 			_acceptedClientConnections.remove(r.toString());
 			_currentListModel.removeElement(r.toString());
+			_numPlayers -= r.getPlayerNames().size();
 		}
 	}
 	
@@ -285,7 +286,7 @@ public class HostNetworkScreen extends TerracePanel {
 				_requestListModel.addElement(_acceptedClientConnections.get(line));
 				_acceptedClientConnections.remove(line);
 				
-				if (_currentListModel.size() != 0){
+				if (_currentListModel.size() != 0) {
 					_currentList.setSelectedIndex(0);
 				}
 				_error.setVisible(false);
@@ -307,7 +308,7 @@ public class HostNetworkScreen extends TerracePanel {
 	private class AddButtonListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			ClientConnection r = (ClientConnection) _requests.getSelectedValue();
+			ClientConnection r = _requests.getSelectedValue();
 			int index = _requests.getSelectedIndex();
 			
 			if (r == null) {
