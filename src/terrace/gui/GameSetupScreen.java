@@ -3,7 +3,6 @@ package terrace.gui;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -683,7 +682,7 @@ public class GameSetupScreen extends TerracePanel implements MouseListener {
 				}
 			}
 			switch (_networkType) {
-			case LOCAL: // TODO resets names when numPlayers changes
+			case LOCAL:
 				switch (_num) {
 				case 1:
 					if (oldNum != 1) {
