@@ -2,19 +2,31 @@ package terrace.gui;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GridBagConstraints;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 import terrace.PlayerColor;
 
 public class TerracePanel extends JPanel {
 	private static final long serialVersionUID = 4103874090610020605L;
+	
+	public static final Color backgroundColor = Color.DARK_GRAY;
+	public static final Color headerColor = Color.WHITE;
+	public static final Color defaultColor = Color.WHITE;
+	public static final Color fadedColor = Color.GRAY;
+	
+	public static final Font headerFont = new Font("Verdana", Font.BOLD, 30);
+	public static final Font defaultFont = new Font("Verdana", Font.BOLD, 24);
 	
 	private static final Color color1 = PlayerColor.BLUE.toColor();
 	private static final Color color2 = PlayerColor.PINK.toColor();
@@ -79,4 +91,27 @@ public class TerracePanel extends JPanel {
 			}
 		}
 	}
+	public void textFieldSetting(JTextField field) {
+		field.setBackground(backgroundColor);
+		field.setForeground(fadedColor);
+		field.setFont(defaultFont);
+		field.setCaretColor(fadedColor);
+	}
+	public void headerSetting(Component comp) {
+		comp.setBackground(backgroundColor);
+		comp.setFont(headerFont);
+		comp.setForeground(headerColor);
+	}
+	public void defaultSetting(Component comp) {
+		comp.setBackground(backgroundColor);
+		comp.setFont(defaultFont);
+		comp.setForeground(defaultColor);
+	}
+	public GridBagConstraints makeGBC(int x, int y) {
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.gridx = x;
+		gbc.gridy = y;
+		return gbc;
+	}
+	
 }

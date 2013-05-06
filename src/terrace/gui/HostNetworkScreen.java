@@ -40,10 +40,7 @@ public class HostNetworkScreen extends TerracePanel {
 	private Set<String> _localPlayers;
 	private DefaultListModel<ClientConnection> _requestListModel;
 	private JList<ClientConnection> _requests;
-	private static final Color backgroundColor = Color.DARK_GRAY;
-	private static final Color headerColor = Color.WHITE;
-	private static final Color defaultColor = Color.WHITE;
-	private static final Color fadedColor = Color.GRAY;
+	
 	private static final Color highlightColor = new Color(245, 245, 245);
 	private static final Font headerFont = new Font("Verdana", Font.BOLD, 30);
 	private static final Font defaultFont = new Font("Verdana", Font.BOLD, 16);
@@ -251,6 +248,7 @@ public class HostNetworkScreen extends TerracePanel {
 			currentListModel.removeAllElements();
 			acceptedClientConnections.clear();
 			error.setVisible(false);
+			//_frame._builder.close();
 		}
 	}
 	
