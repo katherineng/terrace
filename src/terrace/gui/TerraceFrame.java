@@ -53,7 +53,7 @@ public class TerraceFrame extends JFrame {
 		_cards.add(new StartScreen(this), START_SCREEN);
 		_cards.add(_localSetup, LOCAL_SETUP);
 		_cards.add(_hostSetup, NETWORK_SETUP);
-		_cards.add(_joinSetup, JOIN_SETUP);
+		_cards.add(new JoinNetworkScreen(this), JOIN_SETUP);
 		_cards.add(new HelpScreen(this), HELP_SCREEN);
 		_cards.add(_networkScreen, HOST_GAME);
 		_cards.add(new JoinNetworkScreen(this), JOIN_NETWORK);
@@ -95,6 +95,10 @@ public class TerraceFrame extends JFrame {
 	
 	void setPlayerNames(List<String> names) {
 		_playerNames = names;
+	}
+	
+	void addPlayerNames(List<String> names) {
+		_playerNames.addAll(names);
 	}
 	
 	GameBuilder getBuilder() {
