@@ -19,7 +19,7 @@ public class GameBuilder {
 	private NetworkType _type;
 	private Variant _variant;
 	private int _size = 8;
-	private static final int DEFAULT_PORT = 5678;
+	public static final int DEFAULT_PORT = 5678;
 	
 	private List<String> _names;
 	

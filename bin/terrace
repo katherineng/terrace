@@ -1,4 +1,0 @@
-#!/bin/sh
-BINDIR=`dirname $0`
-export CLASSPATH=lib/guava-14.0.jar:lib/junit-4.11.jar:jogamp-all-platforms/jar/gluegen-rt.jar:jogamp-all-platforms/jar/jogl-all.jar:derived/terrace.jar
-$JAVA_HOME/bin/java $TERRACE_JAVA_ARGS terrace.gui.Main "$@"
