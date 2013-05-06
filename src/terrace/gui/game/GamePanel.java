@@ -32,14 +32,14 @@ import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.jogamp.opengl.util.Animator;
 
-//TODO add countown
-public class GamePanel extends GLJPanel implements MouseWheelListener, MouseListener, MouseMotionListener{
-	private final Frame _frame; // the containing frame
+public class GamePanel extends GLJPanel implements MouseWheelListener, MouseListener, MouseMotionListener {
+	private static final long serialVersionUID=100;
+	
 	private final GameScreen _screen;
 	
 	/** Determines current drawing mode **/
 	private enum Mode {NORMAL, SELECTION, HOVER};
-
+	
 	/*==== General Drawing ====*/
 	private Camera _camera;
 	private Vector2d _prevMousePos;
@@ -47,6 +47,7 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 	/*==== For Gameplay ====*/
 	private GUIBoard _board;
 	GameState _game;
+	private Optional<Player> _winner = Optional.absent();
 	
 	/*==== For Selection/Hoover ====*/
 	private GamePiece _selection; 		/** The GamePiece that has currently been selected **/
@@ -55,8 +56,6 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 	private Vector2d _selection_mouse;
 	private Vector2d _hover_mouse;
 	private Mode _mode;
-	
-	private Optional<Player> _winner = Optional.absent();
 	
 	public GamePanel(GameServer game, Frame frame, GameScreen screen) {
 		/*==== General Drawing ====*/
@@ -68,7 +67,6 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 	    Animator animator = new Animator(this);
 	    animator.start();
 	    _mode = Mode.NORMAL;
-	    _frame = frame;
 	    _screen = screen;
 	    
 	    /*==== Gameplay ====*/ 
@@ -114,12 +112,10 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 	    double theta = Math.PI * 1.5f, phi = -.6, fovx = 60., zoom = 1.2;
 	    _camera = new Camera(center, up, theta, phi, fovx, zoom);
 	    
-	    
 	    /*==== Selection ===*/
 	    _selection = null;
 	    _hover = null;
 	    _hover_mouse = new Vector2d(0,0);
-	    
 	    
 	    /*==== Listeners ====*/
 	    this.addMouseWheelListener(this);
@@ -129,13 +125,7 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 	    setVisible(true);
 	}
 	
-	// TODO: remove player from game
-	public void causeForfeit() {
-		
-	}
-
 	public class GraphicListener implements GLEventListener{
-
 		/**
 		 * Sets up stuff for the camera
 		 * @param gl
@@ -214,13 +204,6 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 				assert(false); 
 				break;
 			}
-			if (_winner.isPresent()) {
-				displayWinner(_winner.get());
-			}
-		}
-		
-		private void displayWinner(Player winner) {
-			
 		}
 		
 		/**
@@ -237,7 +220,7 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 			gl.glFrontFace(GL.GL_CW); 
 			_board.draw(gl);
 		}
-
+		
 		/**
 		 * Sets the GamePiece the user has selected. Occurs on click
 		 * @param newSelection - the GamePiece the user has clicked. Can not be null
@@ -251,11 +234,9 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 					newSelection.getPiece().getPlayer() == _game.getActivePlayer() &&
 					_game.getActivePlayer() instanceof LocalPlayer
 			) { 
-				
 				clearPossible();
 				
 				if (_selection == newSelection) { // if they are the same, that means user unselected
-					
 					//change selection settings
 					_selection.changeSelection();
 					_selection = null;
@@ -330,12 +311,9 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 		    return false;
 		}
 		
-
-
 		/*===================
 		 * SELECTION HELPERS
 		 * =================*/
-
 		
 		/**
 		 * clears the list of possible moves
@@ -377,7 +355,7 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 		}
 		
 		public void displayChanged(GLAutoDrawable arg0, boolean arg1, boolean arg2) {}
-
+		
 		/**
 		 * Setting up rendering environment: 
 		 * lighting
@@ -385,12 +363,11 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 		 * setting up board
 		 */
 		public void init(GLAutoDrawable arg0) {
-
 			GL2 gl=arg0.getGL().getGL2();
 			
 			// set up lighting
 			gl.glEnable(GL2.GL_LIGHTING);
-
+			
 			float ambient[]= {0.2f,0.2f,0.2f,1};
 			gl.glLightModelfv(GL2.GL_LIGHT_MODEL_AMBIENT , ambient,0);
 			
@@ -399,17 +376,6 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 			gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, position, 0);
 			float intensity[]= {1,1,1,1};
 			gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_DIFFUSE, intensity, 0);
-			
-//			gl.glEnable(GL2.GL_LIGHT1);
-//			float position2[]= {0,-0.8f,0.3f,1};
-//			gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_POSITION, position2, 0);
-//			float intensity2[]= {1,0,0,0};
-//			gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_DIFFUSE, intensity2, 0);
-//			float specIntensity2[]= {1,1,1,1};
-//			gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_SPECULAR, specIntensity2, 0);
-			
-			
-			Vector3d bg = _board.getPlayerColors(_game.getActivePlayer().getColor());
 			
 			gl.glEnable(GL2.GL_COLOR_MATERIAL);
 			gl.glColorMaterial(GL.GL_FRONT_AND_BACK, GL2.GL_AMBIENT_AND_DIFFUSE);
@@ -424,18 +390,13 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 			gl.glFogfv(GL2.GL_FOG_COLOR,fogColor,0);
 			gl.glClearColor(fogColor[0],fogColor[1],fogColor[2],fogColor[3]);
 		}
-
+		
 		public void reshape(GLAutoDrawable arg0, int arg1, int arg2, int arg3, int arg4) {}
-
+		
 		@Override
 		public void dispose(GLAutoDrawable arg0) {}
 	}
 	
-
-
-	static final long serialVersionUID=100;
-	
-
 	/**
 	 * Used for zoom
 	 */
@@ -443,12 +404,12 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 	public void mouseWheelMoved(MouseWheelEvent e) {
 		_camera.mouseWheel(-e.getWheelRotation());
 	}
-
+	
 	@Override
 	public void mousePressed(MouseEvent e) {
 		_prevMousePos = new Vector2d(e.getX(), e.getY());
 	}
-
+	
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		if (!_winner.isPresent()) {
