@@ -6,8 +6,7 @@ import terrace.util.Posn;
 import terrace.util.Copyable;
 
 public abstract class Board implements Copyable<Board> {
-
-	protected Piece[][] _board;
+	protected Piece[][] _pieces;
 	
 	public abstract int getWidth();
 	public abstract int getHeight();
@@ -32,7 +31,7 @@ public abstract class Board implements Copyable<Board> {
 	 * @return The piece at the position
 	 */
 	public Piece getPieceAt(Posn posn) {
-		return _board[posn.x][posn.y];
+		return _pieces[posn.x][posn.y];
 	}
 	
 	/**
@@ -41,7 +40,7 @@ public abstract class Board implements Copyable<Board> {
 	 * @param piece The piece to which posn should be set
 	 */
 	public void setPieceAt(Posn posn, Piece piece) {
-		_board[posn.getX()][posn.getY()] = piece;
+		_pieces[posn.getX()][posn.getY()] = piece;
 	}
 	
 	/**
@@ -52,12 +51,12 @@ public abstract class Board implements Copyable<Board> {
 	public void makeMove(Move move) {
 		Posn from = move.getPiece().getPosn();
 		Posn to = move.getTo();
-		Piece piece = _board[from.getX()][from.getY()];
+		Piece piece = _pieces[from.getX()][from.getY()];
 
-		assert _board[from.getX()][from.getY()] != null;
-		_board[from.getX()][from.getY()] = null;
+		assert _pieces[from.getX()][from.getY()] != null;
+		_pieces[from.getX()][from.getY()] = null;
 		piece.updatePosn(move.getTo());
-		_board[to.getX()][to.getY()] = piece;
+		_pieces[to.getX()][to.getY()] = piece;
 	}
 	
 	/**
@@ -73,7 +72,7 @@ public abstract class Board implements Copyable<Board> {
 	public List<Piece> getPieces() {
 		List<Piece> result = new LinkedList<>();
 		
-		for (Piece[] row : _board) {
+		for (Piece[] row : _pieces) {
 			for (Piece p : row) {
 				if (p != null) result.add(p);
 			}
@@ -85,7 +84,7 @@ public abstract class Board implements Copyable<Board> {
 		List<Piece> toRet = new LinkedList<Piece>();
 		for (int y = 0; y < getHeight(); y++) {
 			for (int x = 0; x < getWidth(); x++) {
-				Piece p = _board[x][y];
+				Piece p = _pieces[x][y];
 				if (p != null && p.getPlayer() == player) {
 					toRet.add(p);
 				}
@@ -97,9 +96,9 @@ public abstract class Board implements Copyable<Board> {
 	public void removePlayer(Player player) {
 		for (int y = getHeight() - 1; y >= 0; y--) {
 			for (int x = 0; x < getWidth(); x++) {
-				Piece p = _board[x][y];
+				Piece p = _pieces[x][y];
 				if (p != null && p.getColor().equals(player.getColor())) 
-					_board[x][y] = null;
+					_pieces[x][y] = null;
 			}
 		}
 	}
@@ -112,7 +111,7 @@ public abstract class Board implements Copyable<Board> {
 		for (int y = getHeight() - 1; y >= 0; y--) {
 			pieces += "[ ";
 			for (int x = 0; x < getWidth(); x++) {
-				Piece p = _board[x][y];
+				Piece p = _pieces[x][y];
 				if (p != null) {
 					pieces += p.toString() + "\t";
 				} else {
@@ -124,15 +123,17 @@ public abstract class Board implements Copyable<Board> {
 		return pieces;
 	}
 	
-	public void serialize(PrintWriter out) {
+	public abstract void serialize(PrintWriter out);
+	
+	protected void serializePieces(PrintWriter out) {
 		for (int x = 0; x < getWidth(); x++) {
 			for (int y = 0; y < getHeight(); y++) {
-				if (_board[x][y] == null) {
+				if (_pieces[x][y] == null) {
 					out.print("   ");
 				} else {
-					out.print(_board[x][y].getPlayer().getColor().ordinal());
+					out.print(_pieces[x][y].getPlayer().getColor().ordinal());
 					out.print(":");
-					out.print(_board[x][y].getSize());
+					out.print(_pieces[x][y].getSize());
 				}
 			}
 		}

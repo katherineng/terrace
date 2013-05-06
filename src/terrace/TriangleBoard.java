@@ -1,5 +1,6 @@
 package terrace;
 
+import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -15,7 +16,7 @@ public class TriangleBoard extends Board {
 	private static HashMap<Integer, int[][]> _elevationsMap;
 	public TriangleBoard(int dimensions) {
 		_dimensions = dimensions;
-		_board = new Piece[_dimensions][_dimensions*2];
+		_pieces = new Piece[_dimensions][_dimensions*2];
 		_elevationsMap = new HashMap<Integer, int[][]>();
 		setUp();
 	}
@@ -251,11 +252,19 @@ public class TriangleBoard extends Board {
 		Board copy = new TriangleBoard(_dimensions);
 		for (int x = 0; x < getWidth(); x++) {
 			for (int y = 0; y < getHeight(); y++) {
-				if (_board[x][y] != null) {
-					copy._board[x][y] = _board[x][y].copy();
+				if (_pieces[x][y] != null) {
+					copy._pieces[x][y] = _pieces[x][y].copy();
 				}
 			}
 		}
 		return copy;
+	}
+	
+	@Override
+	public void serialize(PrintWriter out) {
+		out.println("Triangle");
+		out.println(_dimensions);
+		
+		serializePieces(out);
 	}
 }

@@ -1,5 +1,6 @@
 package terrace;
 
+import java.io.PrintWriter;
 import java.util.*;
 
 import terrace.util.Posn;
@@ -18,7 +19,7 @@ public class DefaultBoard extends Board {
 
 	public DefaultBoard(int dimensions, Variant variant) {
 		_dimensions = dimensions;
-		_board = new Piece[_dimensions][_dimensions];
+		_pieces = new Piece[_dimensions][_dimensions];
 		_variant = variant;
 		setUp();
 	}
@@ -28,8 +29,8 @@ public class DefaultBoard extends Board {
 		Board copy = new DefaultBoard(_dimensions, _variant);
 		for (int x = 0; x < getWidth(); x++) {
 			for (int y = 0; y < getHeight(); y++) {
-				if (_board[x][y] != null) {
-					copy._board[x][y] = _board[x][y].copy();
+				if (_pieces[x][y] != null) {
+					copy._pieces[x][y] = _pieces[x][y].copy();
 				}
 			}
 		}
@@ -131,7 +132,7 @@ public class DefaultBoard extends Board {
 		
 		for (int i = idx + 1; i < numPosns; i++) {
 			Posn posn = sameTerrace.get(i);
-			Piece p = _board[posn.x][posn.y];
+			Piece p = _pieces[posn.x][posn.y];
 			if (p != null && !p.getColor().equals(piece.getColor())) {
 				break;
 			} else if (p != null) {
@@ -143,7 +144,7 @@ public class DefaultBoard extends Board {
 		
 		for (int i = idx - 1; i >= 0; i--) {
 			Posn posn = sameTerrace.get(i);
-			Piece p = _board[posn.x][posn.y];
+			Piece p = _pieces[posn.x][posn.y];
 			if (p != null && !p.getColor().equals(piece.getColor())) {
 				break;
 			} else if (p != null) {
@@ -218,7 +219,7 @@ public class DefaultBoard extends Board {
 		if (currPosn.x != start.x) {
 			int increment = start.x - currPosn.x;
 			for (int i = start.x + increment; i >= 0 && i < _dimensions; i += increment) {
-				Piece p = _board[i][start.y];
+				Piece p = _pieces[i][start.y];
 				if (p != null) break;
 				
 				int currElevation = _elevationsMap.get(_dimensions)[i][start.y];
@@ -230,7 +231,7 @@ public class DefaultBoard extends Board {
 		else if (currPosn.y != start.y) {
 			int increment = start.y - currPosn.y;
 			for (int i = start.y + increment; i >= 0 && i < _dimensions; i += increment) {
-				Piece p = _board[start.x][i];
+				Piece p = _pieces[start.x][i];
 				if (p != null) break;
 				int currElevation = _elevationsMap.get(_dimensions)[start.x][i];
 				if (prevElevation - currElevation != 1) break;
@@ -298,5 +299,13 @@ public class DefaultBoard extends Board {
 		}
 		
 		return elevations;
+	}
+	
+	@Override
+	public void serialize(PrintWriter out) {
+		out.println("Square");
+		out.println(_dimensions);
+		
+		serializePieces(out);
 	}
 }
