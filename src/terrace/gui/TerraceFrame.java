@@ -30,6 +30,7 @@ public class TerraceFrame extends JFrame {
 	private GameSetupScreen _localSetup;
 	private GameSetupScreen _hostSetup;
 	private GameSetupScreen _joinSetup;
+	private int _port;
 	
 	public TerraceFrame() {
 		setPreferredSize(new Dimension(1200, 1200));
@@ -73,6 +74,7 @@ public class TerraceFrame extends JFrame {
 			_cards.add(_currentGameScreen, GAME);
 		} else if (cardName == HOST_GAME) {
 			_networkScreen.setPlayerNames(_playerNames);
+			_builder.hostGame(_port, _networkScreen.getCallback());
 		}
 		
 		CardLayout layout = (CardLayout) _cards.getLayout();
@@ -85,5 +87,9 @@ public class TerraceFrame extends JFrame {
 	
 	GameBuilder getBuilder() {
 		return _builder;
+	}
+
+	public void setPort(int port) {
+		_port = port; 
 	}
 }
