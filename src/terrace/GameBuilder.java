@@ -73,6 +73,7 @@ public class GameBuilder {
 	
 	public GameServer startGame() {
 		List<Player> players = new LinkedList<>();
+		List<AI> aiPlayers = new LinkedList<>();
 		
 		int playerNum = 0;
 		
@@ -81,23 +82,24 @@ public class GameBuilder {
 			playerNum++;
 		}
 		for (int i = 0; i < getNumAIPlayers(); i++) {
-			players.add(new AI(PlayerColor.values()[playerNum]));
-			playerNum++;
+			aiPlayers.add(new AI(PlayerColor.values()[playerNum]));
 		}
+		players.addAll(aiPlayers);
 		
 		GameState game = new GameState(BoardFactory.create(players, _size, _variant), players, 0);
 		final GameServer s = new GameServer(game);
 		
+		for (final AI ai : aiPlayers) {
+			s.addUpdateStateCB(new Callback<GameState>() {
+				@Override
+				public void call(GameState state) {
+					ai.updateGameState(state);
+				}
+			});
+		}
+		
 		int i = 0;
 		for (final Player p : players) {
-			if (p instanceof AI) {
-				s.addUpdateStateCB(new Callback<GameState>() {
-					@Override
-					public void call(GameState state) {
-						((AI)p).updateGameState(state);
-					}
-				});
-			}
 			p.setName(_names.get(i++));
 		}
 		
