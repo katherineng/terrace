@@ -584,8 +584,8 @@ public class GameSetupScreen extends TerracePanel {
 				}
 				
 				if (_networkType == NetworkType.HOST) {
-					_frame.changeCard("host networked game");
 					_frame.setPort(Integer.parseInt(portField.getText()));
+					_frame.changeCard("host networked game");
 				} else {
 					_frame.changeCard("Game");
 				}
@@ -681,10 +681,12 @@ public class GameSetupScreen extends TerracePanel {
 				return;
 			}
 			_frame._builder.setNumLocalPlayers(_num);
+			
 			switch (_networkType) {
 			case LOCAL: // TODO resets names when numPlayers changes
-				switch (_numPlayers) {
+				switch (_num) {
 				case 1:
+					System.out.println(_num);
 					_p2.setText("CPU");
 					_player2.setText("CPU");
 					_player3.setEnabled(false);
