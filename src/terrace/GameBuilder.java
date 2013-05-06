@@ -34,6 +34,7 @@ public class GameBuilder {
 	public int getNumLocalPlayers() {
 		return _localPlayers;
 	}
+	
 	public int getNumAIPlayers() {
 		switch (_localPlayers) {
 		case 1: return 1;
@@ -44,26 +45,32 @@ public class GameBuilder {
 		assert false;
 		return -1;
 	}
+	
 	public void setVariant(Variant variant) {
 		_variant = variant;
 	}
+	
 	public Variant getVariant() {
 		return _variant;
 	}
+	
 	public void setSize(int size) {
 		_size = size;
 	}
 	public void localGame() {
 		_type = NetworkType.LOCAL;
 	}
+	
 	public void hostGame(
 			final int port,
-			Callback<ClientConnection> newRequest
+			Callback<ClientConnection> newRequest,
+			Callback<ClientConnection> connectionDropped
 	) {
 		_type = NetworkType.HOST;
 		
-		_es.submit(new HostServer(port, _es, newRequest));
+		_es.submit(new HostServer(port, _es, newRequest, connectionDropped));
 	}
+	
 	public GameServer startGame() {
 		List<Player> players = new LinkedList<>();
 		

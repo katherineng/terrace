@@ -74,7 +74,11 @@ public class TerraceFrame extends JFrame {
 			_cards.add(_currentGameScreen, GAME);
 		} else if (cardName == HOST_GAME) {
 			_networkScreen.setPlayerNames(_playerNames);
-			_builder.hostGame(_port, _networkScreen.getCallback());
+			_builder.hostGame(
+					_port,
+					_networkScreen.getNewRequestCallback(),
+					_networkScreen.getConnectionDroppedCallback()
+			);
 		}
 		
 		CardLayout layout = (CardLayout) _cards.getLayout();

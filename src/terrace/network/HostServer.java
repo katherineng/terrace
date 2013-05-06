@@ -13,6 +13,7 @@ public class HostServer implements Runnable, Closeable {
 	private final int _port;
 	private final ExecutorService _es;
 	private final Callback<ClientConnection> _newRequest;
+	private final Callback<ClientConnection> _connDropped;
 	
 	private boolean _closed = false;
 	private Set<ClientConnection> _clients = new HashSet<>();
@@ -20,18 +21,20 @@ public class HostServer implements Runnable, Closeable {
 	public HostServer(
 			int port,
 			ExecutorService es,
-			Callback<ClientConnection> newRequest
+			Callback<ClientConnection> newRequest,
+			Callback<ClientConnection> connectionDropped
 	) {
 		_port = port;
 		_es = es;
 		_newRequest = newRequest;
+		_connDropped = connectionDropped;
 	}
 	
 	@Override
 	public void run() {
 		try (ServerSocket server = new ServerSocket(_port)) {
 			while (!_closed) {
-				final ClientConnection conn = new ClientConnection(server.accept(), _newRequest);
+				ClientConnection conn = new ClientConnection(server.accept(), _newRequest, _connDropped);
 				
 				_clients.add(conn);
 				_es.submit(conn);
