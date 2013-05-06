@@ -205,10 +205,10 @@ public class TriangleBoard extends Board {
 			
 			int elevationDiff = getElevationAt(currentPosn) - getElevationAt(to);
 			if (getPieceAt(to) == null) {
-				if (elevationDiff == 0 || elevationDiff == 1) {
+				if (elevationDiff == 0 || elevationDiff >= 1) {
 					possibleMoves.add(new Move(piece, to));
 				}
-			} else if (getPieceAt(to).compareTo(piece) <= 0 && elevationDiff == 1) {
+			} else if (getPieceAt(to).compareTo(piece) <= 0 && elevationDiff >= 1) {
 				possibleMoves.add(new Move(piece, to, getPieceAt(to)));
 			}
 		}
@@ -216,10 +216,9 @@ public class TriangleBoard extends Board {
 		for(Posn to : cornerNeighbors) {
 			int elevationDiff = getElevationAt(currentPosn) - getElevationAt(to);
 			
-			if ((elevationDiff == 0 || elevationDiff == -1) && getPieceAt(to) == null) {
-					possibleMoves.add(new Move(piece, to, getPieceAt(to)));
-			}
-			
+			if ((elevationDiff == 0 || elevationDiff <= -1) && getPieceAt(to) == null) {
+				possibleMoves.add(new Move(piece, to, getPieceAt(to)));
+			} 
 			/*if((getElevationAt(to) == getElevationAt(currentPosn)) && (getPieceAt(to) != null)
 					&& (getPieceAt(to).compareTo(piece) <= 0)) {
 				possibleMoves.add(new Move(piece, to, getPieceAt(to)));
