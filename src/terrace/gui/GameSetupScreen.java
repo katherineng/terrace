@@ -17,7 +17,6 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -38,7 +37,6 @@ import terrace.gui.controls.TerraceButtonGroup;
 public class GameSetupScreen extends TerracePanel implements MouseListener {
 	private static final long serialVersionUID = 1L;
 	
-	private static final Pattern validName = Pattern.compile("[^,]+");
 	private final static int MAX_NAME_LENGTH = 15;
 	
 	private static final Font headerFont = new Font("Verdana", Font.BOLD, 30);
@@ -321,7 +319,7 @@ public class GameSetupScreen extends TerracePanel implements MouseListener {
 		portLabel.setVisible(false);
 		
 		portField = new JTextField(10);
-		portField.addFocusListener(new InputFocusListener(Integer.toString(_frame._builder.DEFAULT_PORT)));
+		portField.addFocusListener(new InputFocusListener(Integer.toString(GameBuilder.DEFAULT_PORT)));
 		portField.setDocument(new PortInputVerifier());
 		portField.setText(Integer.toString(GameBuilder.DEFAULT_PORT));
 		portField.setCaretColor(fadedColor);
@@ -526,7 +524,6 @@ public class GameSetupScreen extends TerracePanel implements MouseListener {
 	private class GoListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {		
-			int n;
 			if (_networkType == NetworkType.JOIN) {
 				_frame.changeCard("join networked game");
 			} else {
