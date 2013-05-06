@@ -51,9 +51,6 @@ public class GameSetupScreen extends TerracePanel implements MouseListener {
 	private static final Color defaultColor = new Color(255, 255, 255);
 	private static final Color fadedColor = Color.LIGHT_GRAY;
 	
-	private Integer _numPlayers = 1;
-	private Variant v = Variant.STANDARD;
-	
 	private TerraceFrame _frame;
 	private NetworkType _networkType;
 	private JLabel _p1;
@@ -69,15 +66,16 @@ public class GameSetupScreen extends TerracePanel implements MouseListener {
 	private TerraceButton _twoPlayer;
 	private TerraceButton _threePlayer;
 	private TerraceButton _fourPlayer;
-	private JLabel _error;
 	private TerraceButton _large;
 	private JTextField portField;
 	
-	private boolean _isLarge = true; // 0 if small 1 if large
+	private boolean _isLarge = true;
 	
 	public GameSetupScreen(TerraceFrame frame, NetworkType networkType) {
 		super(frame);
 		_frame = frame;
+		_frame._builder.setNumLocalPlayers(1);
+		_frame._builder.setVariant(Variant.STANDARD);
 		_networkType = networkType;
 		setBackground(backgroundColor);
 		JPanel infoPanel = new JPanel(new GridBagLayout());
@@ -436,15 +434,15 @@ public class GameSetupScreen extends TerracePanel implements MouseListener {
 			_player4.setVisible(false);
 			_threePlayer.setEnabled(true);
 			_fourPlayer.setEnabled(true);
-			v = Variant.STANDARD;
-			_numPlayers = 1;
+			_frame._builder.setVariant(Variant.STANDARD);
+			_frame._builder.setNumLocalPlayers(1);
 			_isLarge = true;
 			break;
 		default:
 			_player1.setText("Player 1");
 			_standard.setSelected(true);
-			v = Variant.STANDARD;
-			_numPlayers = 1;
+			_frame._builder.setVariant(Variant.STANDARD);
+			_frame._builder.setNumLocalPlayers(1);
 			_isLarge = true;
 			_onePlayer.setSelected(true);
 			_threePlayer.setEnabled(true);
@@ -533,10 +531,10 @@ public class GameSetupScreen extends TerracePanel implements MouseListener {
 			if (_networkType == NetworkType.JOIN) {
 				_frame.changeCard("join networked game");
 			} else {
-				_frame._builder.setNumLocalPlayers(_numPlayers);
+				int numPlayers = _frame._builder.getNumLocalPlayers();
 				List<String> playerNames = new ArrayList<>();
 				if (_networkType == NetworkType.LOCAL) {
-					if (_numPlayers > 2) {
+					if (numPlayers > 2) {
 						playerNames.add(_player4.getText());
 						playerNames.add(_player3.getText());
 						playerNames.add(_player2.getText());
@@ -546,7 +544,7 @@ public class GameSetupScreen extends TerracePanel implements MouseListener {
 						playerNames.add(_player1.getText());
 					}
 				} else {
-					switch (_numPlayers) {
+					switch (numPlayers) {
 					case 3:
 						playerNames.add(_player3.getText());
 					case 2:
@@ -557,6 +555,7 @@ public class GameSetupScreen extends TerracePanel implements MouseListener {
 				}
 				Collections.reverse(playerNames);
 				_frame.setPlayerNames(playerNames);
+				Variant v = _frame._builder.getVariant();
 				if (v == Variant.TRIANGLE) {
 					if (!_isLarge) {
 						_frame._builder.setSize(4);
@@ -673,22 +672,24 @@ public class GameSetupScreen extends TerracePanel implements MouseListener {
 			int oldNum = _frame._builder.getNumLocalPlayers();
 			System.out.println(oldNum);
 			_frame._builder.setNumLocalPlayers(_num);
-			if (oldNum > _num) {
+			if (oldNum < _num) {
 				switch (oldNum) {
 				case 1: 
-					_p2.setText("Player 2");
+					_player2.setText("Player 2");
 				case 2:
-					_p3.setText("Player 3");
+					_player3.setText("Player 3");
 				case 4:
-					if (_networkType == NetworkType.LOCAL) _p4.setText("Player 4");
+					if (_networkType == NetworkType.LOCAL) _player4.setText("Player 4");
 				}
 			}
 			switch (_networkType) {
 			case LOCAL: // TODO resets names when numPlayers changes
 				switch (_num) {
 				case 1:
+					if (oldNum != 1) {
+						_player2.setText("CPU");
+					}
 					_p2.setText("CPU");
-					_player2.setText("CPU");
 					_player3.setEnabled(false);
 					_player4.setEnabled(false);
 					_p3.setVisible(false);
@@ -697,6 +698,7 @@ public class GameSetupScreen extends TerracePanel implements MouseListener {
 					_player4.setVisible(false);
 					break;
 				case 2:
+					_p2.setText("Player 2");
 					_player3.setEnabled(false);
 					_player4.setEnabled(false);
 					_player3.setVisible(false);
@@ -706,6 +708,7 @@ public class GameSetupScreen extends TerracePanel implements MouseListener {
 					break;
 				case 3:
 					_player3.setEnabled(true);
+					_p2.setText("Player 2");
 					_p4.setText("CPU");
 					_player4.setText("CPU");
 					_player4.setEnabled(true);
@@ -716,8 +719,11 @@ public class GameSetupScreen extends TerracePanel implements MouseListener {
 					break;
 				case 4:
 					_player3.setEnabled(true);
+					_p2.setText("Player 2");
 					_p4.setText("Player 4");
-					_player4.setText("Player 4");
+					if (oldNum != 4) {
+						_player4.setText("Player 4");
+					}
 					_player4.setEnabled(true);
 					_player4.setEnabled(true);
 					_player3.setVisible(true);
@@ -728,7 +734,7 @@ public class GameSetupScreen extends TerracePanel implements MouseListener {
 				}
 				break;
 			default:
-				switch (_numPlayers) {
+				switch (_frame._builder.getNumLocalPlayers()) {
 				case 1:
 					_player2.setEnabled(false);
 					_player2.setVisible(false);
