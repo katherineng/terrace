@@ -102,10 +102,13 @@ public class TerraceButton extends JPanel implements MouseListener {
 		} else if (!isSelected) {
 			setSelected(true);
 		}
+		requestFocus();
 	}
 	
 	@Override
-	public void mousePressed(MouseEvent e) {}
+	public void mousePressed(MouseEvent e) {
+		requestFocus();
+	}
 	
 	@Override
 	public void mouseReleased(MouseEvent e) {}
