@@ -28,12 +28,11 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
 
+import terrace.GameBuilder;
 import terrace.NetworkType;
 import terrace.Variant;
 import terrace.gui.controls.TerraceButton;
 import terrace.gui.controls.TerraceButtonGroup;
-import terrace.network.ClientConnection;
-import terrace.util.Callback;
 
 public class GameSetupScreen extends TerracePanel {
 	private static final long serialVersionUID = 1L;
@@ -326,6 +325,7 @@ public class GameSetupScreen extends TerracePanel {
 		
 		portField = new JTextField(10);
 		portField.setDocument(new PortInputVerifier());
+		portField.setText(Integer.toString(GameBuilder.DEFAULT_PORT));
 		portField.setCaretColor(fadedColor);
 		portField.setFont(defaultFont);
 		portField.setBackground(backgroundColor);
