@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -18,6 +19,7 @@ import terrace.GameBuilder;
 import terrace.NetworkType;
 import terrace.Player;
 import terrace.gui.game.GamePanel;
+import terrace.network.ClientConnection;
 
 public class GameScreen extends JPanel {
 	private static final long serialVersionUID = -3415367755182469262L;
@@ -97,7 +99,7 @@ public class GameScreen extends JPanel {
 		
 		add(topBar, BorderLayout.PAGE_START);
 		
-		_panel = new GamePanel(_builder.startGame(), _frame, this);
+		_panel = new GamePanel(_builder.startGame(Arrays.<ClientConnection>asList()), _frame, this);
 		add(_panel, BorderLayout.CENTER);
 	}
 	

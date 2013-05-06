@@ -71,7 +71,7 @@ public class GameBuilder {
 		_es.submit(new HostServer(port, _es, newRequest, connectionDropped));
 	}
 	
-	public GameServer startGame() {
+	public GameServer startGame(List<ClientConnection> clients) {
 		List<Player> players = new LinkedList<>();
 		List<AI> aiPlayers = new LinkedList<>();
 		
