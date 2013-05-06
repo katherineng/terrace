@@ -9,6 +9,7 @@ import terrace.ai.AI;
 import terrace.gui.game.LocalPlayer;
 import terrace.network.ClientConnection;
 import terrace.network.HostServer;
+import terrace.network.NetworkedServerPlayer;
 import terrace.util.Callback;
 
 public class GameBuilder {
@@ -81,6 +82,13 @@ public class GameBuilder {
 			players.add(new LocalPlayer(PlayerColor.values()[playerNum]));
 			playerNum++;
 		}
+		for (ClientConnection conn : clients) {
+			for (String name : conn.getPlayerNames()) {
+				players.add(new NetworkedServerPlayer(conn, name, PlayerColor.values()[playerNum]));
+				playerNum++;
+			}
+		}
+		
 		for (int i = 0; i < getNumAIPlayers(); i++) {
 			aiPlayers.add(new AI(PlayerColor.values()[playerNum]));
 		}
@@ -89,6 +97,19 @@ public class GameBuilder {
 		GameState game = new GameState(BoardFactory.create(players, _size, _variant), players, 0);
 		final GameServer s = new GameServer(game);
 		
+		for (final ClientConnection conn : clients) {
+			s.addUpdateStateCB(new Callback<GameState>() {
+				@Override
+				public void call(final GameState state) {
+					_es.submit(new Runnable() {
+						@Override
+						public void run() {
+							conn.updateGameState(state);
+						}
+					});
+				}
+			});
+		}
 		for (final AI ai : aiPlayers) {
 			s.addUpdateStateCB(new Callback<GameState>() {
 				@Override

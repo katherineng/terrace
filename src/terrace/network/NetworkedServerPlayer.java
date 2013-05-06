@@ -26,6 +26,10 @@ public class NetworkedServerPlayer extends Player {
 		_out = out;
 	}
 	
+	public NetworkedServerPlayer(ClientConnection conn, String name, PlayerColor color) {
+		this(color, conn.getPort(name), conn.getChannel(name));
+	}
+	
 	@Override
 	public Optional<Move> getMove(int timeout) {
 		try {
