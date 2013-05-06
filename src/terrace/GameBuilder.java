@@ -12,6 +12,8 @@ import terrace.network.HostServer;
 import terrace.util.Callback;
 
 public class GameBuilder {
+	public static final int DEFAULT_PORT = 5678;
+	
 	private final ExecutorService _es = Executors.newCachedThreadPool();
 	
 	private int _localPlayers;
@@ -19,7 +21,6 @@ public class GameBuilder {
 	private NetworkType _type;
 	private Variant _variant;
 	private int _size = 8;
-	public static final int DEFAULT_PORT = 5678;
 	
 	private List<String> _names;
 	
