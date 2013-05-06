@@ -70,17 +70,18 @@ public class ClientConnection implements Closeable, Runnable {
 	
 	@Override
 	public String toString() {
-		String result  = "";
+		String result  = "<html>";
 		
 		boolean first = true;
 		for (String name : _names) {
 			if (first) {
 				first = false;
 			} else {
-				result += ", ";
+				result += "<br>";
 			}
 			result += name;
 		}
+		result += "</html>";
 		
 		return result;
 	}
