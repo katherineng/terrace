@@ -180,7 +180,7 @@ public class HostNetworkScreen extends TerracePanel {
 		addConst.gridy = 2;
 		addButton.addActionListener(new AddButtonListener());
 
-		JLabel requestLabel = new JLabel("ClientConnections to Join");
+		JLabel requestLabel = new JLabel("Requests to Join");
 		GridBagConstraints requestConst = new GridBagConstraints();
 		requestConst.gridx = 1;
 		requestConst.gridy = 0;
