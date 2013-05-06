@@ -30,12 +30,11 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
 
+import terrace.GameBuilder;
 import terrace.NetworkType;
 import terrace.Variant;
 import terrace.gui.controls.TerraceButton;
 import terrace.gui.controls.TerraceButtonGroup;
-import terrace.network.ClientConnection;
-import terrace.util.Callback;
 
 public class GameSetupScreen extends TerracePanel implements MouseListener {
 	private static final long serialVersionUID = 1L;
@@ -325,6 +324,7 @@ public class GameSetupScreen extends TerracePanel implements MouseListener {
 		portField = new JTextField(10);
 		portField.addFocusListener(new InputFocusListener(Integer.toString(_frame._builder.DEFAULT_PORT)));
 		portField.setDocument(new PortInputVerifier());
+		portField.setText(Integer.toString(GameBuilder.DEFAULT_PORT));
 		portField.setCaretColor(fadedColor);
 		portField.setFont(defaultFont);
 		portField.setBackground(backgroundColor);

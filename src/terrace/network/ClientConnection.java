@@ -14,12 +14,18 @@ import terrace.util.Callback;
 public class ClientConnection implements Closeable, Runnable {
 	private final Socket _conn;
 	private final Callback<ClientConnection> _onReady;
+	private final Callback<ClientConnection> _onDrop;
 	
 	private final List<String> _names = new LinkedList<>();
 	
-	public ClientConnection(Socket conn, Callback<ClientConnection> onReady) {
+	public ClientConnection(
+			Socket conn,
+			Callback<ClientConnection> onReady,
+			Callback<ClientConnection> onDrop
+	) {
 		_conn = conn;
 		_onReady = onReady;
+		_onDrop = onDrop;
 	}
 	
 	/**
@@ -27,7 +33,7 @@ public class ClientConnection implements Closeable, Runnable {
 	 * 
 	 * @return The players' names.
 	 */
-	public List<String> getPlayerNames(){
+	public List<String> getPlayerNames() {
 		return _names;
 	}
 	
@@ -65,6 +71,8 @@ public class ClientConnection implements Closeable, Runnable {
 			
 		} catch (IOException e) {
 			 System.err.println("LOG: " + e.getLocalizedMessage());
+		} finally {
+			_onDrop.call(this);
 		}
 	}
 	

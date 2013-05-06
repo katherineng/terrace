@@ -71,14 +71,21 @@ public class HostNetworkScreen extends TerracePanel {
 		addButton = new JButton();
 	}
 	
-	public Callback<ClientConnection> getCallback() {
+	public Callback<ClientConnection> getNewRequestCallback() {
 		return new Callback<ClientConnection>() {
-
 			@Override
 			public void call(ClientConnection val) {
 				_requestListModel.addElement(val);
 			}
-			
+		};
+	}
+	
+	public Callback<ClientConnection> getConnectionDroppedCallback() {
+		return new Callback<ClientConnection>() {
+			@Override
+			public void call(ClientConnection val) {
+				_requestListModel.removeElement(val);
+			}
 		};
 	}
 	
