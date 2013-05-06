@@ -11,6 +11,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -34,7 +36,7 @@ import terrace.Variant;
 import terrace.gui.controls.TerraceButton;
 import terrace.gui.controls.TerraceButtonGroup;
 
-public class GameSetupScreen extends TerracePanel {
+public class GameSetupScreen extends TerracePanel implements MouseListener {
 	private static final long serialVersionUID = 1L;
 	
 	private static final Pattern validName = Pattern.compile("[^,]+");
@@ -85,6 +87,7 @@ public class GameSetupScreen extends TerracePanel {
 		addComponents(infoPanel);
 		outerPanel.add(infoPanel);
 		add(outerPanel);
+		this.addMouseListener(this);
 	}
 	
 	private void addComponents(Container pane) {
@@ -220,6 +223,7 @@ public class GameSetupScreen extends TerracePanel {
 		_player1 = new JTextField(10);
 		_player1.setCaretColor(fadedColor);
 		_player1.setDocument(new LengthLimit(MAX_NAME_LENGTH));
+		_player1.addFocusListener(new InputFocusListener("Player 1"));
 		GridBagConstraints player1Const = makeGBC(1, 1);
 		player1Const.insets = new Insets(0, 4, 0, 0);
 		_player1.setBackground(backgroundColor);
@@ -228,6 +232,7 @@ public class GameSetupScreen extends TerracePanel {
 		_player1.setText("Player 1");
 		
 		_player2 = new JTextField(10);
+		_player2.addFocusListener(new InputFocusListener("Player 2"));
 		_player2.setCaretColor(fadedColor);
 		_player2.setDocument(new LengthLimit(MAX_NAME_LENGTH));
 		GridBagConstraints player2Const = makeGBC(1, 2);
@@ -240,6 +245,7 @@ public class GameSetupScreen extends TerracePanel {
 		_player2.setVisible(false);
 		
 		_player3 = new JTextField(10);
+		_player3.addFocusListener(new InputFocusListener("Player 3"));
 		_player3.setCaretColor(fadedColor);
 		_player3.setDocument(new LengthLimit(MAX_NAME_LENGTH));
 		GridBagConstraints player3Const = makeGBC(1, 3);
@@ -312,18 +318,13 @@ public class GameSetupScreen extends TerracePanel {
 		backConst.insets = new Insets(30, 0, 0,0);
 		backConst.anchor = GridBagConstraints.WEST;
 		
-		_error = new JLabel("");
-		_error.setPreferredSize(new Dimension(250, 50));
-		GridBagConstraints errorConst = makeGBC(0, 6);
-		_error.setVisible(false);
-		_error.setForeground(defaultColor);
-		errorConst.gridwidth = 2;
 		JLabel portLabel = new JLabel("Port ");
 		portLabel.setForeground(headerColor);
 		portLabel.setFont(defaultFont);
 		portLabel.setVisible(false);
 		
 		portField = new JTextField(10);
+		portField.addFocusListener(new InputFocusListener(Integer.toString(_frame._builder.DEFAULT_PORT)));
 		portField.setDocument(new PortInputVerifier());
 		portField.setText(Integer.toString(GameBuilder.DEFAULT_PORT));
 		portField.setCaretColor(fadedColor);
@@ -353,7 +354,6 @@ public class GameSetupScreen extends TerracePanel {
 		pane.add(numPlayersPanel, numPlayersConst);
 		pane.add(backButton, backConst);
 		pane.add(portPanel, portPanelConst);
-		playerNames.add(_error, errorConst);
 		
 		if(_networkType == NetworkType.LOCAL) {
 			_player2.setEnabled(true);
@@ -363,6 +363,7 @@ public class GameSetupScreen extends TerracePanel {
 			_player2.setText("CPU");
 			
 			_player4 = new JTextField(10);
+			_player4.addFocusListener(new InputFocusListener("Player 4"));
 			_player4.setCaretColor(fadedColor);
 			_player4.setDocument(new LengthLimit(MAX_NAME_LENGTH));
 			GridBagConstraints player4Const = makeGBC(1, 4);
@@ -416,11 +417,11 @@ public class GameSetupScreen extends TerracePanel {
 		gbc.gridy = y;
 		return gbc;
 	}
+	
 	public void resetScreen() {
 		switch (_networkType) {
 		case LOCAL:
-			_standard.setSelected(true);// TODO if field is empty when focus is
-										// lost, reset to "player _"
+			_standard.setSelected(true);
 			_player1.setText("Player 1");
 			_onePlayer.setSelected(true);
 			_standard.setSelected(true);
@@ -459,7 +460,25 @@ public class GameSetupScreen extends TerracePanel {
 			break;
 		}
 	}
-	
+	private class InputFocusListener implements FocusListener {
+		String _defaultStr;
+		InputFocusListener(String defaultStr) {
+			_defaultStr = defaultStr;
+		}
+		@Override
+		public void focusGained(FocusEvent e) {}
+
+		@Override
+		public void focusLost(FocusEvent e) {
+			JTextField source = (JTextField) e.getSource();
+			if (source.getText() == null || source.getText().equals("")) {
+				source.setText(_defaultStr);
+			}
+			int end = source.getSelectionEnd();
+			source.setCaretPosition(end);
+		}
+		
+	}
 	private class BackListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -507,41 +526,10 @@ public class GameSetupScreen extends TerracePanel {
 		}
 	}
 	
-	public int checkRegexp() {
-		if (!validName.matcher(_player1.getText()).matches()) {
-			return 1;
-		} else if (!validName.matcher(_player2.getText()).matches()) {
-			return 2;
-		} else if (!validName.matcher(_player3.getText()).matches()) {
-			return 3;
-		} else if (_networkType == NetworkType.LOCAL) {
-			if (!validName.matcher(_player4.getText()).matches()) {
-				return 4;
-			}
-		}
-		return 0;
-	}
-	
-	public void setErrorMsg(String msg) {
-		_error.setText(msg);
-		_error.setVisible(true);
-	}
-	
 	private class GoListener implements ActionListener {
 		@Override
-		public void actionPerformed(ActionEvent e) {
-			_error.setVisible(false);
-			
+		public void actionPerformed(ActionEvent e) {		
 			int n;
-			if ((n = checkRegexp()) != 0) {
-				if (_numPlayers - n == 1) {
-					setErrorMsg("<html>CPU's name may not contain commas (,)</html>");//TODO fix error message
-				} else {
-					setErrorMsg("<html>Player " + n + "'s name may not contain commas (,)</html>");
-				}
-				return;
-			}
-			
 			if (_networkType == NetworkType.JOIN) {
 				_frame.changeCard("join networked game");
 			} else {
@@ -609,11 +597,13 @@ public class GameSetupScreen extends TerracePanel {
 			} else if (_var == Variant.TRIANGLE) {
 				if (_frame._builder.getNumLocalPlayers() > 2) {
 					_frame._builder.setNumLocalPlayers(1);
+					_onePlayer.setSelected(true);
+					_p2.setText("CPU");
+					_player2.setText("CPU");
 				}
 				_player3.setVisible(false);
 				_p3.setVisible(false);
 				_p4.setVisible(false);
-				_onePlayer.setSelected(true);
 				_threePlayer.setEnabled(false);
 				if (_networkType == NetworkType.LOCAL) {
 					_fourPlayer.setEnabled(false);
@@ -680,13 +670,23 @@ public class GameSetupScreen extends TerracePanel {
 			if (!((TerraceButton)e.getSource()).isEnabled()) {
 				return;
 			}
+			int oldNum = _frame._builder.getNumLocalPlayers();
+			System.out.println(oldNum);
 			_frame._builder.setNumLocalPlayers(_num);
-			
+			if (oldNum > _num) {
+				switch (oldNum) {
+				case 1: 
+					_p2.setText("Player 2");
+				case 2:
+					_p3.setText("Player 3");
+				case 4:
+					if (_networkType == NetworkType.LOCAL) _p4.setText("Player 4");
+				}
+			}
 			switch (_networkType) {
 			case LOCAL: // TODO resets names when numPlayers changes
 				switch (_num) {
 				case 1:
-					System.out.println(_num);
 					_p2.setText("CPU");
 					_player2.setText("CPU");
 					_player3.setEnabled(false);
@@ -697,8 +697,6 @@ public class GameSetupScreen extends TerracePanel {
 					_player4.setVisible(false);
 					break;
 				case 2:
-					_p2.setText("Player 2");
-					_player2.setText("Player 2");
 					_player3.setEnabled(false);
 					_player4.setEnabled(false);
 					_player3.setVisible(false);
@@ -707,10 +705,6 @@ public class GameSetupScreen extends TerracePanel {
 					_p4.setVisible(false);
 					break;
 				case 3:
-					_p2.setText("Player 2");
-					_player2.setText("Player 2");
-					_p3.setText("Player 3");
-					_player3.setText("Player 3");
 					_player3.setEnabled(true);
 					_p4.setText("CPU");
 					_player4.setText("CPU");
@@ -721,10 +715,6 @@ public class GameSetupScreen extends TerracePanel {
 					_p4.setVisible(true);
 					break;
 				case 4:
-					_p2.setText("Player 2");
-					_player2.setText("Player 2");
-					_p3.setText("Player 3");
-					_player3.setText("Player 3");
 					_player3.setEnabled(true);
 					_p4.setText("Player 4");
 					_player4.setText("Player 4");
@@ -779,4 +769,23 @@ public class GameSetupScreen extends TerracePanel {
 		@Override
 		public void mouseExited(MouseEvent e) {}
 	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		this.requestFocus();
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		this.requestFocus();
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {}
+
+	@Override
+	public void mouseExited(MouseEvent e) {}
 }
