@@ -1,12 +1,13 @@
 package terrace;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.common.base.Optional;
-
 import terrace.util.Callback;
 import terrace.util.Copyable;
+
+import com.google.common.base.Optional;
 
 public class GameState implements Copyable<GameState> {
 	private final Board _board;
@@ -101,5 +102,13 @@ public class GameState implements Copyable<GameState> {
 		GameState copy = new GameState(_board.copy(), new ArrayList<>(_players), _active);
 		copy._winner = _winner;
 		return copy;
+	}
+	
+	public void serialize(PrintWriter out) {
+		out.println(_active);
+		for (Player p : _players) {
+			out.println(p);
+		}
+		_board.serialize(out);
 	}
 }

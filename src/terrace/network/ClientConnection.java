@@ -7,11 +7,16 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import terrace.GameState;
+import terrace.message.Channel;
+import terrace.message.Port;
 import terrace.util.Callback;
 import terrace.util.Posn;
 
@@ -26,6 +31,10 @@ public class ClientConnection implements Closeable, Runnable {
 	private final Callback<ClientConnection> _onDrop;
 	
 	private final List<String> _names = new LinkedList<>();
+	private final Map<String, Port<NetworkMessage>> _ports = new HashMap<>();
+	private final Map<String, Channel<NetworkMessage>> _channels = new HashMap<>();
+	
+	private GameState _state;
 	
 	public ClientConnection(
 			Socket conn,
@@ -134,5 +143,26 @@ public class ClientConnection implements Closeable, Runnable {
 		result += "</html>";
 		
 		return result;
+	}
+	
+	public Port<NetworkMessage> getPort(String name) {
+		if (!_ports.containsKey(name)) {
+			_ports.put(name, new Port<NetworkMessage>());
+		}
+		return _ports.get(name);
+	}
+	
+	public Channel<NetworkMessage> getChannel(String name) {
+		if (!_channels.containsKey(name)) {
+			_channels.put(name, getPort(name).newChannel());
+		}
+		return _channels.get(name);
+	}
+	
+	public void updateGameState(GameState state) {
+		synchronized (this) {
+			_state = state;
+		}
+		state.serialize(_out);
 	}
 }

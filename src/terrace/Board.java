@@ -1,7 +1,7 @@
 package terrace;
 
+import java.io.PrintWriter;
 import java.util.*;
-import java.util.List;
 import terrace.util.Posn;
 import terrace.util.Copyable;
 
@@ -122,5 +122,19 @@ public abstract class Board implements Copyable<Board> {
 			pieces += "]\n";
 		}
 		return pieces;
+	}
+	
+	public void serialize(PrintWriter out) {
+		for (int x = 0; x < getWidth(); x++) {
+			for (int y = 0; y < getHeight(); y++) {
+				if (_board[x][y] == null) {
+					out.print("   ");
+				} else {
+					out.print(_board[x][y].getPlayer().getColor().ordinal());
+					out.print(":");
+					out.print(_board[x][y].getSize());
+				}
+			}
+		}
 	}
 }
