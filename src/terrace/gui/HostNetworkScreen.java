@@ -30,6 +30,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import terrace.network.ClientConnection;
+import terrace.util.Callback;
 
 public class HostNetworkScreen extends TerracePanel {
 	private static final long serialVersionUID = -1281313334499999359L;
@@ -68,6 +69,17 @@ public class HostNetworkScreen extends TerracePanel {
 		currentListModel = new DefaultListModel<>();
 		removeButton = new JButton();
 		addButton = new JButton();
+	}
+	
+	public Callback<ClientConnection> getCallback() {
+		return new Callback<ClientConnection>() {
+
+			@Override
+			public void call(ClientConnection val) {
+				_requestListModel.addElement(val);
+			}
+			
+		};
 	}
 	
 	public void removeClientConnection(ClientConnection r) {
