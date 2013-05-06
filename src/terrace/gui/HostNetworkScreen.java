@@ -225,7 +225,7 @@ public class HostNetworkScreen extends TerracePanel {
 	private class GoListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			_frame.changeCard(TerraceFrame.GAME);
+			_frame.startGame(new ArrayList<>(_acceptedClientConnections.values()));
 		}
 	}
 	
