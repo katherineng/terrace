@@ -2,6 +2,7 @@ package terrace.gui;
 
 import java.awt.CardLayout;
 import java.awt.Dimension;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.JFrame;
@@ -9,18 +10,19 @@ import javax.swing.JPanel;
 
 import terrace.GameBuilder;
 import terrace.NetworkType;
+import terrace.network.ClientConnection;
 
 public class TerraceFrame extends JFrame {
 	private static final long serialVersionUID = 641801362474775997L;
 	
 	static final String START_SCREEN = "Setup";
-	private static final String GAME = "Game";
-	private static final String LOCAL_SETUP = "local game setup";
-	private static final String NETWORK_SETUP = "networked game setup";
-	private static final String JOIN_SETUP  = "join game setup";
-	private static final String HOST_GAME = "host networked game";
-	private static final String JOIN_NETWORK = "join networked game";
-	private static final String HELP_SCREEN = "help screen";
+	static final String GAME = "Game";
+	static final String LOCAL_SETUP = "local game setup";
+	static final String NETWORK_SETUP = "networked game setup";
+	static final String JOIN_SETUP  = "join game setup";
+	static final String HOST_GAME = "host networked game";
+	static final String JOIN_NETWORK = "join networked game";
+	static final String HELP_SCREEN = "help screen";
 	
 	final GameBuilder _builder = new GameBuilder();
 	private JPanel _cards;
@@ -31,6 +33,7 @@ public class TerraceFrame extends JFrame {
 	private GameSetupScreen _hostSetup;
 	private GameSetupScreen _joinSetup;
 	private int _port;
+	private List<ClientConnection> _clients = new LinkedList<>();
 	
 	public TerraceFrame() {
 		setPreferredSize(new Dimension(1200, 1200));
@@ -70,7 +73,7 @@ public class TerraceFrame extends JFrame {
 			if (_currentGameScreen != null) _cards.remove(_currentGameScreen);
 			
 			_builder.setPlayerNames(_playerNames);
-			_currentGameScreen = new GameScreen(_builder, this);
+			_currentGameScreen = new GameScreen(_builder, this, _clients);
 			_cards.add(_currentGameScreen, GAME);
 		} else if (cardName == HOST_GAME) {
 			_networkScreen.setPlayerNames(_playerNames);
@@ -83,6 +86,11 @@ public class TerraceFrame extends JFrame {
 		
 		CardLayout layout = (CardLayout) _cards.getLayout();
 		layout.show(_cards, cardName);
+	}
+	
+	public void startGame(List<ClientConnection> clients) {
+		_clients = clients;
+		changeCard(GAME);
 	}
 	
 	void setPlayerNames(List<String> names) {

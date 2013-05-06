@@ -5,7 +5,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -34,7 +34,7 @@ public class GameScreen extends JPanel {
 	private JLabel _variant;
 	private boolean _gameOver = false;
 	
-	public GameScreen(GameBuilder builder, TerraceFrame frame) {
+	public GameScreen(GameBuilder builder, TerraceFrame frame, List<ClientConnection> clients) {
 		_frame = frame;
 		_builder = builder;
 		_networkType = NetworkType.LOCAL;
@@ -99,7 +99,7 @@ public class GameScreen extends JPanel {
 		
 		add(topBar, BorderLayout.PAGE_START);
 		
-		_panel = new GamePanel(_builder.startGame(Arrays.<ClientConnection>asList()), _frame, this);
+		_panel = new GamePanel(_builder.startGame(clients), _frame, this);
 		add(_panel, BorderLayout.CENTER);
 	}
 	

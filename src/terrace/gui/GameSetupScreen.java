@@ -481,7 +481,7 @@ public class GameSetupScreen extends TerracePanel implements MouseListener {
 	private class BackListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			_frame.changeCard("Setup");
+			_frame.changeCard(TerraceFrame.START_SCREEN);
 		}
 	}
 
@@ -528,7 +528,7 @@ public class GameSetupScreen extends TerracePanel implements MouseListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {		
 			if (_networkType == NetworkType.JOIN) {
-				_frame.changeCard("join networked game");
+				_frame.changeCard(TerraceFrame.JOIN_SETUP);
 			} else {
 				int numPlayers = _frame._builder.getNumLocalPlayers();
 				List<String> playerNames = new ArrayList<>();
@@ -737,21 +737,21 @@ public class GameSetupScreen extends TerracePanel implements MouseListener {
 			}
 		}
 	}
-
+	
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		this.requestFocus();
 	}
-
+	
 	@Override
 	public void mousePressed(MouseEvent e) {}
-
+	
 	@Override
 	public void mouseReleased(MouseEvent e) {}
-
+	
 	@Override
 	public void mouseEntered(MouseEvent e) {}
-
+	
 	@Override
 	public void mouseExited(MouseEvent e) {}
 }

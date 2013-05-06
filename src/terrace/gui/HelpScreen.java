@@ -87,7 +87,7 @@ public class HelpScreen extends TerracePanel {
 	class BackListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			_frame.changeCard("Setup");
+			_frame.changeCard(TerraceFrame.START_SCREEN);
 		}
 	}
 }

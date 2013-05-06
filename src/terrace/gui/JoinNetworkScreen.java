@@ -99,7 +99,7 @@ public class JoinNetworkScreen extends TerracePanel {
 	private class BackListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			_frame.changeCard("join game setup");
+			_frame.changeCard(TerraceFrame.JOIN_SETUP);
 			resetScreen();
 		}
 	}

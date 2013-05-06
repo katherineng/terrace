@@ -225,7 +225,7 @@ public class HostNetworkScreen extends TerracePanel {
 	private class GoListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			//TODO not sure what to start
+			_frame.changeCard(TerraceFrame.GAME);
 		}
 	}
 	
@@ -243,7 +243,7 @@ public class HostNetworkScreen extends TerracePanel {
 	private class BackListener implements ActionListener {//TODO add a popup
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			_frame.changeCard("networked game setup");
+			_frame.changeCard(TerraceFrame.NETWORK_SETUP);
 			_requestListModel.clear();
 			_currentListModel.removeAllElements();
 			_acceptedClientConnections.clear();

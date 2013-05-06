@@ -96,7 +96,7 @@ public class StartScreen extends TerracePanel {
 	private class HelpButtonListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			_frame.changeCard("help screen");
+			_frame.changeCard(TerraceFrame.HELP_SCREEN);
 		}
 	}
 }
