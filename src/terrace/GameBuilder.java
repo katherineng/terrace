@@ -20,7 +20,6 @@ public class GameBuilder {
 	
 	private int _localPlayers;
 	private int _networkPlayers = 0;
-	private NetworkType _type;
 	private Variant _variant;
 	private int _size = 8;
 	
@@ -59,17 +58,12 @@ public class GameBuilder {
 	public void setSize(int size) {
 		_size = size;
 	}
-	public void localGame() {
-		_type = NetworkType.LOCAL;
-	}
 	
 	public void hostGame(
 			final int port,
 			Callback<ClientConnection> newRequest,
 			Callback<ClientConnection> connectionDropped
 	) {
-		_type = NetworkType.HOST;
-		
 		_es.submit(new HostServer(port, _es, newRequest, connectionDropped));
 	}
 	
