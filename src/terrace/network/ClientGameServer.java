@@ -1,4 +1,4 @@
-package terrace;
+package terrace.network;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -6,6 +6,9 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.List;
+
+import terrace.GameServer;
+import terrace.Move;
 
 public class ClientGameServer extends GameServer {
 	private final Socket _conn;

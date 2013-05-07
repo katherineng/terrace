@@ -1,6 +1,5 @@
 package terrace.network;
 
-import terrace.ClientGameServer;
 import terrace.LocalPlayer;
 import terrace.Move;
 import terrace.PlayerColor;
