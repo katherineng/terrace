@@ -182,10 +182,6 @@ public class TriangleBoard extends Board {
 		}));
 	}
 	
-	private boolean inBounds(Posn p) {
-		return p.getX() >= 0 && p.getY() >= 0 && p.getX() < _dimensions && p.getY() < _dimensions * 2;
-	}
-	
 	private int getElevationAt(Posn p) {
 		return _elevationsMap.get(_dimensions)[p.getX()][p.getY()];
 	}

@@ -119,9 +119,20 @@ public class ClientConnection implements Closeable, Runnable {
 					Posn from = new Posn(Integer.parseInt(m.group(2)), Integer.parseInt(m.group(3)));
 					Posn to = new Posn(Integer.parseInt(m.group(4)), Integer.parseInt(m.group(5)));
 					
-					
+					synchronized (this) {
+						if (stateNum == _state.getTurnNumber()) {
+							try {
+								System.err.println("DEBUG: Sending move to " + _state.getActivePlayer().getName());
+								getChannel(_state.getActivePlayer().getName()).send(new MoveMessage(stateNum, from, to));
+							} catch (InterruptedException e) {
+								System.err.println("LOG: Send interrupted.");
+							}
+						} else {
+							System.err.println("LOG: Client missed turn.");
+						}
+					}
 				} else {
-					// TODO
+					System.err.println("LOG: Client sent bad data.");
 				}
 			}
 		}
@@ -164,5 +175,9 @@ public class ClientConnection implements Closeable, Runnable {
 			_state = state;
 		}
 		state.serialize(_out);
+	}
+	
+	public GameState getState() {
+		return _state;
 	}
 }

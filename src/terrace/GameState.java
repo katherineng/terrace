@@ -118,4 +118,8 @@ public class GameState implements Copyable<GameState> {
 		out.println();
 		_board.serialize(out);
 	}
+	
+	public int getTurnNumber() {
+		return _turnNumber;
+	}
 }

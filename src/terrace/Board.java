@@ -104,6 +104,10 @@ public abstract class Board implements Copyable<Board> {
 		}
 	}
 	
+	public boolean inBounds(Posn p) {
+		return p.getX() >= 0 && p.getY() >= 0 && p.getX() < getWidth() && p.getY() < getHeight();
+	}
+	
 	public abstract String elevationsToString();
 	
 	public String piecesToString() {
