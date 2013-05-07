@@ -3,12 +3,10 @@ package terrace;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-
-import com.google.common.base.Optional;
-
-import terrace.*;
 import terrace.message.Channel;
 import terrace.message.Port;
+
+import com.google.common.base.Optional;
 
 public class LocalPlayer extends Player {
 	private final Port<Move> moves = new Port<>();
