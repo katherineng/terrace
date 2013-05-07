@@ -115,6 +115,7 @@ public class GameState implements Copyable<GameState> {
 		for (Player p : _players) {
 			out.println(p.getName());
 		}
+		out.println();
 		_board.serialize(out);
 	}
 }
