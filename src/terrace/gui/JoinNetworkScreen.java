@@ -115,16 +115,25 @@ public class JoinNetworkScreen extends TerracePanel implements MouseListener {
 		_hostLabel.setFont(headerFont);
 		_hostLabel.setForeground(headerColor);
 		_portField.setDocument(new PortInputVerifier());
-		_portField.addFocusListener(new InputFocusListener(Integer.toString(GameBuilder.DEFAULT_PORT)));
 		_portField.setFont(headerFont);
+		_portField.setMargin(new Insets(0, 3, 0, 0));
+		_portField.setCaretColor(fadedColor);
 		_portField.setBackground(backgroundColor);
+		_portField.setForeground(fadedColor);
 		_hostField.setFont(headerFont);
+		_hostField.setMargin(new Insets(0, 3, 0, 0));
 		_hostField.setBackground(backgroundColor);
+		_hostField.setForeground(fadedColor);
+		_hostField.setCaretColor(fadedColor);
 		_update.setFont(defaultFont);
 		_update.setForeground(defaultColor);
 		
 		backButton.addActionListener(new BackListener());
+		GridBagConstraints backConst = makeGBC(0, 6);
+		backConst.insets = new Insets(0, 10, 10, 0);
 		goButton.addActionListener(new GoListener());
+		GridBagConstraints goConst = makeGBC(3, 6);
+		goConst.insets = new Insets(0, 0, 10, 10);
 		
 		pane.add(_hostLabel, makeConstraints(1, 0));
 		pane.add(_hostField, makeConstraints(2, 0));
@@ -171,7 +180,7 @@ public class JoinNetworkScreen extends TerracePanel implements MouseListener {
 		textFieldSetting(_p1Field);
 		_p1Field.setText("Player 1");
 
-		_p2Field.addFocusListener(new InputFocusListener("Player 2"));//TODO when on CPU focusListener renames to player 2
+		_p2Field.addFocusListener(new InputFocusListener("Player 2"));
 		_p2Field.setDocument(new LengthLimit(MAX_NAME_LENGTH));
 		GridBagConstraints p2FieldConst = makeGBC(1, 2);
 		p2FieldConst.insets = new Insets(0, 4, 0, 0);
@@ -236,8 +245,8 @@ public class JoinNetworkScreen extends TerracePanel implements MouseListener {
 		pane.add(namesLabelPanel, headerConst);
 		pane.add(playerNames, playerNamesConst);
 		pane.add(numPlayersPanel, numPlayersConst);
-		pane.add(goButton, makeConstraints(3, 6));
-		pane.add(backButton, makeConstraints(0, 6));
+		pane.add(goButton, goConst);
+		pane.add(backButton, backConst);
 	}
 	public void resetScreen() {
 		_hostField.setText("");
