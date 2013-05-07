@@ -14,6 +14,7 @@ import terrace.GameState;
 import terrace.Move;
 import terrace.Player;
 import terrace.PlayerColor;
+import terrace.util.Callback;
 
 public class ClientGameServer extends GameServer {
 	private final Socket _conn;
@@ -57,6 +58,11 @@ public class ClientGameServer extends GameServer {
 			
 			while (true) {
 				GameState state = GameState.read(_in, _players);
+				
+				for (Callback<GameState> cb : _updateStateCBs) {
+					cb.call(state);
+				}
+				if (state.getWinner().isPresent()) return;
 			}
 		} catch (IOException e) {
 			_onDrop.run();
