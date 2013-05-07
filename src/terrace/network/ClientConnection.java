@@ -15,6 +15,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import terrace.GameState;
+import terrace.Player;
 import terrace.message.Channel;
 import terrace.message.Port;
 import terrace.util.Callback;
@@ -170,10 +171,19 @@ public class ClientConnection implements Closeable, Runnable {
 		return _channels.get(name);
 	}
 	
-	public void updateGameState(GameState state) {
-		synchronized (this) {
-			_state = state;
+	public synchronized void initializeGameState(GameState state, int playerStartIdx) {
+		_out.println(playerStartIdx);
+		
+		for (Player p : state.getPlayers()) {
+			_out.println(p.getName());
 		}
+		_out.println();
+		
+		updateGameState(state);
+	}
+	
+	public synchronized void updateGameState(GameState state) {
+		_state = state;
 		state.serialize(_out);
 	}
 	

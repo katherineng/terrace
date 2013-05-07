@@ -1,7 +1,9 @@
 package terrace;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -76,12 +78,14 @@ public class GameBuilder {
 		List<AI> aiPlayers = new LinkedList<>();
 		
 		int playerNum = 0;
+		Map<ClientConnection, Integer> clientPlayerStartIdxs = new HashMap<>();
 		
 		for (int i = 0; i < _localPlayers; i++) {
 			players.add(new LocalServerPlayer(PlayerColor.values()[playerNum]));
 			playerNum++;
 		}
 		for (ClientConnection conn : clients) {
+			clientPlayerStartIdxs.put(conn, playerNum);
 			for (String name : conn.getPlayerNames()) {
 				_names.add(name);
 				players.add(new NetworkedServerPlayer(conn, name, PlayerColor.values()[playerNum]));
@@ -130,7 +134,7 @@ public class GameBuilder {
 		}
 		
 		for (ClientConnection conn : clients) {
-			conn.updateGameState(initialState);
+			conn.initializeGameState(initialState, clientPlayerStartIdxs.get(conn));
 		}
 		
 		_es.submit(new Runnable() {
