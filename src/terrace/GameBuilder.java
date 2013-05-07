@@ -124,7 +124,7 @@ public class GameBuilder {
 		int i = 0;
 		for (final Player p : players) {
 			if (i >= _names.size()) {
-				p.setName("CPU " + (i - _names.size() + 1));
+				p.setName("CPU");
 			} else {
 				p.setName(_names.get(i));
 			}
