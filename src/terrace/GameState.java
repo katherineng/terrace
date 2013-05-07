@@ -1,8 +1,12 @@
 package terrace;
 
+import java.io.BufferedReader;
+import java.io.EOFException;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import terrace.util.Callback;
 import terrace.util.Copyable;
@@ -10,6 +14,8 @@ import terrace.util.Copyable;
 import com.google.common.base.Optional;
 
 public class GameState implements Copyable<GameState> {
+	private static final Pattern numberPattern = Pattern.compile("[0-9]+");
+	
 	private int _turnNumber;
 	private final Board _board;
 	private List<Player> _players;
@@ -117,5 +123,23 @@ public class GameState implements Copyable<GameState> {
 	
 	public int getTurnNumber() {
 		return _turnNumber;
+	}
+	
+	public static GameState read(BufferedReader in, List<Player> players) throws IOException {
+		int turnNum = readIntLine(in);
+		int active = readIntLine(in);
+		
+		if (active >= players.size()) throw new IOException("Server sent bad active player");
+		
+		return new GameState(BoardFactory.read(in, players), players, active, turnNum);
+	}
+	
+	private static int readIntLine(BufferedReader in) throws IOException {
+		String line = in.readLine();
+		if (line == null) throw new EOFException("Server connection closed");
+		if (!numberPattern.matcher(line).matches()) {
+			throw new IOException("Server sent bad number");
+		}
+		return Integer.parseInt(line);
 	}
 }

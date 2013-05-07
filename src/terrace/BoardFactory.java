@@ -1,10 +1,80 @@
 package terrace;
 
+import java.io.BufferedReader;
+import java.io.EOFException;
+import java.io.IOException;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import terrace.util.Posn;
 
 public class BoardFactory {
+	private static final Pattern piece = Pattern.compile("\\(([0-4])\\:([T0-9])\\)");
+	private static final Pattern standardBoard = Pattern.compile("([A-Z]+) ([0-9]+)");
+	
+	public static Board read(BufferedReader in, List<Player> players) throws IOException {
+		String typeLine = in.readLine();
+		
+		if (typeLine == null) throw new EOFException("Server connection closed");
+		
+		Matcher m = standardBoard.matcher(typeLine); 
+		
+		if (!m.matches()) throw new IOException("Server sent bad type line.");
+		
+		try {
+			Variant v = Variant.valueOf(m.group(1));
+			Board board;
+			
+			switch(v) {
+			case TRIANGLE:
+				board = new TriangleBoard(Integer.parseInt(m.group(2)));
+				break;
+			default:
+				board = new DefaultBoard(Integer.parseInt(m.group(2)), v);
+				break;
+			}
+			readPieces(in, players, board);
+			return board;
+		} catch (IllegalArgumentException e) {
+			throw new IOException("Server sent bad board type");
+		}
+	}
+	
+	private static void readPieces(BufferedReader in, List<Player> players, Board board) throws IOException {
+		for (int y = 0; y < board.getHeight(); y++) {
+			String row = in.readLine();
+			
+			if (row == null) throw new EOFException("Server connection closed");
+			
+			String[] cells = row.split(".");
+			if (cells.length != board.getWidth()) throw new IOException("Server sent bad number of columns");
+			
+			for (int x = 0; x < board.getWidth(); x++) {
+				Posn p = new Posn(x, y);
+				board.setPieceAt(p, readPiece(p, cells[x], players));
+			}
+		}
+	}
+	
+	private static Piece readPiece(Posn p, String cell, List<Player> players) throws IOException {
+		if (cell.equals("     ")) {
+			return null;
+		} else {
+			Matcher m = piece.matcher(cell);
+			if (!m.matches()) throw new IOException("Server sent bad piece");
+			
+			int player = Integer.parseInt(m.group(1));
+			if (player >= players.size()) throw new IOException("Server sent bad player number");
+			
+			if (m.group(2).equals("T")) {
+				// We don't know the goal but that is ok because the server knows.
+				return new TPiece(p, players.get(player), null);
+			} else {
+				return new Piece(Integer.parseInt(m.group(2)), p, players.get(player));
+			}
+		}
+	}
 	
 	public static Board create(List<Player> players, int size, Variant variant) {
 		Board board;
@@ -19,9 +89,7 @@ public class BoardFactory {
 			setUpPieces(players, board);
 			break;
 		}
-		
 		return board;
-		
 	}
 	
 	/**
@@ -49,10 +117,10 @@ public class BoardFactory {
 			if (board instanceof DefaultBoard) {
 				setUpDefault4P(p1, p2, p3, p4, board);
 			} else {
-				setUpTriangle4P(p1, p2, p3, p4, board);
+				System.err.println("ERROR: Triangle board can't have 4 players");
 			}
 		} else {
-			System.err.println("NO");
+			System.err.println("ERROR: Bad number of players");
 		}
 	}
 
@@ -69,41 +137,31 @@ public class BoardFactory {
 			if (i == 0) {
 				Piece tPiece = new TPiece(new Posn(0,0), p1, new Posn(dim - 1, dim - 1));
 				Piece p2Piece = new Piece(numTerraces - 1, new Posn(i, dim - 1), p2);
-//				p1.addPiece(tPiece);
-//				p2.addPiece(p2Piece);
-
+				
 				board.setPieceAt(new Posn(i, 0), tPiece);
 				board.setPieceAt(new Posn(i, dim - 1), p2Piece);
-
 			} else if (i == dim - 1) {
 				Piece tPiece = new TPiece(new Posn(dim - 1, dim - 1), p2, new Posn(0, 0));
 				Piece p1Piece = new Piece(i / 2, new Posn(i, 0), p1);
-//				p1.addPiece(p1Piece);
-//				p2.addPiece(tPiece);
-
+				
 				board.setPieceAt(new Posn(i, i), tPiece);
 				board.setPieceAt(new Posn(i, 0), p1Piece);
 			} else {
 				Piece p1Piece = new Piece(i / 2, new Posn(i, 0), p1);
 				Piece p2Piece = new Piece(numTerraces - (i / 2) - 1, new Posn(i, dim - 1), p2);
-//				p1.addPiece(p1Piece);
-//				p2.addPiece(p2Piece);
-
+				
 				board.setPieceAt(new Posn(i, 0), p1Piece);
 				board.setPieceAt(new Posn(i, dim - 1), p2Piece);
 			}
-
+			
 			Piece p1Piece = new Piece(numTerraces - (i / 2) - 1, new Posn(i, 1), p1);
 			Piece p2Piece = new Piece(i / 2, new Posn(i, dim  - 2), p2);
-//			p1.addPiece(p1Piece);
-//			p2.addPiece(p2Piece);
-
+			
 			board.setPieceAt(new Posn(i, 1), p1Piece);
 			board.setPieceAt(new Posn(i, dim - 2), p2Piece);
-
 		}
 	}
-
+	
 	/**
 	 * Sets up the pieces on the board for a 4-player game
 	 * @param p1 Player 1
@@ -121,30 +179,21 @@ public class BoardFactory {
 				Piece t2Piece = new TPiece(new Posn(0, 1), p2, new Posn(dim - 1, dim - 1));
 				Piece p3Piece = new Piece(numTerraces - (i / 2) - 1, new Posn(i, dim -1), p3);
 				Piece p4Piece = new Piece(numTerraces - (i / 2) - 1, new Posn(dim -1, i), p4);
-//				p1.addPiece(t1Piece);
-//				p2.addPiece(t2Piece);
-//				p3.addPiece(p3Piece);
-//				p4.addPiece(p4Piece);
-
+				
 				board.setPieceAt(new Posn(i, 0), t1Piece);
 				board.setPieceAt(new Posn(i, dim - 1), p3Piece);
-
+				
 				board.setPieceAt(new Posn(0, i), t2Piece);
 				board.setPieceAt(new Posn(dim - 1, i), p4Piece);
-
 			} else if(i == dim - 2) {
 				Piece p1Piece = new Piece(i / 2, new Posn(i, 0), p1);
 				Piece p2Piece = new Piece(i / 2, new Posn(0, i), p2);
 				Piece t3Piece = new TPiece(new Posn(i, dim - 1), p3, new Posn(0, 0));
 				Piece t4Piece = new TPiece(new Posn(dim - 1, i), p4, new Posn(0, 0));
-//				p1.addPiece(p1Piece);
-//				p2.addPiece(p2Piece);
-//				p3.addPiece(t3Piece);
-//				p4.addPiece(t4Piece);
-
+				
 				board.setPieceAt(new Posn(i, 0), p1Piece);
 				board.setPieceAt(new Posn(i, dim - 1), t3Piece);
-
+				
 				board.setPieceAt(new Posn(0, i), p2Piece);
 				board.setPieceAt(new Posn(dim - 1, i), t4Piece);
 			} else {
@@ -152,14 +201,10 @@ public class BoardFactory {
 				Piece p2Piece = new Piece(i / 2, new Posn(0, i), p2);
 				Piece p3Piece = new Piece(numTerraces - (i / 2) - 1, new Posn(i, dim -1), p3);
 				Piece p4Piece = new Piece(numTerraces - (i / 2) - 1, new Posn(dim -1, i), p4);
-//				p1.addPiece(p1Piece);
-//				p2.addPiece(p2Piece);
-//				p3.addPiece(p3Piece);
-//				p4.addPiece(p4Piece);
-
+				
 				board.setPieceAt(new Posn(i, 0), p1Piece);
 				board.setPieceAt(new Posn(i, dim - 1), p3Piece);
-
+				
 				board.setPieceAt(new Posn(0, i), p2Piece);
 				board.setPieceAt(new Posn(dim - 1, i), p4Piece);
 			}
@@ -188,12 +233,6 @@ public class BoardFactory {
 			board.setPieceAt(new Posn(i, 1), p1Piece);
 			board.setPieceAt(new Posn(i, board.getHeight() - 1), p2PieceEdge);
 			board.setPieceAt(new Posn(i, board.getHeight() - 2), p2Piece);
-			
 		}
-		
-	}
-	
-	private static void setUpTriangle4P(Player p1, Player p2, Player p3, Player p4, Board board) {
-		
 	}
 }
