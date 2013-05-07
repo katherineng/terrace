@@ -135,8 +135,8 @@ public abstract class Board implements Copyable<Board> {
 		out.print('x');
 		out.println(getHeight());
 		
-		for (int x = 0; x < getWidth(); x++) {
-			for (int y = 0; y < getHeight(); y++) {
+		for (int y = 0; y < getHeight(); y++) {
+			for (int x = 0; x < getWidth(); x++) {
 				if (_pieces[x][y] == null) {
 					out.print("     ");
 				} else {
