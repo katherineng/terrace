@@ -95,8 +95,8 @@ public class GameBuilder {
 		}
 		players.addAll(aiPlayers);
 		
-		GameState game = new GameState(BoardFactory.create(players, _size, _variant), players, 0, 0);
-		final GameServer s = new GameServer(game);
+		GameState initialState = new GameState(BoardFactory.create(players, _size, _variant), players, 0, 0);
+		final GameServer s = new GameServer(initialState);
 		
 		for (final ClientConnection conn : clients) {
 			s.addUpdateStateCB(new Callback<GameState>() {
@@ -110,6 +110,7 @@ public class GameBuilder {
 					});
 				}
 			});
+			conn.updateGameState(initialState);
 		}
 		for (final AI ai : aiPlayers) {
 			s.addUpdateStateCB(new Callback<GameState>() {
