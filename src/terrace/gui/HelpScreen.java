@@ -1,6 +1,7 @@
 package terrace.gui;
 
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -9,8 +10,10 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
@@ -28,25 +31,33 @@ public class HelpScreen extends TerracePanel {
 	private static final Font defaultFont = new Font("Verdana", Font.BOLD, 16);
 	
 	private static final Color backgroundColor = Color.DARK_GRAY;
-	private static final Color textColor = Color.GRAY;
+	private static final Color textColor = Color.WHITE;
+	private static final Color headerColor = Color.WHITE;
+	private static final Color fadedColor = Color.GRAY;
 	
 	public HelpScreen(TerraceFrame frame) {
 		super(frame);
 		_frame = frame;
 		setBackground(backgroundColor);
 		setLayout(new GridBagLayout());
-		addComponents();
+		JPanel info = new JPanel(new GridBagLayout());
+		info.setBackground(backgroundColor);
+		info.setBorder(BorderFactory.createLineBorder(Color.white));
+		addComponents(info);
+		add(info);
 	}
 	
-	private void addComponents() {
+	private void addComponents(Container pane) {
+		setLayout(new GridBagLayout());
 		terraceLabel = new JLabel("TERRACE");
 		terraceLabel.setFont(headerFont);
+		terraceLabel.setForeground(headerColor);
 		terraceLabel.setBackground(backgroundColor);
 		//terraceLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		GridBagConstraints labelConst = new GridBagConstraints();
 		labelConst.gridx = 0;
 		labelConst.gridy = 0;
-		labelConst.insets = new Insets(0, 0, 20, 0);
+		labelConst.insets = new Insets(10, 0, 10, 0);
 		
 		textArea = new JTextArea();
 		
@@ -63,9 +74,11 @@ public class HelpScreen extends TerracePanel {
 		GridBagConstraints textConst = new GridBagConstraints();
 		textConst.gridx = 0;
 		textConst.gridy = 1;
+		textConst.insets = new Insets(0, 10, 0, 10);
 		textArea.setSize(new Dimension(500, 300));
 		textArea.setEditable(false);
 		textArea.setFont(defaultFont);
+		textArea.setBackground(fadedColor);
 		
 		textArea.append("Terrace is a stratey game played on a three dimensional board.\n");
 		textArea.append("There are two types of boards for this game: Triangle and Square.\n");
@@ -76,12 +89,12 @@ public class HelpScreen extends TerracePanel {
 		GridBagConstraints backConst = new GridBagConstraints();
 		backConst.gridx = 0;
 		backConst.gridy = 2;
-		backConst.insets = new Insets(20, 0,0 ,0);
+		backConst.insets = new Insets(20, 0, 10 ,0);
 		
-		add(terraceLabel, labelConst);
+		pane.add(terraceLabel, labelConst);
 		//add(textArea, textConst);
-		add(scroll, textConst);
-		add(backButton, backConst);
+		pane.add(scroll, textConst);
+		pane.add(backButton, backConst);
 	}
 	
 	class BackListener implements ActionListener {

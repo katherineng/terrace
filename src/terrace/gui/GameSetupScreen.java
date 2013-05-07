@@ -282,7 +282,7 @@ public class GameSetupScreen extends TerracePanel implements MouseListener {
 		textFieldSetting(_p1Field);
 		_p1Field.setText("Player 1");
 
-		_p2Field.addFocusListener(_p2Focus);//TODO when on CPU focusListener renames to player 2
+		_p2Field.addFocusListener(_p2Focus);
 		_p2Field.setDocument(new LengthLimit(MAX_NAME_LENGTH));
 		GridBagConstraints p2FieldConst = makeGBC(1, 2);
 		p2FieldConst.insets = new Insets(0, 4, 0, 0);
@@ -360,7 +360,7 @@ public class GameSetupScreen extends TerracePanel implements MouseListener {
 		numPlayersPanel.add(_threePlayer, threeConst);
 		numPlayersPanel.add(_fourPlayer, fourConst);
 		
-		GridBagConstraints goConst = makeGBC(3, 4);
+		GridBagConstraints goConst = makeGBC(2, 4);
 		goButton.addActionListener(new GoListener());
 		goConst.insets = new Insets(30, 0, 0, 0);
 		goConst.anchor = GridBagConstraints.EAST;
