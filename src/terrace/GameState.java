@@ -10,12 +10,14 @@ import terrace.util.Copyable;
 import com.google.common.base.Optional;
 
 public class GameState implements Copyable<GameState> {
+	private int _turnNumber;
 	private final Board _board;
 	private List<Player> _players;
 	private int _active = 0;
 	private Player _winner = null;
 	
-	public GameState(Board board, List<Player> players, int active) {
+	public GameState(Board board, List<Player> players, int active, int turnNumber) {
+		_turnNumber = turnNumber;
 		_board = board;
 		_players = players;
 		_active = active;
@@ -39,6 +41,7 @@ public class GameState implements Copyable<GameState> {
 	
 	public void endTurn() {
 		_active = (_active + 1) % _players.size();
+		_turnNumber++;
 	}
 	
 	//TODO
@@ -99,12 +102,13 @@ public class GameState implements Copyable<GameState> {
 	
 	@Override
 	public GameState copy() {
-		GameState copy = new GameState(_board.copy(), new ArrayList<>(_players), _active);
+		GameState copy = new GameState(_board.copy(), new ArrayList<>(_players), _active, _turnNumber + 1);
 		copy._winner = _winner;
 		return copy;
 	}
 	
 	public void serialize(PrintWriter out) {
+		out.println(_turnNumber);
 		out.print(_active);
 		out.print('/');
 		out.println(_players.size());

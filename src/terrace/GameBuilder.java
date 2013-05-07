@@ -95,7 +95,7 @@ public class GameBuilder {
 		}
 		players.addAll(aiPlayers);
 		
-		GameState game = new GameState(BoardFactory.create(players, _size, _variant), players, 0);
+		GameState game = new GameState(BoardFactory.create(players, _size, _variant), players, 0, 0);
 		final GameServer s = new GameServer(game);
 		
 		for (final ClientConnection conn : clients) {
