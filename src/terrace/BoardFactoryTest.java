@@ -4,7 +4,6 @@ import static org.junit.Assert.*;
 import java.util.*;
 import org.junit.Test;
 
-import terrace.gui.game.LocalPlayer;
 
 public class BoardFactoryTest {
 

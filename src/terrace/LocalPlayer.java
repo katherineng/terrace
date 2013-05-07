@@ -1,4 +1,4 @@
-package terrace.gui.game;
+package terrace;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;

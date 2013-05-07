@@ -6,7 +6,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import terrace.ai.AI;
-import terrace.gui.game.LocalPlayer;
 import terrace.network.ClientConnection;
 import terrace.network.HostServer;
 import terrace.network.NetworkedServerPlayer;
