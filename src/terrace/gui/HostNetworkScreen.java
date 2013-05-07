@@ -29,6 +29,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import terrace.Variant;
 import terrace.network.ClientConnection;
 import terrace.util.Callback;
 
@@ -314,8 +315,13 @@ public class HostNetworkScreen extends TerracePanel {
 			if (r == null) {
 				return;
 			}
-			if (_numPlayers + r.getPlayerNames().size() > 4) {
-				_error.setText("Game cannot have more than 4 players");
+			if (_frame._builder.getVariant() == Variant.TRIANGLE) {
+				 if (_numPlayers + r.getPlayerNames().size() > 2) {
+						_error.setText("Game using the triangular board cannot have more than 2 players");
+						_error.setVisible(true);
+					}
+			} else if (_numPlayers + r.getPlayerNames().size() > 4) {
+				_error.setText("Games using the standard board cannot have more than 4 players");
 				_error.setVisible(true);
 			} else {
 				_currentListModel.addElement(r.toString());

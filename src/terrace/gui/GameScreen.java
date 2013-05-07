@@ -50,7 +50,7 @@ public class GameScreen extends JPanel {
 		_status = new JLabel();
 		//_status.setFont(new Font("Dialog", Font.BOLD, 16));
 		
-		JButton mainMenu = new JButton("Main Menu");
+		JButton mainMenu = new JButton("Quit Game");
 		mainMenu.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

@@ -78,14 +78,18 @@ public class TerraceButton extends JPanel implements MouseListener {
 	
 	@Override
 	public void setEnabled(boolean enabled) {
+		boolean oldEnabled = isEnabled;
 		super.setEnabled(enabled);
-		System.out.println();
 		isEnabled = enabled;
-		if (!enabled) {
-			setSelected(false);
-			label.setForeground(getBackground());
+		if (enabled == oldEnabled) {
+			return;
 		} else {
-			label.setForeground(unselectedColor);
+			if (!enabled) {
+				setSelected(false);
+				label.setForeground(getBackground());
+			} else {
+				label.setForeground(unselectedColor);
+			}
 		}
 	}
 	
