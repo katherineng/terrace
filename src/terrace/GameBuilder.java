@@ -110,7 +110,6 @@ public class GameBuilder {
 					});
 				}
 			});
-			conn.updateGameState(initialState);
 		}
 		for (final AI ai : aiPlayers) {
 			s.addUpdateStateCB(new Callback<GameState>() {
@@ -129,6 +128,10 @@ public class GameBuilder {
 				p.setName(_names.get(i));
 			}
 			i++;
+		}
+		
+		for (ClientConnection conn : clients) {
+			conn.updateGameState(initialState);
 		}
 		
 		_es.submit(new Runnable() {
