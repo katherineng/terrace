@@ -1,7 +1,9 @@
 package terrace;
 
-import java.io.PrintWriter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 import terrace.util.Posn;
 
@@ -15,15 +17,14 @@ import terrace.util.Posn;
 public class DefaultBoard extends Board {
 	final int _dimensions;
 	static HashMap<Integer, int[][]> _elevationsMap = new HashMap<Integer, int[][]>();;
-	private Variant _variant;
-
+	
 	public DefaultBoard(int dimensions, Variant variant) {
 		_dimensions = dimensions;
 		_pieces = new Piece[_dimensions][_dimensions];
 		_variant = variant;
 		setUp();
 	}
-
+	
 	@Override
 	public Board copy() {
 		Board copy = new DefaultBoard(_dimensions, _variant);
@@ -299,13 +300,5 @@ public class DefaultBoard extends Board {
 		}
 		
 		return elevations;
-	}
-	
-	@Override
-	public void serialize(PrintWriter out) {
-		out.println("Square");
-		out.println(_dimensions);
-		
-		serializePieces(out);
 	}
 }

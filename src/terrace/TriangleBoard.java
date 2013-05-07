@@ -1,6 +1,5 @@
 package terrace;
 
-import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -12,14 +11,18 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 
 public class TriangleBoard extends Board {
-	private final int _dimensions;
 	private static HashMap<Integer, int[][]> _elevationsMap;
+	
+	private final int _dimensions;
+	
 	public TriangleBoard(int dimensions) {
+		_variant = Variant.TRIANGLE;
 		_dimensions = dimensions;
 		_pieces = new Piece[_dimensions][_dimensions*2];
 		_elevationsMap = new HashMap<Integer, int[][]>();
 		setUp();
 	}
+	
 	public void setUp() {
 		if (_elevationsMap.get(_dimensions) == null) {
 			int[][] elevations  = new int[_dimensions][_dimensions*2];
@@ -107,12 +110,12 @@ public class TriangleBoard extends Board {
 	public int getWidth() {
 		return _dimensions;
 	}
-
+	
 	@Override
 	public int getHeight() {
 		return _dimensions * 2;
 	}
-
+	
 	@Override
 	public List<Posn> getNeighbors(Posn posn) {
 		List<Posn> neighborPosns = getCornerNeighbors(posn);
@@ -258,13 +261,5 @@ public class TriangleBoard extends Board {
 			}
 		}
 		return copy;
-	}
-	
-	@Override
-	public void serialize(PrintWriter out) {
-		out.println("Triangle");
-		out.println(_dimensions);
-		
-		serializePieces(out);
 	}
 }

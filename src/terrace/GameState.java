@@ -105,9 +105,11 @@ public class GameState implements Copyable<GameState> {
 	}
 	
 	public void serialize(PrintWriter out) {
-		out.println(_active);
+		out.print(_active);
+		out.print('/');
+		out.println(_players.size());
 		for (Player p : _players) {
-			out.println(p);
+			out.println(p.getName());
 		}
 		_board.serialize(out);
 	}

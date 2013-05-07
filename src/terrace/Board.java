@@ -6,6 +6,7 @@ import terrace.util.Posn;
 import terrace.util.Copyable;
 
 public abstract class Board implements Copyable<Board> {
+	protected Variant _variant;
 	protected Piece[][] _pieces;
 	
 	public abstract int getWidth();
@@ -123,9 +124,13 @@ public abstract class Board implements Copyable<Board> {
 		return pieces;
 	}
 	
-	public abstract void serialize(PrintWriter out);
-	
-	protected void serializePieces(PrintWriter out) {
+	protected void serialize(PrintWriter out) {
+		out.print(_variant);
+		out.print(' ');
+		out.print(getWidth());
+		out.print('x');
+		out.println(getHeight());
+		
 		for (int x = 0; x < getWidth(); x++) {
 			for (int y = 0; y < getHeight(); y++) {
 				if (_pieces[x][y] == null) {
