@@ -1,5 +1,7 @@
 package terrace;
 
+import java.io.PrintWriter;
+
 import terrace.util.Posn;
 
 public class TPiece extends Piece {
@@ -27,5 +29,11 @@ public class TPiece extends Piece {
 	@Override
 	public boolean isTPiece(){
 		return true;
+	}
+	
+	public void serialize(PrintWriter out) {
+		out.print('(');
+		out.print(_player.getColor().ordinal());
+		out.print(":T)");
 	}
 }
