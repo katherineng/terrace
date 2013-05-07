@@ -78,7 +78,7 @@ public class GameBuilder {
 		int playerNum = 0;
 		
 		for (int i = 0; i < _localPlayers; i++) {
-			players.add(new LocalPlayer(PlayerColor.values()[playerNum]));
+			players.add(new LocalServerPlayer(PlayerColor.values()[playerNum]));
 			playerNum++;
 		}
 		for (ClientConnection conn : clients) {

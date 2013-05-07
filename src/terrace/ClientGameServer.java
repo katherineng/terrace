@@ -47,4 +47,13 @@ public class ClientGameServer extends GameServer {
 			_onDrop.run();
 		}
 	}
+	
+	public void sendMove(Move m, int turnNumber) {
+		_out.println(
+				turnNumber + " " +
+				m.getPiece().getPosn().getX() + " " +
+				m.getPiece().getPosn().getY() + " " +
+				m.getTo().getX() + " " + m.getTo().getY()
+		);
+	}
 }
