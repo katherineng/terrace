@@ -1,9 +1,11 @@
 package terrace;
 
 import java.io.PrintWriter;
-import java.util.*;
-import terrace.util.Posn;
+import java.util.LinkedList;
+import java.util.List;
+
 import terrace.util.Copyable;
+import terrace.util.Posn;
 
 public abstract class Board implements Copyable<Board> {
 	protected Variant _variant;
@@ -128,12 +130,10 @@ public abstract class Board implements Copyable<Board> {
 		return pieces;
 	}
 	
-	protected void serialize(PrintWriter out) {
+	void serialize(PrintWriter out) {
 		out.print(_variant);
 		out.print(' ');
-		out.print(getWidth());
-		out.print('x');
-		out.println(getHeight());
+		out.println(getWidth());
 		
 		for (int y = 0; y < getHeight(); y++) {
 			for (int x = 0; x < getWidth(); x++) {
@@ -142,6 +142,7 @@ public abstract class Board implements Copyable<Board> {
 				} else {
 					_pieces[x][y].serialize(out);
 				}
+				out.print('.');
 			}
 			out.println();
 		}
