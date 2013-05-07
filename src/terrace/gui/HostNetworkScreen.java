@@ -23,12 +23,14 @@ import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import terrace.NetworkType;
 import terrace.Variant;
 import terrace.network.ClientConnection;
 import terrace.util.Callback;
@@ -241,14 +243,24 @@ public class HostNetworkScreen extends TerracePanel {
 		}
 	}
 	
-	private class BackListener implements ActionListener {//TODO add a popup
+	private class BackListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			_frame.changeCard(TerraceFrame.NETWORK_SETUP);
-			_requestListModel.clear();
-			_currentListModel.removeAllElements();
-			_acceptedClientConnections.clear();
-			_error.setVisible(false);
+			if (JOptionPane.showConfirmDialog(
+					_frame,
+					"Are you sure you would like to quit this server?",
+					"Return to Main Menu",
+					JOptionPane.YES_NO_OPTION
+			) != JOptionPane.YES_OPTION) {
+				return;
+			} else {
+				//TODO shut down server
+				_frame.changeCard(TerraceFrame.NETWORK_SETUP);
+				_requestListModel.clear();
+				_currentListModel.removeAllElements();
+				_acceptedClientConnections.clear();
+				_error.setVisible(false);
+			}
 		}
 	}
 	
