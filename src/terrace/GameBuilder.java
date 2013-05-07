@@ -1,5 +1,6 @@
 package terrace;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.concurrent.Executors;
 
 import terrace.ai.AI;
 import terrace.network.ClientConnection;
+import terrace.network.ClientGameServer;
 import terrace.network.HostServer;
 import terrace.network.NetworkedServerPlayer;
 import terrace.util.Callback;
@@ -135,7 +137,7 @@ public class GameBuilder {
 			@Override
 			public void run() {
 				try {
-					s.run();
+					s.run(null);
 				} catch (Throwable t) {
 					t.printStackTrace();
 				}
@@ -147,5 +149,34 @@ public class GameBuilder {
 	
 	public void setPlayerNames(List<String> names) {
 		_names = names;
+	}
+	
+	public void joinGame(
+			final String host,
+			final int port,
+			final Callback<GameServer> onStart,
+			final Runnable onDrop
+	) {
+		_es.submit(new Runnable() {
+			@Override
+			public void run() {
+				try (final GameServer gs = new ClientGameServer(
+						host,
+						port,
+						_names,
+						onDrop
+				)) {
+					gs.run(new Runnable() {
+						@Override
+						public void run() {
+							onStart.call(gs);
+						}
+					});
+				} catch (IOException e) {
+					System.err.println("LOG: " + e.getLocalizedMessage());
+					onDrop.run();
+				}
+			}
+		});
 	}
 }

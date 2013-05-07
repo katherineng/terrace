@@ -29,5 +29,5 @@ public abstract class GameServer implements Closeable {
 		_notifyLoserCBs.add(cb);
 	}
 	
-	public abstract void run();
+	public abstract void run(Runnable onReady);
 }

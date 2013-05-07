@@ -17,7 +17,9 @@ public class LocalGameServer extends GameServer {
 	 * @see terrace.GameServer#run()
 	 */
 	@Override
-	public void run() {
+	public void run(Runnable onReady) {
+		if (onReady != null) onReady.run();
+		
 		while (!_closed) {
 			Optional<Move> move = _game.getActivePlayer().getMove(45);
 			if (move.isPresent()) {

@@ -43,7 +43,7 @@ public class ClientGameServer extends GameServer {
 	}
 	
 	@Override
-	public void run() {
+	public void run(Runnable onReady) {
 		try {
 			if (!"TERRACE-Server".equals(_in.readLine())) {
 				System.err.println("LOG: Bad server. Disconnecting.");
@@ -55,6 +55,8 @@ public class ClientGameServer extends GameServer {
 			_out.println();
 			
 			readPlayers();
+			
+			onReady.run();
 			
 			while (true) {
 				GameState state = GameState.read(_in, _players);
