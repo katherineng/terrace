@@ -1,5 +1,7 @@
 package terrace;
 
+import java.io.PrintWriter;
+
 import terrace.util.Copyable;
 import terrace.util.Posn;
 
@@ -73,5 +75,13 @@ public class Piece implements Comparable<Piece>, Copyable<Piece> {
 
 	public Player getPlayer() {
 		return _player;
+	}
+	
+	public void serialize(PrintWriter out) {
+		out.print('(');
+		out.print(_player.getColor().ordinal());
+		out.print(':');
+		out.print(_size);
+		out.print(')');
 	}
 }
