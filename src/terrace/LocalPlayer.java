@@ -35,4 +35,9 @@ public class LocalPlayer extends Player {
 			System.err.println("LOG: " + e.getLocalizedMessage());
 		}
 	}
+	
+	@Override
+	public boolean isLocalHuman() {
+		return true;
+	}
 }

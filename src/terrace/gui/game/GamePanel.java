@@ -272,7 +272,7 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 		private boolean setMove(BoardTile newSelection) {
 			assert(newSelection != null);
 			
-			if (_game.getActivePlayer() instanceof LocalPlayer) {
+			if (_game.getActivePlayer().isLocalHuman()) {
 				LocalPlayer p = (LocalPlayer)_game.getActivePlayer();
 				
 				Piece captured = _game.getBoard().getPieceAt(newSelection.getPosn());

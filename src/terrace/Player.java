@@ -50,4 +50,8 @@ public abstract class Player {
 	public void setName(String name) {
 		_name = name;
 	}
+	
+	public boolean isLocalHuman() {
+		return false;
+	}
 }
