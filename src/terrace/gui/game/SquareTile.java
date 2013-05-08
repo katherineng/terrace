@@ -6,13 +6,11 @@ import terrace.util.Posn;
 import terrace.util.Vector2d;
 import terrace.util.Vector3d;
 
-public class SquareTile extends BoardTile{
-
+public class SquareTile extends BoardTile {
 	public SquareTile(GUIBoard board, double height, Posn pos, int level) {
 		super(board, height, pos, level);
-		// TODO Auto-generated constructor stub
 	}
-
+	
 	@Override
 	public void draw(GL2 gl) {	
 		double dim = 1.0/_board.getWidth();
@@ -91,5 +89,4 @@ public class SquareTile extends BoardTile{
 		
 		gl.glPopMatrix();
 	}
-
 }
