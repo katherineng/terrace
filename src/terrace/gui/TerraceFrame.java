@@ -110,10 +110,10 @@ public class TerraceFrame extends JFrame {
 							_joinSetup.notifyConnectionLost();
 						}
 					},
-					new Runnable() {
+					new Runnable() {  
 						@Override
 						public void run() {
-							JOptionPane.showConfirmDialog(
+							JOptionPane.showMessageDialog(
 									TerraceFrame.this,
 									"Connection has been lost.");
 							TerraceFrame.this.changeCard(START_SCREEN);
