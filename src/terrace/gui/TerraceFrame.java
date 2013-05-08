@@ -8,6 +8,7 @@ import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import terrace.GameBuilder;
 import terrace.GameServer;
@@ -91,11 +92,17 @@ public class TerraceFrame extends JFrame {
 					_port,
 					new Callback<GameServer>() {
 						@Override
-						public void call(GameServer val) {
-							if (_currentGameScreen != null) _cards.remove(_currentGameScreen);
-							_currentGameScreen = new GameScreen(val, TerraceFrame.this);
-							CardLayout layout = (CardLayout) _cards.getLayout();
-							layout.show(_cards, GAME);
+						public void call(final GameServer val) {
+							SwingUtilities.invokeLater(new Runnable() {
+								@Override
+								public void run() {
+									if (_currentGameScreen != null) _cards.remove(_currentGameScreen);
+									_currentGameScreen = new GameScreen(val, TerraceFrame.this);
+									_cards.add(_currentGameScreen, GAME);
+									CardLayout layout = (CardLayout) _cards.getLayout();
+									layout.show(_cards, GAME);
+								}
+							});
 						}
 					},
 					new Runnable() {
@@ -110,16 +117,13 @@ public class TerraceFrame extends JFrame {
 							_joinSetup.notifyConnectionLost();
 						}
 					},
-					new Runnable() {
+					new Runnable() {  
 						@Override
 						public void run() {
-							if (JOptionPane.showConfirmDialog(
+							JOptionPane.showMessageDialog(
 									TerraceFrame.this,
-									"Connection has been lost.",
-									"Connection lost",
-									JOptionPane.YES_OPTION) == JOptionPane.YES_OPTION) {
-								TerraceFrame.this.changeCard(START_SCREEN);
-							}
+									"Connection has been lost.");
+							TerraceFrame.this.changeCard(START_SCREEN);
 						}
 					}
 			);

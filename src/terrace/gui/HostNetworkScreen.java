@@ -30,7 +30,6 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import terrace.NetworkType;
 import terrace.Variant;
 import terrace.network.ClientConnection;
 import terrace.util.Callback;
@@ -134,6 +133,7 @@ public class HostNetworkScreen extends TerracePanel {
 		JScrollPane requestScroll = new JScrollPane(_requests);
 		_requests.setBackground(fadedColor);
 		_requests.setForeground(defaultColor);
+		_requests.setFont(defaultFont);
 		_requests.setCellRenderer(new ListSelectionRenderer());
 		GridBagConstraints scrollConstraints = new GridBagConstraints();
 		scrollConstraints.gridx  = 1;
@@ -229,6 +229,10 @@ public class HostNetworkScreen extends TerracePanel {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			_frame.startGame(new ArrayList<>(_acceptedClientConnections.values()));
+			_requestListModel.clear();
+			_currentListModel.clear();
+			_acceptedClientConnections.clear();
+			_error.setVisible(false);
 		}
 	}
 	
@@ -257,7 +261,7 @@ public class HostNetworkScreen extends TerracePanel {
 				//TODO shut down server
 				_frame.changeCard(TerraceFrame.NETWORK_SETUP);
 				_requestListModel.clear();
-				_currentListModel.removeAllElements();
+				_currentListModel.clear();
 				_acceptedClientConnections.clear();
 				_error.setVisible(false);
 			}

@@ -21,7 +21,6 @@ import javax.swing.SwingUtilities;
 import terrace.GameServer;
 import terrace.GameState;
 import terrace.LocalPlayer;
-import terrace.LocalServerPlayer;
 import terrace.Move;
 import terrace.Piece;
 import terrace.Player;
@@ -234,7 +233,7 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 			//only act of user is the same
 			if (
 					newSelection.getPiece().getPlayer() == _game.getActivePlayer() &&
-					_game.getActivePlayer() instanceof LocalServerPlayer
+					_game.getActivePlayer() instanceof LocalPlayer
 			) { 
 				clearPossible();
 				

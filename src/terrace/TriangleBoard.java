@@ -11,7 +11,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 
 public class TriangleBoard extends Board {
-	private static HashMap<Integer, int[][]> _elevationsMap;
+	private static HashMap<Integer, int[][]> _elevationsMap = new HashMap<Integer, int[][]>();
 	
 	private final int _dimensions;
 	
@@ -19,7 +19,6 @@ public class TriangleBoard extends Board {
 		_variant = Variant.TRIANGLE;
 		_dimensions = dimensions;
 		_pieces = new Piece[_dimensions][_dimensions*2];
-		_elevationsMap = new HashMap<Integer, int[][]>();
 		setUp();
 	}
 	

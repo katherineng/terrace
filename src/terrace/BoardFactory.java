@@ -47,8 +47,10 @@ public class BoardFactory {
 			
 			if (row == null) throw new EOFException("Server connection closed");
 			
-			String[] cells = row.split(".");
-			if (cells.length != board.getWidth()) throw new IOException("Server sent bad number of columns");
+			String[] cells = row.split("\\.");
+			if (cells.length != board.getWidth()) {
+				throw new IOException("Server sent " + cells.length + " columns but expected " + board.getWidth());
+			}
 			
 			for (int x = 0; x < board.getWidth(); x++) {
 				Posn p = new Posn(x, y);

@@ -147,4 +147,8 @@ public abstract class Board implements Copyable<Board> {
 			out.println();
 		}
 	}
+	
+	public Variant getVariant() {
+		return _variant;
+	}
 }
