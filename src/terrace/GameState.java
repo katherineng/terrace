@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -137,7 +138,13 @@ public class GameState implements Copyable<GameState> {
 		Set<Player> activePlayers = new HashSet<>();
 		for (Piece p : b.getPieces()) activePlayers.add(p.getPlayer());
 		
-		return new GameState(b, new ArrayList<>(activePlayers), active, turnNum);
+		List<Player> activePlayerList = new LinkedList<>();
+		
+		for (Player p : players) {
+			if (activePlayers.contains(p)) activePlayerList.add(p);
+		}
+		
+		return new GameState(b, activePlayerList, active, turnNum);
 	}
 	
 	private static int readIntLine(BufferedReader in) throws IOException {
