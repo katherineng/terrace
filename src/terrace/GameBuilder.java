@@ -180,7 +180,6 @@ public class GameBuilder implements Closeable {
 					gs.run(new Runnable() {
 						@Override
 						public void run() {
-							_resources.add(gs);
 							onStart.call(gs);
 						}
 					});
