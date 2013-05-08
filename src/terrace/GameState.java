@@ -115,7 +115,7 @@ public class GameState implements Copyable<GameState> {
 	
 	public void serialize(PrintWriter out) {
 		out.println(_turnNumber);
-		out.println(_active);
+		out.println(getActivePlayer().getColor().ordinal());
 		_board.serialize(out);
 	}
 	
