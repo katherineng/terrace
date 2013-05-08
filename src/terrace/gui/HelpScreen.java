@@ -80,10 +80,31 @@ public class HelpScreen extends TerracePanel {
 		textArea.setFont(defaultFont);
 		textArea.setBackground(fadedColor);
 		
-		textArea.append("Terrace is a stratey game played on a three dimensional board.\n");
+		textArea.append("Terrace is a stratey game played on a three dimensional board");
+		textArea.append(" that has similar objectives to chess. Each player has a set of different");
+		textArea.append(" sized pieces, including a \"King Piece\"");
+		textArea.append(" In this version, the King Piece is shaped as a small box. The objective");
+		textArea.append(" of the game is to either capture all of your opponents' King Pieces or");
+		textArea.append(" get your King Piece to the corner tile diagonally opposite from where it started.");
 		textArea.append("There are two types of boards for this game: Triangle and Square.\n");
-		textArea.append("The Square board also has 3 rule variants: Standard, Downhill, and Agressive.\n");
-		textArea.append(".....");
+		textArea.append("The Square board also has 3 rule variants: Standard, Downhill, and Agressive.\n\n");
+		textArea.append("Standard Rules:\n");
+		textArea.append("Pieces can move diagonally and directly up a terrace, and directly down a terrace if the");
+		textArea.append(" space is vacant. They can also move anywhere on the same terrace as long as");
+		textArea.append(" do not jump over an opponent's piece (players can jump over their own pieces on the");
+		textArea.append(" while moving along a terrace). A piece can only capture diagonally downward if the");
+		textArea.append(" piece it is capturing is either the same size or smaller.\n\n");
+		textArea.append("Downhill Rules:\n");
+		textArea.append("Pieces can move the same way they do with the Standard rules, but can also");
+		textArea.append(" move down any number of terraces as long there are no pieces in the way.\n\n");
+		textArea.append("Aggressive Rules:\n");
+		textArea.append("Pieces can move the same way they do with the Standard rules, but can also");
+		textArea.append(" capture upward if the captured piece is at least one size smaller.\n\n");
+		textArea.append("Triangle Rules:\n");
+		textArea.append("Pieces can move up a terrace through corners, down a terrace through edges, and along the same terrace");
+		textArea.append(" through either corners or edges if the space is vacant. They can only capture");
+		textArea.append(" down a terrace through edges.\n\n");
+		
 		backButton = new JButton("Back");
 		backButton.addActionListener(new BackListener());
 		GridBagConstraints backConst = new GridBagConstraints();
