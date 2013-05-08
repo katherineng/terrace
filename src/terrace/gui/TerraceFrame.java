@@ -90,7 +90,6 @@ public class TerraceFrame extends JFrame {
 					_hostName,
 					_port,
 					new Callback<GameServer>() {
-
 						@Override
 						public void call(GameServer val) {
 							if (_currentGameScreen != null) _cards.remove(_currentGameScreen);
@@ -98,17 +97,29 @@ public class TerraceFrame extends JFrame {
 							CardLayout layout = (CardLayout) _cards.getLayout();
 							layout.show(_cards, GAME);
 						}
-						
 					},
 					new Runnable() {
-
 						@Override
 						public void run() {
+							// TODO Auto-generated method stub
 							
 						}
-						
+					},
+					new Runnable() {
+						@Override
+						public void run() {
+							// TODO Auto-generated method stub
+							
+						}
+					},
+					new Runnable() {
+						@Override
+						public void run() {
+							// TODO Auto-generated method stub
+							
+						}
 					}
-					);
+			);
 			
 		}
 		if (!cardName.equals(JOIN_NETWORK)) {

@@ -161,7 +161,9 @@ public class GameBuilder implements Closeable {
 			final String host,
 			final int port,
 			final Callback<GameServer> onStart,
-			final Runnable onDrop
+			final Runnable noConnection,
+			final Runnable onRequestDrop,
+			final Runnable onGameDrop
 	) {
 		_es.submit(new Runnable() {
 			@Override
@@ -170,7 +172,8 @@ public class GameBuilder implements Closeable {
 						host,
 						port,
 						_names,
-						onDrop
+						onRequestDrop,
+						onGameDrop
 				)) {
 					gs.run(new Runnable() {
 						@Override
@@ -181,7 +184,7 @@ public class GameBuilder implements Closeable {
 					});
 				} catch (IOException e) {
 					System.err.println("LOG: " + e.getLocalizedMessage());
-					onDrop.run();
+					noConnection.run();
 				}
 			}
 		});

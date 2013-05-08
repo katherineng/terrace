@@ -21,20 +21,23 @@ public class ClientGameServer extends GameServer {
 	private final BufferedReader _in;
 	private final PrintWriter _out;
 	private final List<String> _localNames;
-	private final Runnable _onDrop;
+	private final Runnable _onRequestDrop;
+	private final Runnable _onGameDrop;
 	private final List<Player> _players = new LinkedList<>();
 	
 	public ClientGameServer(
 			String host,
 			int port,
 			List<String> names,
-			Runnable onDrop
+			Runnable onRequestDrop,
+			Runnable onGameDrop
 	) throws IOException {
 		_conn = new Socket(host, port);
 		_in = new BufferedReader(new InputStreamReader(_conn.getInputStream()));
 		_out = new PrintWriter(_conn.getOutputStream(), true);
 		_localNames = names;
-		_onDrop = onDrop;
+		_onRequestDrop = onRequestDrop;
+		_onGameDrop = onGameDrop;
 	}
 	
 	@Override
@@ -55,19 +58,23 @@ public class ClientGameServer extends GameServer {
 			_out.println();
 			
 			readPlayers();
-			
 			onReady.run();
 			
+		} catch (IOException e) {
+			_onRequestDrop.run();
+		}
+		
+		try {
 			while (true) {
 				GameState state = GameState.read(_in, _players);
 				
-				for (Callback<GameState> cb : _updateStateCBs) {
-					cb.call(state);
-				}
+				for (Callback<GameState> cb : _updateStateCBs) cb.call(state);
+				
 				if (state.getWinner().isPresent()) return;
 			}
 		} catch (IOException e) {
-			_onDrop.run();
+			_onGameDrop.run();
+			return;
 		}
 	}
 	
