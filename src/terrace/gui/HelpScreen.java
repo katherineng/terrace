@@ -31,7 +31,6 @@ public class HelpScreen extends TerracePanel {
 	private static final Font defaultFont = new Font("Verdana", Font.BOLD, 16);
 	
 	private static final Color backgroundColor = Color.DARK_GRAY;
-	private static final Color textColor = Color.WHITE;
 	private static final Color headerColor = Color.WHITE;
 	private static final Color fadedColor = Color.GRAY;
 	
@@ -53,7 +52,6 @@ public class HelpScreen extends TerracePanel {
 		terraceLabel.setFont(headerFont);
 		terraceLabel.setForeground(headerColor);
 		terraceLabel.setBackground(backgroundColor);
-		//terraceLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		GridBagConstraints labelConst = new GridBagConstraints();
 		labelConst.gridx = 0;
 		labelConst.gridy = 0;
@@ -61,8 +59,6 @@ public class HelpScreen extends TerracePanel {
 		
 		textArea = new JTextArea();
 		
-		//textArea.setBackground(backgroundColor);
-		//textArea.setForeground(textColor);
 		textArea.setColumns(5);
 		textArea.setLineWrap(true);
 		textArea.setRows(2);
