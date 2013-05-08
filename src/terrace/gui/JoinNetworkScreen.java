@@ -312,6 +312,7 @@ public class JoinNetworkScreen extends TerracePanel implements MouseListener {
 			_frame._builder.setPlayerNames(names);			
 			_update.setText("trying to connect...");
 			_update.setVisible(true);
+			_frame.changeCard(_frame.JOIN_NETWORK);
 		}
 	}
 	private class LengthLimit extends PlainDocument {
