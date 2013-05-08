@@ -168,6 +168,7 @@ public class GameBuilder implements Closeable {
 		_es.submit(new Runnable() {
 			@Override
 			public void run() {
+				System.err.println("DEBUG: Trying to start client game server.");
 				try {
 					try (final GameServer gs = new ClientGameServer(
 							host,
