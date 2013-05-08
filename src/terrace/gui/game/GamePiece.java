@@ -1,13 +1,9 @@
 package terrace.gui.game;
 
 
-import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
-import javax.media.opengl.glu.GLU;
-import javax.media.opengl.glu.GLUquadric;
 
 import terrace.Piece;
-import terrace.TPiece;
 import terrace.util.Posn;
 
 public abstract class GamePiece implements Drawable {
