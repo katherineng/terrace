@@ -24,7 +24,7 @@ public class TerraceFrame extends JFrame {
 	static final String JOIN_NETWORK = "join networked game";
 	static final String HELP_SCREEN = "help screen";
 	
-	final GameBuilder _builder = new GameBuilder();
+	GameBuilder _builder = new GameBuilder();
 	private JPanel _cards;
 	private List<String> _playerNames;
 	private HostNetworkScreen _networkScreen;

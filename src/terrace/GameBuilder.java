@@ -1,5 +1,6 @@
 package terrace;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -15,10 +16,11 @@ import terrace.network.HostServer;
 import terrace.network.NetworkedServerPlayer;
 import terrace.util.Callback;
 
-public class GameBuilder {
+public class GameBuilder implements Closeable {
 	public static final int DEFAULT_PORT = 5678;
 	
 	private final ExecutorService _es = Executors.newCachedThreadPool();
+	private List<Closeable> _resources = new LinkedList<>();
 	
 	private int _localPlayers;
 	private int _networkPlayers = 0;
@@ -66,7 +68,10 @@ public class GameBuilder {
 			Callback<ClientConnection> newRequest,
 			Callback<ClientConnection> connectionDropped
 	) {
-		_es.submit(new HostServer(port, _es, newRequest, connectionDropped));
+		HostServer hs = new HostServer(port, _es, newRequest, connectionDropped);
+		
+		_resources.add(hs);
+		_es.submit(hs);
 	}
 	
 	public GameServer startGame(List<ClientConnection> clients) {
@@ -96,6 +101,7 @@ public class GameBuilder {
 		
 		GameState initialState = new GameState(BoardFactory.create(players, _size, _variant), players, 0, 0);
 		final GameServer s = new LocalGameServer(initialState);
+		_resources.add(s);
 		
 		for (final ClientConnection conn : clients) {
 			s.addUpdateStateCB(new Callback<GameState>() {
@@ -169,6 +175,7 @@ public class GameBuilder {
 					gs.run(new Runnable() {
 						@Override
 						public void run() {
+							_resources.add(gs);
 							onStart.call(gs);
 						}
 					});
@@ -178,5 +185,16 @@ public class GameBuilder {
 				}
 			}
 		});
+	}
+	
+	@Override
+	public void close() {
+		for (Closeable resource : _resources) {
+			try {
+				resource.close();
+			} catch (IOException e) {
+				System.err.println("LOG: " + e.getLocalizedMessage());
+			}
+		}
 	}
 }
