@@ -376,7 +376,7 @@ public class JoinNetworkScreen extends TerracePanel implements MouseListener {
 					_p3Field.setText("Player 3");
 				}
 			}
-			switch (_frame._builder.getNumLocalPlayers()) {
+			switch (_numPlayers) {
 			case 1:
 				_p2Field.setEnabled(false);
 				_p2Field.setVisible(false);
