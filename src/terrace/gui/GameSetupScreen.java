@@ -459,7 +459,7 @@ public class GameSetupScreen extends TerracePanel implements MouseListener {
 		_p3Field.setVisible(false);
 		_p3Label.setVisible(false);
 		_p3Field.setVisible(false);
-
+		_error.setVisible(false);
 		switch (_networkType) {
 		case LOCAL:
 			_p2Label.setText("CPU");
@@ -552,7 +552,8 @@ public class GameSetupScreen extends TerracePanel implements MouseListener {
 
 	private class GoListener implements ActionListener {
 		@Override
-		public void actionPerformed(ActionEvent e) {		
+		public void actionPerformed(ActionEvent e) {	
+			_error.setVisible(false);
 			if (_networkType == NetworkType.JOIN) {
 				_frame.changeCard(TerraceFrame.JOIN_SETUP);
 			} else {

@@ -147,6 +147,7 @@ public class GameScreen extends JPanel {
 		_status.setText(player.getName() + "'s turn");
 		Color color = player.getColor().toColor().darker();
 		_status.setForeground(color);
+		_updateLabel.setVisible(false);
 	}
 	
 	public void setWinner(Player player) {
