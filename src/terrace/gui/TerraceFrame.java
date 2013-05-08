@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import terrace.GameBuilder;
@@ -33,7 +34,7 @@ public class TerraceFrame extends JFrame {
 	private GameScreen _currentGameScreen;
 	private GameSetupScreen _localSetup;
 	private GameSetupScreen _hostSetup;
-	private GameSetupScreen _joinSetup;
+	private JoinNetworkScreen _joinSetup;
 	private int _port;
 	private String _hostName;
 	private List<ClientConnection> _clients = new LinkedList<>();
@@ -46,7 +47,7 @@ public class TerraceFrame extends JFrame {
 		_networkScreen = new HostNetworkScreen(this);
 		_localSetup = new GameSetupScreen(this, NetworkType.LOCAL);
 		_hostSetup = new GameSetupScreen(this, NetworkType.HOST);
-		_joinSetup = new GameSetupScreen(this, NetworkType.JOIN);
+		_joinSetup = new JoinNetworkScreen(this);
 		
 		setExtendedState(getExtendedState() | MAXIMIZED_BOTH);
 		getContentPane().setLayout(new CardLayout());
@@ -56,10 +57,9 @@ public class TerraceFrame extends JFrame {
 		_cards.add(new StartScreen(this), START_SCREEN);
 		_cards.add(_localSetup, LOCAL_SETUP);
 		_cards.add(_hostSetup, NETWORK_SETUP);
-		_cards.add(new JoinNetworkScreen(this), JOIN_SETUP);
+		_cards.add(_joinSetup, JOIN_SETUP);
 		_cards.add(new HelpScreen(this), HELP_SCREEN);
 		_cards.add(_networkScreen, HOST_GAME);
-		_cards.add(new JoinNetworkScreen(this), JOIN_NETWORK);
 		add(_cards);
 	}
 	
@@ -101,22 +101,25 @@ public class TerraceFrame extends JFrame {
 					new Runnable() {
 						@Override
 						public void run() {
-							// TODO Auto-generated method stub
-							
+							_joinSetup.notifyUnableToConnect();
 						}
 					},
 					new Runnable() {
 						@Override
 						public void run() {
-							// TODO Auto-generated method stub
-							
+							_joinSetup.notifyConnectionLost();
 						}
 					},
 					new Runnable() {
 						@Override
 						public void run() {
-							// TODO Auto-generated method stub
-							
+							if (JOptionPane.showConfirmDialog(
+									TerraceFrame.this,
+									"Connection has been lost.",
+									"Connection lost",
+									JOptionPane.YES_OPTION) == JOptionPane.YES_OPTION) {
+								TerraceFrame.this.changeCard(START_SCREEN);
+							}
 						}
 					}
 			);
