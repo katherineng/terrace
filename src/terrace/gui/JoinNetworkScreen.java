@@ -25,6 +25,7 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
 
+import terrace.GameBuilder;
 import terrace.gui.controls.AbstractMouseListener;
 import terrace.gui.controls.TerraceButton;
 import terrace.gui.controls.TerraceButtonGroup;
@@ -119,6 +120,7 @@ public class JoinNetworkScreen extends TerracePanel implements MouseListener {
 		_hostLabel.setFont(headerFont);
 		_hostLabel.setForeground(headerColor);
 		_portField.setDocument(new PortInputVerifier());
+		_portField.setText(Integer.toString(GameBuilder.DEFAULT_PORT));
 		_portField.setFont(headerFont);
 		_portField.setMargin(new Insets(0, 3, 0, 0));
 		_portField.setCaretColor(fadedColor);
