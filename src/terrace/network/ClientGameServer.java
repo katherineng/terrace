@@ -78,7 +78,12 @@ public class ClientGameServer extends GameServer {
 			do {
 				for (Callback<GameState> cb : _updateStateCBs) cb.call(_game);
 				
-				if (_game.getWinner().isPresent()) return;
+				if (_game.getWinner().isPresent()) {
+					for (Callback<Player> cb : _notifyWinnerCBs) {
+						cb.call(_game.getWinner().get());
+					}
+					return;
+				}
 				
 				_game = GameState.read(_in, _players);
 			} while (true);

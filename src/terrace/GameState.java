@@ -5,7 +5,9 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import terrace.util.Callback;
@@ -27,6 +29,8 @@ public class GameState implements Copyable<GameState> {
 		_board = board;
 		_players = players;
 		_active = active;
+		
+		if (players.size() == 1) _winner = players.get(0);
 	}
 	
 	public Board getBoard() {
@@ -55,7 +59,6 @@ public class GameState implements Copyable<GameState> {
 		if (_players.indexOf(player) < _active) _active--;
 		_players.remove(player);
 		_board.removePlayer(player);
-	
 	}
 	
 	public void makeMove(
@@ -129,11 +132,17 @@ public class GameState implements Copyable<GameState> {
 		
 		if (active >= players.size()) throw new IOException("Server sent bad active player");
 		
-		return new GameState(BoardFactory.read(in, players), players, active, turnNum);
+		Board b = BoardFactory.read(in, players);
+		
+		Set<Player> activePlayers = new HashSet<>();
+		for (Piece p : b.getPieces()) activePlayers.add(p.getPlayer());
+		
+		return new GameState(b, new ArrayList<>(activePlayers), active, turnNum);
 	}
 	
 	private static int readIntLine(BufferedReader in) throws IOException {
 		String line = in.readLine();
+		
 		if (line == null) throw new EOFException("Server connection closed");
 		if (!numberPattern.matcher(line).matches()) {
 			throw new IOException("Server sent bad number");
