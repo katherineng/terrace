@@ -71,4 +71,9 @@ public class NetworkedServerPlayer extends Player {
 		System.out.println("LOG: Client made bad move. Reason: " + reason);
 		return Optional.absent();
 	}
+	
+	@Override
+	public boolean wantToForfeit() {
+		return _conn.isClosed();
+	}
 }

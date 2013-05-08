@@ -50,4 +50,13 @@ public abstract class Player {
 	public void setName(String name) {
 		_name = name;
 	}
+	
+	/**
+	 * Used to drop disconnecting client players.
+	 * 
+	 * @return Whether or not this player wants to forfeit.
+	 */
+	public boolean wantToForfeit() {
+		return false;
+	}
 }

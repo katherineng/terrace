@@ -190,4 +190,8 @@ public class ClientConnection implements Closeable, Runnable {
 	public GameState getState() {
 		return _state;
 	}
+	
+	public boolean isClosed() {
+		return _conn.isClosed();
+	}
 }

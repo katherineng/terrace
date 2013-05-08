@@ -24,6 +24,10 @@ public class LocalGameServer extends GameServer {
 		if (onReady != null) onReady.run();
 		
 		while (!_closed) {
+			for (Player p : _game.getPlayers()) {
+				if (p.wantToForfeit()) _game.forfeitGame(p);
+			}
+			
 			Optional<Move> move = _game.getActivePlayer().getMove(_timeout);
 			if (move.isPresent()) {
 				try {
