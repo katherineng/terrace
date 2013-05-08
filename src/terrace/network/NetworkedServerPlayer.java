@@ -25,6 +25,8 @@ public class NetworkedServerPlayer extends Player {
 	@Override
 	public Optional<Move> getMove(int timeout) {
 		for (int i = 0; i < timeout; i++) {
+			if (wantToForfeit()) return Optional.absent();
+			
 			try {
 				System.err.println("DEBUG: Asking " + getName() + " for move.");
 				throw _in.get(1, TimeUnit.SECONDS);
