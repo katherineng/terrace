@@ -115,9 +115,7 @@ public class GameState implements Copyable<GameState> {
 	
 	public void serialize(PrintWriter out) {
 		out.println(_turnNumber);
-		out.print(_active);
-		out.print('/');
-		out.println(_players.size());
+		out.println(_active);
 		_board.serialize(out);
 	}
 	
