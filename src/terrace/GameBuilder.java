@@ -168,21 +168,24 @@ public class GameBuilder implements Closeable {
 		_es.submit(new Runnable() {
 			@Override
 			public void run() {
-				try (final GameServer gs = new ClientGameServer(
-						host,
-						port,
-						_names,
-						onRequestDrop,
-						onGameDrop
-				)) {
-					_resources.add(gs);
-					
-					gs.run(new Runnable() {
-						@Override
-						public void run() {
-							onStart.call(gs);
-						}
-					});
+				try {
+					try (final GameServer gs = new ClientGameServer(
+							host,
+							port,
+							_names,
+							onRequestDrop,
+							onGameDrop
+					)) {
+						System.err.println("DEBUG: Started client game server.");
+						_resources.add(gs);
+						
+						gs.run(new Runnable() {
+							@Override
+							public void run() {
+								onStart.call(gs);
+							}
+						});
+					}
 				} catch (IOException e) {
 					System.err.println("LOG: " + e.getLocalizedMessage());
 					noConnection.run();
