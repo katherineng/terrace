@@ -19,6 +19,7 @@ import terrace.GameBuilder;
 import terrace.GameServer;
 import terrace.NetworkType;
 import terrace.Player;
+import terrace.Variant;
 import terrace.gui.game.GamePanel;
 import terrace.network.ClientConnection;
 
@@ -32,11 +33,13 @@ public class GameScreen extends JPanel {
 	private GamePanel _panel;
 	private GameBuilder _builder;
 	private JLabel _status;
-	private JLabel _variant;
+	private JLabel _variantLabel;
 	private boolean _gameOver = false;
+	private Variant _variant;
 	
 	public GameScreen(GameServer server, TerraceFrame frame) {
 		_frame = frame;
+		_variant = server.getState().getBoard().getVariant();
 		addComponents();
 		setBackground(backgroundColor);
 		addGamePanel(server);
@@ -46,14 +49,15 @@ public class GameScreen extends JPanel {
 		_frame = frame;
 		_builder = builder;
 		_networkType = NetworkType.LOCAL;
+		_variant = builder.getVariant();
 		setBackground(backgroundColor);
 		
 		setLayout(new BorderLayout());
 		addComponents();
 		addGamePanel(_builder.startGame(clients));
 	}
+	
 	private void addComponents() {
-
 		JPanel topBar = new JPanel();
 		topBar.setBackground(backgroundColor);
 		topBar.setLayout(new BoxLayout(topBar, BoxLayout.X_AXIS));
@@ -103,11 +107,11 @@ public class GameScreen extends JPanel {
 			}
 		});
 		JButton pause = new JButton("Pause");
-		_variant = new JLabel("Game Variant: " + _builder.getVariant() +" ");
-		_variant.setForeground(defaultColor);
+		_variantLabel = new JLabel("Game Variant: " + _variant +" ");
+		_variantLabel.setForeground(defaultColor);
 		topBar.add(_status);
 		topBar.add(Box.createHorizontalGlue());
-		topBar.add(_variant);
+		topBar.add(_variantLabel);
 		topBar.add(pause);
 		topBar.add(Box.createRigidArea(new Dimension(5, 1)));
 		topBar.add(mainMenu);
