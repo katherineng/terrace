@@ -311,7 +311,7 @@ public class JoinNetworkScreen extends TerracePanel implements MouseListener {
 			}
 			Collections.reverse(names);
 			
-			_frame.setPort(Integer.parseInt(_portLabel.getText()));
+			_frame.setPort(Integer.parseInt(_portField.getText()));
 			_frame.setHostName(_hostField.getText());
 			_frame._builder.setPlayerNames(names);			
 			_update.setText("trying to connect...");
