@@ -25,19 +25,16 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
 
-import terrace.GameBuilder;
-import terrace.GameServer;
 import terrace.gui.controls.AbstractMouseListener;
 import terrace.gui.controls.TerraceButton;
 import terrace.gui.controls.TerraceButtonGroup;
-import terrace.util.Callback;
 
 public class JoinNetworkScreen extends TerracePanel implements MouseListener {
 	private final static int MAX_NAME_LENGTH = 15;
 	
 	private static final long serialVersionUID = -7114643450789860986L;
 	
-	private int _numPlayers;
+	private int _numPlayers = 1;
 	
 	private TerraceFrame _frame;
 	private JLabel _portLabel;
@@ -238,7 +235,6 @@ public class JoinNetworkScreen extends TerracePanel implements MouseListener {
 		defaultSetting(_threePlayer);
 		_threePlayer.addMouseListener(new NumPlayerListener(3));
 		GridBagConstraints threeConst = makeGBC(0, 1);
-
 		TerraceButtonGroup numPlayersButtons = new TerraceButtonGroup();
 		numPlayersButtons.add(_onePlayer);
 		numPlayersButtons.add(_twoPlayer);
@@ -282,6 +278,7 @@ public class JoinNetworkScreen extends TerracePanel implements MouseListener {
 		_p3Field.setText("Player 3");
 		_update.setText("");
 		_update.setVisible(false);
+		_numPlayers = 1;
 	}
 	private GridBagConstraints makeConstraints(int x, int y){
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -316,7 +313,7 @@ public class JoinNetworkScreen extends TerracePanel implements MouseListener {
 			_frame._builder.setPlayerNames(names);			
 			_update.setText("trying to connect...");
 			_update.setVisible(true);
-			_frame.changeCard(_frame.JOIN_NETWORK);
+			_frame.changeCard(TerraceFrame.JOIN_NETWORK);
 		}
 	}
 	private class LengthLimit extends PlainDocument {
