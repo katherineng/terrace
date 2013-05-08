@@ -62,7 +62,7 @@ public class HelpScreen extends TerracePanel {
 		textArea = new JTextArea();
 		
 		//textArea.setBackground(backgroundColor);
-		textArea.setForeground(textColor);
+		//textArea.setForeground(textColor);
 		textArea.setColumns(5);
 		textArea.setLineWrap(true);
 		textArea.setRows(2);
