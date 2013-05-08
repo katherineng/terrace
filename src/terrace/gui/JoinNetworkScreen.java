@@ -263,8 +263,6 @@ public class JoinNetworkScreen extends TerracePanel implements MouseListener {
 		_update.setVisible(true);
 	}
 	public void resetScreen() {
-		_hostField.setText("");
-		_portField.setText("");
 		_p1Field.setText("Player 1");
 		_onePlayer.setSelected(true);
 		_frame._builder.setNumLocalPlayers(1);

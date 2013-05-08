@@ -4,11 +4,12 @@ import java.util.ArrayList;
 
 import terrace.Piece;
 import terrace.util.Posn;
+import terrace.util.Vector3d;
 
 public class GUISquareBoard extends GUIBoard {
 	public GUISquareBoard(GamePanel panel) {
 		_panel = panel;
-		_foundation = new RectPrism(0.0, -0.01, 0.0, 1.0, 0.01, 1.0);
+		_foundation = new RectPrism(0.0, -0.005, 0.0, 1.0, 0.01, 1.0, new Vector3d(.7*.8,.7*.8,.7*.8));
 		int dimension = _panel._game.getBoard().getWidth();
 		_boardTiles = new BoardTile[dimension][dimension];
 		_gamePieces = new ArrayList<GamePiece>();

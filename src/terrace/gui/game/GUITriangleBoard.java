@@ -5,12 +5,13 @@ import java.util.*;
 import terrace.Board;
 import terrace.Piece;
 import terrace.util.Posn;
+import terrace.util.Vector3d;
 
 public class GUITriangleBoard extends GUIBoard {
 
 	public GUITriangleBoard(GamePanel panel){
 		_panel = panel;
-		_foundation = new RectPrism(0.0, -0.01, 0.0, 1.0, 0.01, 1.0);
+		_foundation = new RectPrism(0.0, -0.01, 0.0, 1.0, 0.01, 1.0, new Vector3d(.56, .56, .56));
 		assert _panel._game.getBoard().getHeight() > _panel._game.getBoard().getWidth();
 		_boardTiles = new BoardTile[_panel._game.getBoard().getWidth()][_panel._game.getBoard().getHeight()];
 		_gamePieces = new ArrayList<GamePiece>();

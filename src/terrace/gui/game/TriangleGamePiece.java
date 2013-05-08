@@ -44,7 +44,10 @@ public class TriangleGamePiece extends GamePiece implements Drawable {
 			gl.glColor3d(mult*vec.x, mult*vec.y, vec.z);
 		}
 		
-		glu.gluSphere(quadric, _radius, 25, 25);
+		if (_piece instanceof TPiece)
+			(new RectPrism(0,0,0,_radius*1.75, _radius*1.75, _radius*1.75, new Vector3d(vec.x,  vec.y, vec.z))).draw(gl);
+		else
+			glu.gluSphere(quadric, _radius, 25, 25);
 	    gl.glPopMatrix();
 	}
 }

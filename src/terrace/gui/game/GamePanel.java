@@ -386,11 +386,12 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 			float specColor[]= {1,1,1,1};
 			gl.glMaterialfv(GL.GL_FRONT_AND_BACK,GL2.GL_SPECULAR, specColor,0);
 			gl.glMaterialf(GL.GL_FRONT_AND_BACK,GL2.GL_SHININESS, 80);
+			
 			gl.glEnable(GL2.GL_FOG);
-			gl.glFogf(GL2.GL_FOG_START,0.3f);
+			gl.glFogf(GL2.GL_FOG_START,.7f);
 			gl.glFogf(GL2.GL_FOG_END,1);
 			gl.glFogi(GL2.GL_FOG_MODE,GL.GL_LINEAR);
-			float fogColor[]={.5f,.5f,.5f,1};
+			float fogColor[]={.9f,.9f,.9f,1};
 			gl.glFogfv(GL2.GL_FOG_COLOR,fogColor,0);
 			gl.glClearColor(fogColor[0],fogColor[1],fogColor[2],fogColor[3]);
 		}
@@ -441,6 +442,7 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 			_mode = Mode.HOVER;
 		}
 	}
+	
 	@Override
 	public void mouseReleased(MouseEvent e) {}
 	@Override
