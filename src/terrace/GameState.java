@@ -1,8 +1,12 @@
 package terrace;
 
+import java.io.BufferedReader;
+import java.io.EOFException;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import terrace.util.Callback;
 import terrace.util.Copyable;
@@ -10,12 +14,16 @@ import terrace.util.Copyable;
 import com.google.common.base.Optional;
 
 public class GameState implements Copyable<GameState> {
+	private static final Pattern numberPattern = Pattern.compile("[0-9]+");
+	
+	private int _turnNumber;
 	private final Board _board;
 	private List<Player> _players;
 	private int _active = 0;
 	private Player _winner = null;
 	
-	public GameState(Board board, List<Player> players, int active) {
+	public GameState(Board board, List<Player> players, int active, int turnNumber) {
+		_turnNumber = turnNumber;
 		_board = board;
 		_players = players;
 		_active = active;
@@ -39,6 +47,7 @@ public class GameState implements Copyable<GameState> {
 	
 	public void endTurn() {
 		_active = (_active + 1) % _players.size();
+		_turnNumber++;
 	}
 	
 	//TODO
@@ -99,16 +108,38 @@ public class GameState implements Copyable<GameState> {
 	
 	@Override
 	public GameState copy() {
-		GameState copy = new GameState(_board.copy(), new ArrayList<>(_players), _active);
+		GameState copy = new GameState(_board.copy(), new ArrayList<>(_players), _active, _turnNumber + 1);
 		copy._winner = _winner;
 		return copy;
 	}
 	
 	public void serialize(PrintWriter out) {
-		out.println(_active);
-		for (Player p : _players) {
-			out.println(p);
-		}
+		out.println(_turnNumber);
+		out.print(_active);
+		out.print('/');
+		out.println(_players.size());
 		_board.serialize(out);
+	}
+	
+	public int getTurnNumber() {
+		return _turnNumber;
+	}
+	
+	public static GameState read(BufferedReader in, List<Player> players) throws IOException {
+		int turnNum = readIntLine(in);
+		int active = readIntLine(in);
+		
+		if (active >= players.size()) throw new IOException("Server sent bad active player");
+		
+		return new GameState(BoardFactory.read(in, players), players, active, turnNum);
+	}
+	
+	private static int readIntLine(BufferedReader in) throws IOException {
+		String line = in.readLine();
+		if (line == null) throw new EOFException("Server connection closed");
+		if (!numberPattern.matcher(line).matches()) {
+			throw new IOException("Server sent bad number");
+		}
+		return Integer.parseInt(line);
 	}
 }

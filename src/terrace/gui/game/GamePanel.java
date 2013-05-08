@@ -20,6 +20,8 @@ import javax.swing.SwingUtilities;
 
 import terrace.GameServer;
 import terrace.GameState;
+import terrace.LocalPlayer;
+import terrace.LocalServerPlayer;
 import terrace.Move;
 import terrace.Piece;
 import terrace.Player;
@@ -232,7 +234,7 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 			//only act of user is the same
 			if (
 					newSelection.getPiece().getPlayer() == _game.getActivePlayer() &&
-					_game.getActivePlayer() instanceof LocalPlayer
+					_game.getActivePlayer() instanceof LocalServerPlayer
 			) { 
 				clearPossible();
 				
@@ -271,13 +273,15 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 		private boolean setMove(BoardTile newSelection) {
 			assert(newSelection != null);
 			
-			if (_game.getActivePlayer() instanceof LocalPlayer) {
-				LocalPlayer p = (LocalPlayer)_game.getActivePlayer();
+			GameState game = _game;
+			
+			if (game.getActivePlayer() instanceof LocalPlayer) {
+				LocalPlayer p = (LocalPlayer)game.getActivePlayer();
 				
-				Piece captured = _game.getBoard().getPieceAt(newSelection.getPosn());
+				Piece captured = game.getBoard().getPieceAt(newSelection.getPosn());
 				Move m = new Move(_selection.getPiece(), newSelection.getPosn(), captured);
-				if (_game.isValid(m, p)) {
-					p.sendMove(m);
+				if (game.isValid(m, p)) {
+					p.sendMove(m, game.getTurnNumber());
 					clearPossible();
 				} else {
 					_hover.incorrect();

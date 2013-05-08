@@ -8,6 +8,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
+import java.awt.Insets;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -96,6 +97,7 @@ public class TerracePanel extends JPanel {
 		field.setForeground(fadedColor);
 		field.setFont(defaultFont);
 		field.setCaretColor(fadedColor);
+		field.setMargin(new Insets(0, 3, 0, 0));
 	}
 	public void headerSetting(Component comp) {
 		comp.setBackground(backgroundColor);

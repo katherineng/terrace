@@ -1,11 +1,14 @@
 package terrace;
 
 import java.io.PrintWriter;
-import java.util.*;
-import terrace.util.Posn;
+import java.util.LinkedList;
+import java.util.List;
+
 import terrace.util.Copyable;
+import terrace.util.Posn;
 
 public abstract class Board implements Copyable<Board> {
+	protected Variant _variant;
 	protected Piece[][] _pieces;
 	
 	public abstract int getWidth();
@@ -103,6 +106,10 @@ public abstract class Board implements Copyable<Board> {
 		}
 	}
 	
+	public boolean inBounds(Posn p) {
+		return p.getX() >= 0 && p.getY() >= 0 && p.getX() < getWidth() && p.getY() < getHeight();
+	}
+	
 	public abstract String elevationsToString();
 	
 	public String piecesToString() {
@@ -123,19 +130,21 @@ public abstract class Board implements Copyable<Board> {
 		return pieces;
 	}
 	
-	public abstract void serialize(PrintWriter out);
-	
-	protected void serializePieces(PrintWriter out) {
-		for (int x = 0; x < getWidth(); x++) {
-			for (int y = 0; y < getHeight(); y++) {
+	void serialize(PrintWriter out) {
+		out.print(_variant);
+		out.print(' ');
+		out.println(getWidth());
+		
+		for (int y = 0; y < getHeight(); y++) {
+			for (int x = 0; x < getWidth(); x++) {
 				if (_pieces[x][y] == null) {
-					out.print("   ");
+					out.print("     ");
 				} else {
-					out.print(_pieces[x][y].getPlayer().getColor().ordinal());
-					out.print(":");
-					out.print(_pieces[x][y].getSize());
+					_pieces[x][y].serialize(out);
 				}
+				out.print('.');
 			}
+			out.println();
 		}
 	}
 }

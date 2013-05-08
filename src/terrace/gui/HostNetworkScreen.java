@@ -23,12 +23,15 @@ import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import terrace.NetworkType;
+import terrace.Variant;
 import terrace.network.ClientConnection;
 import terrace.util.Callback;
 
@@ -240,14 +243,24 @@ public class HostNetworkScreen extends TerracePanel {
 		}
 	}
 	
-	private class BackListener implements ActionListener {//TODO add a popup
+	private class BackListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			_frame.changeCard(TerraceFrame.NETWORK_SETUP);
-			_requestListModel.clear();
-			_currentListModel.removeAllElements();
-			_acceptedClientConnections.clear();
-			_error.setVisible(false);
+			if (JOptionPane.showConfirmDialog(
+					_frame,
+					"Are you sure you would like to quit this server?",
+					"Return to Main Menu",
+					JOptionPane.YES_NO_OPTION
+			) != JOptionPane.YES_OPTION) {
+				return;
+			} else {
+				//TODO shut down server
+				_frame.changeCard(TerraceFrame.NETWORK_SETUP);
+				_requestListModel.clear();
+				_currentListModel.removeAllElements();
+				_acceptedClientConnections.clear();
+				_error.setVisible(false);
+			}
 		}
 	}
 	
@@ -314,8 +327,13 @@ public class HostNetworkScreen extends TerracePanel {
 			if (r == null) {
 				return;
 			}
-			if (_numPlayers + r.getPlayerNames().size() > 4) {
-				_error.setText("Game cannot have more than 4 players");
+			if (_frame._builder.getVariant() == Variant.TRIANGLE) {
+				 if (_numPlayers + r.getPlayerNames().size() > 2) {
+						_error.setText("Game using the triangular board cannot have more than 2 players");
+						_error.setVisible(true);
+					}
+			} else if (_numPlayers + r.getPlayerNames().size() > 4) {
+				_error.setText("Games using the standard board cannot have more than 4 players");
 				_error.setVisible(true);
 			} else {
 				_currentListModel.addElement(r.toString());

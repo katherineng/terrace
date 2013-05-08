@@ -12,6 +12,9 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -23,14 +26,18 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
 
 import terrace.GameBuilder;
+import terrace.GameServer;
 import terrace.gui.controls.AbstractMouseListener;
 import terrace.gui.controls.TerraceButton;
 import terrace.gui.controls.TerraceButtonGroup;
+import terrace.util.Callback;
 
 public class JoinNetworkScreen extends TerracePanel implements MouseListener {
 	private final static int MAX_NAME_LENGTH = 15;
 	
 	private static final long serialVersionUID = -7114643450789860986L;
+	
+	private int _numPlayers;
 	
 	private TerraceFrame _frame;
 	private JLabel _portLabel;
@@ -115,23 +122,32 @@ public class JoinNetworkScreen extends TerracePanel implements MouseListener {
 		_hostLabel.setFont(headerFont);
 		_hostLabel.setForeground(headerColor);
 		_portField.setDocument(new PortInputVerifier());
-		_portField.addFocusListener(new InputFocusListener(Integer.toString(GameBuilder.DEFAULT_PORT)));
 		_portField.setFont(headerFont);
+		_portField.setMargin(new Insets(0, 3, 0, 0));
+		_portField.setCaretColor(fadedColor);
 		_portField.setBackground(backgroundColor);
+		_portField.setForeground(fadedColor);
 		_hostField.setFont(headerFont);
+		_hostField.setMargin(new Insets(0, 3, 0, 0));
 		_hostField.setBackground(backgroundColor);
+		_hostField.setForeground(fadedColor);
+		_hostField.setCaretColor(fadedColor);
 		_update.setFont(defaultFont);
 		_update.setForeground(defaultColor);
 		
 		backButton.addActionListener(new BackListener());
+		GridBagConstraints backConst = makeGBC(0, 7);
+		backConst.insets = new Insets(0, 10, 10, 0);
 		goButton.addActionListener(new GoListener());
+		GridBagConstraints goConst = makeGBC(3, 7);
+		goConst.insets = new Insets(0, 0, 10, 10);
 		
 		pane.add(_hostLabel, makeConstraints(1, 0));
 		pane.add(_hostField, makeConstraints(2, 0));
 		pane.add(_portLabel, makeConstraints(1, 1));
 		pane.add(_portField, makeConstraints(2, 1));
 		
-		GridBagConstraints updateConst = makeConstraints(1, 2);
+		GridBagConstraints updateConst = makeConstraints(1, 6);
 		updateConst.gridwidth = 2;
 		
 		namesLabelPanel.setBackground(backgroundColor);
@@ -171,7 +187,7 @@ public class JoinNetworkScreen extends TerracePanel implements MouseListener {
 		textFieldSetting(_p1Field);
 		_p1Field.setText("Player 1");
 
-		_p2Field.addFocusListener(new InputFocusListener("Player 2"));//TODO when on CPU focusListener renames to player 2
+		_p2Field.addFocusListener(new InputFocusListener("Player 2"));
 		_p2Field.setDocument(new LengthLimit(MAX_NAME_LENGTH));
 		GridBagConstraints p2FieldConst = makeGBC(1, 2);
 		p2FieldConst.insets = new Insets(0, 4, 0, 0);
@@ -236,8 +252,17 @@ public class JoinNetworkScreen extends TerracePanel implements MouseListener {
 		pane.add(namesLabelPanel, headerConst);
 		pane.add(playerNames, playerNamesConst);
 		pane.add(numPlayersPanel, numPlayersConst);
-		pane.add(goButton, makeConstraints(3, 6));
-		pane.add(backButton, makeConstraints(0, 6));
+		pane.add(goButton, goConst);
+		pane.add(backButton, backConst);
+	}
+	public void notifyConnectionLost() {
+		_update.setText("Connection has been lost");
+		_update.setVisible(true);
+	
+	}
+	public void notifyUnableToConnect() {
+		_update.setText("Unable to connect to server");
+		_update.setVisible(true);
 	}
 	public void resetScreen() {
 		_hostField.setText("");
@@ -255,6 +280,8 @@ public class JoinNetworkScreen extends TerracePanel implements MouseListener {
 		_p2Field.setEnabled(false);
 		_p2Label.setVisible(false);
 		_p3Field.setText("Player 3");
+		_update.setText("");
+		_update.setVisible(false);
 	}
 	private GridBagConstraints makeConstraints(int x, int y){
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -267,6 +294,7 @@ public class JoinNetworkScreen extends TerracePanel implements MouseListener {
 	private class BackListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			_frame._builder.close();
 			_frame.changeCard(TerraceFrame.START_SCREEN);
 			resetScreen();
 		}
@@ -275,9 +303,18 @@ public class JoinNetworkScreen extends TerracePanel implements MouseListener {
 	private class GoListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			//TODO request for networking stuff
+			List<String> names = new LinkedList<>();
+			switch (_numPlayers) {
+			case 3: names.add(_p3Field.getText());
+			case 2:	names.add(_p2Field.getText());
+			case 1: names.add(_p1Field.getText());
+			}
+			Collections.reverse(names);
+			
+			_frame._builder.setPlayerNames(names);			
 			_update.setText("trying to connect...");
 			_update.setVisible(true);
+			_frame.changeCard(_frame.JOIN_NETWORK);
 		}
 	}
 	private class LengthLimit extends PlainDocument {
@@ -330,8 +367,8 @@ public class JoinNetworkScreen extends TerracePanel implements MouseListener {
 			if (!((TerraceButton)e.getSource()).isEnabled()) {
 				return;
 			}
-			int oldNum = _frame._builder.getNumLocalPlayers();
-			_frame._builder.setNumLocalPlayers(_num);
+			int oldNum = _numPlayers;
+			_numPlayers = _num;
 			if (oldNum < _num) {
 				switch (oldNum) {
 				case 1: 

@@ -1,18 +1,15 @@
 package terrace.gui.game;
 
-
-import javax.media.opengl.GL2;
-
 import terrace.Piece;
 import terrace.util.Posn;
 
 public abstract class GamePiece implements Drawable {
-	boolean _selected;	/** Whether or not this object has been selected by the user **/
+	boolean _selected;	// Whether or not this object has been selected by the user
 	protected double _radius;
 	GUIBoard _board;
 	Piece _piece;
 	
-	public GamePiece(GUIBoard board, Piece piece){
+	public GamePiece(GUIBoard board, Piece piece) {
 		_board = board;
 	    _selected = false;
 	    _radius = (piece.getSize() + 1) * .01;
@@ -20,30 +17,22 @@ public abstract class GamePiece implements Drawable {
 
 	}
 	
-	public Posn getPosn(){
+	public Posn getPosn() {
 		return _piece.getPosn();
 	}
-	public boolean isSelected(){
+	
+	public boolean isSelected() {
 		return _selected;
 	}
-	public Piece getPiece(){
+	
+	public Piece getPiece() {
 		return _piece;
 	}
 	
 	/**
 	 * Changes whether or not this object is deeemd to be selected
 	 */
-	public void changeSelection(){
+	public void changeSelection() {
 		_selected = !_selected;
 	}
-
-	
-	public abstract void drawPiece(GL2 gl);
-	
-	@Override
-	public void draw(GL2 gl) {
-		// TODO Auto-generated method stub
-		drawPiece(gl);
-	}
-
 }

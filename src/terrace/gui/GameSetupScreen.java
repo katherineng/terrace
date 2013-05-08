@@ -93,8 +93,13 @@ public class GameSetupScreen extends TerracePanel implements MouseListener {
 	private JLabel nameHeader;
 	private JPanel playerNames;
 
+	private InputFocusListener _p1Focus;
+	private InputFocusListener _p2Focus;
+	private InputFocusListener _p3Focus;
+	private InputFocusListener _p4Focus;
 
-
+	private JLabel _error;
+	
 	public GameSetupScreen(TerraceFrame frame, NetworkType networkType) {
 		super(frame);
 
@@ -148,6 +153,13 @@ public class GameSetupScreen extends TerracePanel implements MouseListener {
 		_p3Field = new JTextField(10);
 		_p4Field = new JTextField(10);
 
+		_p1Focus = new InputFocusListener("Player 1");
+		_p2Focus = new InputFocusListener("Player 2");
+		_p3Focus = new InputFocusListener("Player 3");
+		_p4Focus = new InputFocusListener("Player 4");
+		
+		_error = new JLabel();
+		
 		JPanel infoPanel = new JPanel(new GridBagLayout());
 		JPanel outerPanel = new JPanel();
 		outerPanel.setBackground(backgroundColor);
@@ -268,13 +280,13 @@ public class GameSetupScreen extends TerracePanel implements MouseListener {
 
 		//text fields for player names
 		_p1Field.setDocument(new LengthLimit(MAX_NAME_LENGTH));
-		_p1Field.addFocusListener(new InputFocusListener("Player 1"));
+		_p1Field.addFocusListener(_p1Focus);
 		GridBagConstraints p1FieldConst = makeGBC(1, 1);
 		p1FieldConst.insets = new Insets(0, 4, 0, 0);
 		textFieldSetting(_p1Field);
 		_p1Field.setText("Player 1");
 
-		_p2Field.addFocusListener(new InputFocusListener("Player 2"));//TODO when on CPU focusListener renames to player 2
+		_p2Field.addFocusListener(_p2Focus);
 		_p2Field.setDocument(new LengthLimit(MAX_NAME_LENGTH));
 		GridBagConstraints p2FieldConst = makeGBC(1, 2);
 		p2FieldConst.insets = new Insets(0, 4, 0, 0);
@@ -283,7 +295,7 @@ public class GameSetupScreen extends TerracePanel implements MouseListener {
 		_p2Field.setVisible(false);
 		textFieldSetting(_p2Field);
 
-		_p3Field.addFocusListener(new InputFocusListener("Player 3"));
+		_p3Field.addFocusListener(_p3Focus);
 		_p3Field.setDocument(new LengthLimit(MAX_NAME_LENGTH));
 		GridBagConstraints p3FieldConst = makeGBC(1, 3);
 		p3FieldConst.insets = new Insets(0, 4, 0, 0);
@@ -293,7 +305,7 @@ public class GameSetupScreen extends TerracePanel implements MouseListener {
 		_p3Field.setVisible(false);
 		textFieldSetting(_p3Field);
 
-		_p4Field.addFocusListener(new InputFocusListener("Player 4"));
+		_p4Field.addFocusListener(_p4Focus);
 		_p4Field.setDocument(new LengthLimit(MAX_NAME_LENGTH));
 		GridBagConstraints p4FieldConst = makeGBC(1, 4);
 		p4FieldConst.insets = new Insets(0, 4, 0, 0);
@@ -352,13 +364,13 @@ public class GameSetupScreen extends TerracePanel implements MouseListener {
 		numPlayersPanel.add(_threePlayer, threeConst);
 		numPlayersPanel.add(_fourPlayer, fourConst);
 		
-		GridBagConstraints goConst = makeGBC(3, 4);
+		GridBagConstraints goConst = makeGBC(2, 5);
 		goButton.addActionListener(new GoListener());
 		goConst.insets = new Insets(30, 0, 0, 0);
 		goConst.anchor = GridBagConstraints.EAST;
 
 		backButton.addActionListener(new BackListener());
-		GridBagConstraints backConst = makeGBC(0, 4);
+		GridBagConstraints backConst = makeGBC(0, 5);
 		backConst.insets = new Insets(30, 0, 0,0);
 		backConst.anchor = GridBagConstraints.WEST;
 
@@ -369,6 +381,11 @@ public class GameSetupScreen extends TerracePanel implements MouseListener {
 		portPanelConst.anchor = GridBagConstraints.CENTER; 
 		portPanelConst.insets = new Insets(15, 0, 0, 0);
 
+		_error.setVisible(false);
+		_error.setFont(defaultFont);
+		_error.setForeground(defaultColor);
+		GridBagConstraints errorConst = makeGBC(1, 4);
+		
 		headerSetting(portLabel);
 		portLabel.setVisible(false);
 
@@ -389,14 +406,15 @@ public class GameSetupScreen extends TerracePanel implements MouseListener {
 		pane.add(numPlayersPanel, numPlayersConst);
 		pane.add(backButton, backConst);
 		pane.add(portPanel, portPanelConst);
+		pane.add(_error, errorConst);
 
 		if(_networkType == NetworkType.LOCAL) {
 			_p2Field.setEnabled(true);
 			_p2Field.setVisible(true);
 			_p2Label.setVisible(true);
 			_p2Label.setText("CPU");
-			_p2Field.setText("CPU");			
-
+			_p2Field.setText("CPU");
+			_p2Focus.setString("CPU");
 			goButton.setText("Start Game");
 		} else if(_networkType == NetworkType.HOST) {
 			_fourPlayer.setEnabled(false);
@@ -426,6 +444,10 @@ public class GameSetupScreen extends TerracePanel implements MouseListener {
 		}
 	}
 
+	public void setErrorMessage(String message) {
+		_error.setText(message);
+		_error.setVisible(true);
+	}
 	public void resetScreen() {
 		_standard.setSelected(true);
 		_p1Field.setText("Player 1");
@@ -443,6 +465,7 @@ public class GameSetupScreen extends TerracePanel implements MouseListener {
 		case LOCAL:
 			_p2Label.setText("CPU");
 			_p2Field.setText("CPU");
+			_p2Focus.setString("CPU");
 			_p4Field.setEnabled(false);
 			_p4Label.setVisible(false);
 			_p4Field.setVisible(false);
@@ -475,6 +498,10 @@ public class GameSetupScreen extends TerracePanel implements MouseListener {
 			}
 			int end = source.getSelectionEnd();
 			source.setCaretPosition(end);
+		}
+		
+		public void setString(String str) {
+			_defaultStr = str;
 		}
 
 	}
@@ -593,11 +620,21 @@ public class GameSetupScreen extends TerracePanel implements MouseListener {
 			if (!((TerraceButton)e.getSource()).isEnabled()) {
 				return;
 			} else if (_var == Variant.TRIANGLE) {
-				if (_frame._builder.getNumLocalPlayers() > 2) {
+				if (_frame._builder.getNumLocalPlayers() > 2 && _networkType == NetworkType.LOCAL) {
 					_frame._builder.setNumLocalPlayers(1);
 					_onePlayer.setSelected(true);
 					_p2Label.setText("CPU");
 					_p2Field.setText("CPU");
+					_p2Focus.setString("CPU");
+				}
+				if(_networkType == NetworkType.HOST) {
+					_frame._builder.setNumLocalPlayers(1);
+					_onePlayer.setSelected(true);
+					_p2Label.setVisible(false);
+					_p2Field.setEnabled(false);
+					_p2Field.setVisible(false);
+					_twoPlayer.setVisible(false);
+					_twoPlayer.setEnabled(false);
 				}
 				_p3Field.setVisible(false);
 				_p3Label.setVisible(false);
@@ -608,6 +645,8 @@ public class GameSetupScreen extends TerracePanel implements MouseListener {
 					_p4Field.setVisible(false);
 				}
 			} else {
+				_twoPlayer.setVisible(true);
+				_twoPlayer.setEnabled(true);
 				_threePlayer.setEnabled(true);
 				if (_networkType == NetworkType.LOCAL) {
 					_fourPlayer.setEnabled(true);
@@ -664,6 +703,7 @@ public class GameSetupScreen extends TerracePanel implements MouseListener {
 						_p2Field.setText("CPU");
 					}
 					_p2Label.setText("CPU");
+					_p2Focus.setString("CPU");
 					_p3Field.setEnabled(false);
 					_p4Field.setEnabled(false);
 					_p3Label.setVisible(false);
@@ -673,6 +713,7 @@ public class GameSetupScreen extends TerracePanel implements MouseListener {
 					break;
 				case 2:
 					_p2Label.setText("Player 2");
+					_p2Focus.setString("Player 2");
 					_p3Field.setEnabled(false);
 					_p4Field.setEnabled(false);
 					_p3Field.setVisible(false);
@@ -685,6 +726,7 @@ public class GameSetupScreen extends TerracePanel implements MouseListener {
 					_p2Label.setText("Player 2");
 					_p4Label.setText("CPU");
 					_p4Field.setText("CPU");
+					_p4Focus.setString("CPU");
 					_p4Field.setEnabled(true);
 					_p3Field.setVisible(true);
 					_p4Field.setVisible(true);
@@ -697,6 +739,7 @@ public class GameSetupScreen extends TerracePanel implements MouseListener {
 					_p4Label.setText("Player 4");
 					if (oldNum != 4) {
 						_p4Field.setText("Player 4");
+						_p4Focus.setString("Player 4");
 					}
 					_p4Field.setEnabled(true);
 					_p4Field.setEnabled(true);

@@ -1,20 +1,18 @@
-package terrace.gui.game;
+package terrace;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-
-import com.google.common.base.Optional;
-
-import terrace.*;
 import terrace.message.Channel;
 import terrace.message.Port;
 
-public class LocalPlayer extends Player {
+import com.google.common.base.Optional;
+
+public class LocalServerPlayer extends LocalPlayer {
 	private final Port<Move> moves = new Port<>();
 	private final Channel<Move> send = moves.newChannel();
 	
-	public LocalPlayer(PlayerColor color) {
+	public LocalServerPlayer(PlayerColor color) {
 		super(color);
 	}
 	
@@ -28,7 +26,8 @@ public class LocalPlayer extends Player {
 		}
 	}
 	
-	public void sendMove(Move move) {
+	@Override
+	public void sendMove(Move move, int turnNumber) {
 		try {
 			send.send(move);
 		} catch (IOException | InterruptedException e) {

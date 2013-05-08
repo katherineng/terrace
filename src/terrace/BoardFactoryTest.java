@@ -4,7 +4,6 @@ import static org.junit.Assert.*;
 import java.util.*;
 import org.junit.Test;
 
-import terrace.gui.game.LocalPlayer;
 
 public class BoardFactoryTest {
 
@@ -12,8 +11,8 @@ public class BoardFactoryTest {
 	public void triangleBoardTest() {
 		
 		List<Player> players = new ArrayList<>();
-		players.add(new LocalPlayer(PlayerColor.PINK));
-		players.add(new LocalPlayer(PlayerColor.BLUE));
+		players.add(new LocalServerPlayer(PlayerColor.PINK));
+		players.add(new LocalServerPlayer(PlayerColor.BLUE));
 		Board board = BoardFactory.create(players, 4, Variant.TRIANGLE);
 		
 		assertTrue(board instanceof TriangleBoard);
@@ -33,8 +32,8 @@ public class BoardFactoryTest {
 	@Test
 	public void defaultBoard8x8() {
 		List<Player> players = new ArrayList<>();
-		players.add(new LocalPlayer(PlayerColor.PINK));
-		players.add(new LocalPlayer(PlayerColor.BLUE));
+		players.add(new LocalServerPlayer(PlayerColor.PINK));
+		players.add(new LocalServerPlayer(PlayerColor.BLUE));
 		Board board = BoardFactory.create(players, 8, Variant.STANDARD);
 		
 		assertTrue(board instanceof DefaultBoard);
@@ -54,10 +53,10 @@ public class BoardFactoryTest {
 	@Test
 	public void defaultBoard8x84P() {
 		List<Player> players = new ArrayList<>();
-		players.add(new LocalPlayer(PlayerColor.PINK));
-		players.add(new LocalPlayer(PlayerColor.BLUE));
-		players.add(new LocalPlayer(PlayerColor.GREEN));
-		players.add(new LocalPlayer(PlayerColor.YELLOW));
+		players.add(new LocalServerPlayer(PlayerColor.PINK));
+		players.add(new LocalServerPlayer(PlayerColor.BLUE));
+		players.add(new LocalServerPlayer(PlayerColor.GREEN));
+		players.add(new LocalServerPlayer(PlayerColor.YELLOW));
 		Board board = BoardFactory.create(players, 8, Variant.STANDARD);
 		
 		assertTrue(board instanceof DefaultBoard);
@@ -77,8 +76,8 @@ public class BoardFactoryTest {
 	@Test
 	public void defaultBoard6x6() {
 		List<Player> players = new ArrayList<>();
-		players.add(new LocalPlayer(PlayerColor.PINK));
-		players.add(new LocalPlayer(PlayerColor.BLUE));
+		players.add(new LocalServerPlayer(PlayerColor.PINK));
+		players.add(new LocalServerPlayer(PlayerColor.BLUE));
 		Board board = BoardFactory.create(players, 6, Variant.STANDARD);
 		
 		assertTrue(board instanceof DefaultBoard);
@@ -95,10 +94,10 @@ public class BoardFactoryTest {
 	@Test
 	public void defaultBoard6x64P() {
 		List<Player> players = new ArrayList<>();
-		players.add(new LocalPlayer(PlayerColor.PINK));
-		players.add(new LocalPlayer(PlayerColor.BLUE));
-		players.add(new LocalPlayer(PlayerColor.GREEN));
-		players.add(new LocalPlayer(PlayerColor.YELLOW));
+		players.add(new LocalServerPlayer(PlayerColor.PINK));
+		players.add(new LocalServerPlayer(PlayerColor.BLUE));
+		players.add(new LocalServerPlayer(PlayerColor.GREEN));
+		players.add(new LocalServerPlayer(PlayerColor.YELLOW));
 		Board board = BoardFactory.create(players, 6, Variant.STANDARD);
 		
 		assertTrue(board instanceof DefaultBoard);
@@ -115,8 +114,8 @@ public class BoardFactoryTest {
 	@Test
 	public void size0() {
 		List<Player> players = new ArrayList<>();
-		players.add(new LocalPlayer(PlayerColor.PINK));
-		players.add(new LocalPlayer(PlayerColor.BLUE));
+		players.add(new LocalServerPlayer(PlayerColor.PINK));
+		players.add(new LocalServerPlayer(PlayerColor.BLUE));
 		Board board = BoardFactory.create(players, 0, Variant.STANDARD);
 		
 		assertTrue(board instanceof DefaultBoard);
