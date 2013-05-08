@@ -335,6 +335,16 @@ public class HostNetworkScreen extends TerracePanel {
 				 if (_numPlayers + r.getPlayerNames().size() > 2) {
 						_error.setText("Game using the triangular board cannot have more than 2 players");
 						_error.setVisible(true);
+					} else {
+						_currentListModel.addElement(r.toString());
+						_acceptedClientConnections.put(r.toString(), r);
+						_numPlayers += r.getPlayerNames().size();
+						
+						if (_requestListModel.size() != 0){
+							_requests.setSelectedIndex(0);
+						}
+						_requestListModel.remove(index);
+						_error.setVisible(false);
 					}
 			} else if (_numPlayers + r.getPlayerNames().size() > 4) {
 				_error.setText("Games using the standard board cannot have more than 4 players");
