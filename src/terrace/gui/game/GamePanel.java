@@ -21,7 +21,6 @@ import javax.swing.SwingUtilities;
 import terrace.GameServer;
 import terrace.GameState;
 import terrace.LocalPlayer;
-import terrace.LocalServerPlayer;
 import terrace.Move;
 import terrace.Piece;
 import terrace.Player;
