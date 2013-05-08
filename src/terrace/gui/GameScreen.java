@@ -104,13 +104,7 @@ public class GameScreen extends JPanel {
 				_frame._builder.close();
 				_frame._builder = new GameBuilder();
 				
-				_frame.changeCard(TerraceFrame.START_SCREEN);
-				
-				if (_networkType == NetworkType.JOIN) {
-					// TODO: remove self from game, notify other players
-				} else if (_networkType == NetworkType.HOST) {
-					// TODO: end game, notify other players
-				}
+				_frame.changeCard(TerraceFrame.START_SCREEN);	
 			}
 		});
 		_updateLabel = new JLabel();
