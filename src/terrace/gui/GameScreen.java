@@ -39,6 +39,7 @@ public class GameScreen extends JPanel {
 	
 	public GameScreen(GameServer server, TerraceFrame frame) {
 		_frame = frame;
+		_networkType = NetworkType.JOIN;
 		_variant = server.getState().getBoard().getVariant();
 		setBackground(backgroundColor);
 		setLayout(new BorderLayout());
