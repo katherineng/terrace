@@ -42,7 +42,6 @@ public class GameSetupScreen extends TerracePanel implements MouseListener {
 	private static final Color backgroundColor = Color.DARK_GRAY;
 	private static final Color headerColor = Color.WHITE;
 	private static final Color defaultColor = Color.WHITE;
-	private static final Color fadedColor = Color.LIGHT_GRAY;
 
 	private boolean _isLarge = true;
 
