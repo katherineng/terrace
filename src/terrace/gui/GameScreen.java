@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import terrace.GameBuilder;
+import terrace.GameServer;
 import terrace.NetworkType;
 import terrace.Player;
 import terrace.gui.game.GamePanel;
@@ -34,6 +35,13 @@ public class GameScreen extends JPanel {
 	private JLabel _variant;
 	private boolean _gameOver = false;
 	
+	public GameScreen(GameServer server, TerraceFrame frame) {
+		_frame = frame;
+		addComponents();
+		setBackground(backgroundColor);
+		addGamePanel(server);
+	}
+	
 	public GameScreen(GameBuilder builder, TerraceFrame frame, List<ClientConnection> clients) {
 		_frame = frame;
 		_builder = builder;
@@ -41,7 +49,11 @@ public class GameScreen extends JPanel {
 		setBackground(backgroundColor);
 		
 		setLayout(new BorderLayout());
-		
+		addComponents();
+		addGamePanel(_builder.startGame(clients));
+	}
+	private void addComponents() {
+
 		JPanel topBar = new JPanel();
 		topBar.setBackground(backgroundColor);
 		topBar.setLayout(new BoxLayout(topBar, BoxLayout.X_AXIS));
@@ -99,10 +111,12 @@ public class GameScreen extends JPanel {
 		
 		add(topBar, BorderLayout.PAGE_START);
 		
-		_panel = new GamePanel(_builder.startGame(clients), _frame, this);
+		
+	}
+	private void addGamePanel(GameServer server) {
+		_panel = new GamePanel(server, _frame, this);
 		add(_panel, BorderLayout.CENTER);
 	}
-	
 	GamePanel getGame() {
 		return _panel;
 	}

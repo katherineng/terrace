@@ -12,6 +12,9 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -23,14 +26,18 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
 
 import terrace.GameBuilder;
+import terrace.GameServer;
 import terrace.gui.controls.AbstractMouseListener;
 import terrace.gui.controls.TerraceButton;
 import terrace.gui.controls.TerraceButtonGroup;
+import terrace.util.Callback;
 
 public class JoinNetworkScreen extends TerracePanel implements MouseListener {
 	private final static int MAX_NAME_LENGTH = 15;
 	
 	private static final long serialVersionUID = -7114643450789860986L;
+	
+	private int _numPlayers;
 	
 	private TerraceFrame _frame;
 	private JLabel _portLabel;
@@ -248,6 +255,16 @@ public class JoinNetworkScreen extends TerracePanel implements MouseListener {
 		pane.add(goButton, goConst);
 		pane.add(backButton, backConst);
 	}
+	public Runnable getDropRunnable(){
+		return new Runnable() {
+
+			@Override
+			public void run() {
+				
+			}
+			
+		};
+	}
 	public void resetScreen() {
 		_hostField.setText("");
 		_portField.setText("");
@@ -284,7 +301,15 @@ public class JoinNetworkScreen extends TerracePanel implements MouseListener {
 	private class GoListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			//TODO request for networking stuff
+			List<String> names = new LinkedList<>();
+			switch (_numPlayers) {
+			case 3: names.add(_p3Field.getText());
+			case 2:	names.add(_p2Field.getText());
+			case 1: names.add(_p1Field.getText());
+			}
+			Collections.reverse(names);
+			
+			_frame._builder.setPlayerNames(names);			
 			_update.setText("trying to connect...");
 			_update.setVisible(true);
 		}
@@ -339,8 +364,8 @@ public class JoinNetworkScreen extends TerracePanel implements MouseListener {
 			if (!((TerraceButton)e.getSource()).isEnabled()) {
 				return;
 			}
-			int oldNum = _frame._builder.getNumLocalPlayers();
-			_frame._builder.setNumLocalPlayers(_num);
+			int oldNum = _numPlayers;
+			_numPlayers = _num;
 			if (oldNum < _num) {
 				switch (oldNum) {
 				case 1: 

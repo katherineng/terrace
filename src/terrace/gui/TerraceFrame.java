@@ -9,8 +9,10 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import terrace.GameBuilder;
+import terrace.GameServer;
 import terrace.NetworkType;
 import terrace.network.ClientConnection;
+import terrace.util.Callback;
 
 public class TerraceFrame extends JFrame {
 	private static final long serialVersionUID = 641801362474775997L;
@@ -33,6 +35,7 @@ public class TerraceFrame extends JFrame {
 	private GameSetupScreen _hostSetup;
 	private GameSetupScreen _joinSetup;
 	private int _port;
+	private String _hostName;
 	private List<ClientConnection> _clients = new LinkedList<>();
 	
 	public TerraceFrame() {
@@ -75,17 +78,43 @@ public class TerraceFrame extends JFrame {
 			_builder.setPlayerNames(_playerNames);
 			_currentGameScreen = new GameScreen(_builder, this, _clients);
 			_cards.add(_currentGameScreen, GAME);
-		} else if (cardName == HOST_GAME) {
+		} else if (cardName.equals(HOST_GAME)) {
 			_networkScreen.setPlayerNames(_playerNames);
 			_builder.hostGame(
 					_port,
 					_networkScreen.getNewRequestCallback(),
 					_networkScreen.getConnectionDroppedCallback()
 			);
+		} else if (cardName.equals(JOIN_NETWORK)) {
+			_builder.joinGame(
+					_hostName,
+					_port,
+					new Callback<GameServer>() {
+
+						@Override
+						public void call(GameServer val) {
+							if (_currentGameScreen != null) _cards.remove(_currentGameScreen);
+							_currentGameScreen = new GameScreen(val, TerraceFrame.this);
+							CardLayout layout = (CardLayout) _cards.getLayout();
+							layout.show(_cards, GAME);
+						}
+						
+					},
+					new Runnable() {
+
+						@Override
+						public void run() {
+							
+						}
+						
+					}
+					);
+			
 		}
-		
-		CardLayout layout = (CardLayout) _cards.getLayout();
-		layout.show(_cards, cardName);
+		if (!cardName.equals(JOIN_NETWORK)) {
+			CardLayout layout = (CardLayout) _cards.getLayout();
+			layout.show(_cards, cardName);
+		}
 	}
 	
 	public void startGame(List<ClientConnection> clients) {
