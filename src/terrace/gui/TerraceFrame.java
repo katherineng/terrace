@@ -98,6 +98,7 @@ public class TerraceFrame extends JFrame {
 								public void run() {
 									if (_currentGameScreen != null) _cards.remove(_currentGameScreen);
 									_currentGameScreen = new GameScreen(val, TerraceFrame.this);
+									_cards.add(_currentGameScreen, GAME);
 									CardLayout layout = (CardLayout) _cards.getLayout();
 									layout.show(_cards, GAME);
 								}
