@@ -36,7 +36,7 @@ public class TerraceFrame extends JFrame {
 	private GameSetupScreen _hostSetup;
 	private JoinNetworkScreen _joinSetup;
 	private int _port;
-	private String _hostName;
+	private String _hostname;
 	private List<ClientConnection> _clients = new LinkedList<>();
 	
 	public TerraceFrame() {
@@ -87,7 +87,7 @@ public class TerraceFrame extends JFrame {
 			);
 		} else if (cardName.equals(JOIN_NETWORK)) {
 			_builder.joinGame(
-					_hostName,
+					_hostname,
 					_port,
 					new Callback<GameServer>() {
 						@Override
@@ -150,5 +150,8 @@ public class TerraceFrame extends JFrame {
 
 	public void setPort(int port) {
 		_port = port; 
+	}
+	public void setHostName(String hostname) {
+		_hostname = hostname;
 	}
 }
