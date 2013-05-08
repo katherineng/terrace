@@ -98,6 +98,8 @@ public class GameSetupScreen extends TerracePanel implements MouseListener {
 	private InputFocusListener _p3Focus;
 	private InputFocusListener _p4Focus;
 
+	private JLabel _error;
+	
 	public GameSetupScreen(TerraceFrame frame, NetworkType networkType) {
 		super(frame);
 
@@ -155,6 +157,8 @@ public class GameSetupScreen extends TerracePanel implements MouseListener {
 		_p2Focus = new InputFocusListener("Player 2");
 		_p3Focus = new InputFocusListener("Player 3");
 		_p4Focus = new InputFocusListener("Player 4");
+		
+		_error = new JLabel();
 		
 		JPanel infoPanel = new JPanel(new GridBagLayout());
 		JPanel outerPanel = new JPanel();
@@ -360,13 +364,13 @@ public class GameSetupScreen extends TerracePanel implements MouseListener {
 		numPlayersPanel.add(_threePlayer, threeConst);
 		numPlayersPanel.add(_fourPlayer, fourConst);
 		
-		GridBagConstraints goConst = makeGBC(2, 4);
+		GridBagConstraints goConst = makeGBC(2, 5);
 		goButton.addActionListener(new GoListener());
 		goConst.insets = new Insets(30, 0, 0, 0);
 		goConst.anchor = GridBagConstraints.EAST;
 
 		backButton.addActionListener(new BackListener());
-		GridBagConstraints backConst = makeGBC(0, 4);
+		GridBagConstraints backConst = makeGBC(0, 5);
 		backConst.insets = new Insets(30, 0, 0,0);
 		backConst.anchor = GridBagConstraints.WEST;
 
@@ -377,6 +381,11 @@ public class GameSetupScreen extends TerracePanel implements MouseListener {
 		portPanelConst.anchor = GridBagConstraints.CENTER; 
 		portPanelConst.insets = new Insets(15, 0, 0, 0);
 
+		_error.setVisible(false);
+		_error.setFont(defaultFont);
+		_error.setForeground(defaultColor);
+		GridBagConstraints errorConst = makeGBC(1, 4);
+		
 		headerSetting(portLabel);
 		portLabel.setVisible(false);
 
@@ -397,6 +406,7 @@ public class GameSetupScreen extends TerracePanel implements MouseListener {
 		pane.add(numPlayersPanel, numPlayersConst);
 		pane.add(backButton, backConst);
 		pane.add(portPanel, portPanelConst);
+		pane.add(_error, errorConst);
 
 		if(_networkType == NetworkType.LOCAL) {
 			_p2Field.setEnabled(true);
@@ -434,6 +444,10 @@ public class GameSetupScreen extends TerracePanel implements MouseListener {
 		}
 	}
 
+	public void setErrorMessage(String message) {
+		_error.setText(message);
+		_error.setVisible(true);
+	}
 	public void resetScreen() {
 		_standard.setSelected(true);
 		_p1Field.setText("Player 1");

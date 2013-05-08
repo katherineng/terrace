@@ -280,6 +280,8 @@ public class JoinNetworkScreen extends TerracePanel implements MouseListener {
 		_p2Field.setEnabled(false);
 		_p2Label.setVisible(false);
 		_p3Field.setText("Player 3");
+		_update.setText("");
+		_update.setVisible(false);
 	}
 	private GridBagConstraints makeConstraints(int x, int y){
 		GridBagConstraints gbc = new GridBagConstraints();
