@@ -292,6 +292,7 @@ public class JoinNetworkScreen extends TerracePanel implements MouseListener {
 	private class BackListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			_frame._builder.close();
 			_frame.changeCard(TerraceFrame.START_SCREEN);
 			resetScreen();
 		}
