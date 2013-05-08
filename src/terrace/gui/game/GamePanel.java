@@ -234,7 +234,7 @@ public class GamePanel extends GLJPanel implements MouseWheelListener, MouseList
 			//only act of user is the same
 			if (
 					newSelection.getPiece().getPlayer() == _game.getActivePlayer() &&
-					_game.getActivePlayer() instanceof LocalServerPlayer
+					_game.getActivePlayer() instanceof LocalPlayer
 			) { 
 				clearPossible();
 				
