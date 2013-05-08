@@ -3,6 +3,7 @@ package terrace.gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -34,8 +35,10 @@ public class GameScreen extends JPanel {
 	private GameBuilder _builder;
 	private JLabel _status;
 	private JLabel _variantLabel;
+	private JLabel _updateLabel;
 	private boolean _gameOver = false;
 	private Variant _variant;
+	private static final Font defaultFont = new Font("Verdana", Font.BOLD, 16);
 	
 	public GameScreen(GameServer server, TerraceFrame frame) {
 		_frame = frame;
@@ -61,11 +64,13 @@ public class GameScreen extends JPanel {
 	
 	private void addComponents() {
 		JPanel topBar = new JPanel();
+		topBar.setFont(defaultFont);
 		topBar.setBackground(backgroundColor);
 		topBar.setLayout(new BoxLayout(topBar, BoxLayout.X_AXIS));
 		topBar.setBorder(new EmptyBorder(5, 20, 5, 5));
 		
 		_status = new JLabel();
+		_status.setFont(defaultFont);
 		//_status.setFont(new Font("Dialog", Font.BOLD, 16));
 		
 		JButton mainMenu = new JButton("Quit Game");
@@ -108,19 +113,27 @@ public class GameScreen extends JPanel {
 				}
 			}
 		});
-		JButton pause = new JButton("Pause");
+		_updateLabel = new JLabel();
+		_updateLabel.setVisible(false);
+		_updateLabel.setForeground(defaultColor);
+		_updateLabel.setFont(defaultFont);
 		_variantLabel = new JLabel("Game Variant: " + _variant +" ");
 		_variantLabel.setForeground(defaultColor);
 		topBar.add(_status);
+		topBar.add(Box.createRigidArea(new Dimension(15,0)));
+		topBar.add(_updateLabel);
 		topBar.add(Box.createHorizontalGlue());
 		topBar.add(_variantLabel);
-		topBar.add(pause);
 		topBar.add(Box.createRigidArea(new Dimension(5, 1)));
 		topBar.add(mainMenu);
 		
 		add(topBar, BorderLayout.PAGE_START);
 		
 		
+	}
+	public void setUpdate(String message) {
+		_updateLabel.setText(message);
+		_updateLabel.setVisible(true);
 	}
 	private void addGamePanel(GameServer server) {
 		_panel = new GamePanel(server, _frame, this);
