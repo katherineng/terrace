@@ -63,8 +63,6 @@ public class ClientGameServer extends GameServer {
 			readPlayers();
 			
 			System.err.println("LOG: Read players. Ready for game.");
-			onReady.run();
-			System.err.println("DEBUG: Called ready callback.");
 			
 		} catch (IOException e) {
 			System.err.println("LOG: " + e.getLocalizedMessage());
@@ -72,14 +70,18 @@ public class ClientGameServer extends GameServer {
 		}
 		
 		try {
-			while (true) {
-				System.err.println("LOG: Trying to read game state");
-				_game = GameState.read(_in, _players);
-				
+			System.err.println("LOG: Trying to read game state");
+			_game = GameState.read(_in, _players);
+			onReady.run();
+			System.err.println("DEBUG: Called ready callback.");
+			
+			do {
 				for (Callback<GameState> cb : _updateStateCBs) cb.call(_game);
 				
 				if (_game.getWinner().isPresent()) return;
-			}
+				
+				_game = GameState.read(_in, _players);
+			} while (true);
 		} catch (IOException e) {
 			System.err.println("LOG: " + e.getLocalizedMessage());
 			_onGameDrop.run();
