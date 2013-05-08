@@ -136,10 +136,10 @@ public class JoinNetworkScreen extends TerracePanel implements MouseListener {
 		_update.setForeground(defaultColor);
 		
 		backButton.addActionListener(new BackListener());
-		GridBagConstraints backConst = makeGBC(0, 6);
+		GridBagConstraints backConst = makeGBC(0, 7);
 		backConst.insets = new Insets(0, 10, 10, 0);
 		goButton.addActionListener(new GoListener());
-		GridBagConstraints goConst = makeGBC(3, 6);
+		GridBagConstraints goConst = makeGBC(3, 7);
 		goConst.insets = new Insets(0, 0, 10, 10);
 		
 		pane.add(_hostLabel, makeConstraints(1, 0));
@@ -147,7 +147,7 @@ public class JoinNetworkScreen extends TerracePanel implements MouseListener {
 		pane.add(_portLabel, makeConstraints(1, 1));
 		pane.add(_portField, makeConstraints(2, 1));
 		
-		GridBagConstraints updateConst = makeConstraints(1, 2);
+		GridBagConstraints updateConst = makeConstraints(1, 6);
 		updateConst.gridwidth = 2;
 		
 		namesLabelPanel.setBackground(backgroundColor);
@@ -255,15 +255,14 @@ public class JoinNetworkScreen extends TerracePanel implements MouseListener {
 		pane.add(goButton, goConst);
 		pane.add(backButton, backConst);
 	}
-	public Runnable getDropRunnable(){
-		return new Runnable() {
-
-			@Override
-			public void run() {
-				
-			}
-			
-		};
+	public void notifyConnectionLost() {
+		_update.setText("Connection has been lost");
+		_update.setVisible(true);
+	
+	}
+	public void notifyUnableToConnect() {
+		_update.setText("Unable to connect to server");
+		_update.setVisible(true);
 	}
 	public void resetScreen() {
 		_hostField.setText("");
