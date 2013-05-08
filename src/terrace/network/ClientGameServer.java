@@ -24,6 +24,7 @@ public class ClientGameServer extends GameServer {
 	private final Runnable _onRequestDrop;
 	private final Runnable _onGameDrop;
 	private final List<Player> _players = new LinkedList<>();
+	private boolean _closed =  false;
 	
 	public ClientGameServer(
 			String host,
@@ -43,6 +44,7 @@ public class ClientGameServer extends GameServer {
 	
 	@Override
 	public void close() throws IOException {
+		_closed = true;
 		_conn.close();
 	}
 	
@@ -66,7 +68,7 @@ public class ClientGameServer extends GameServer {
 			
 		} catch (IOException e) {
 			System.err.println("LOG: " + e.getLocalizedMessage());
-			_onRequestDrop.run();
+			if (!_closed) _onRequestDrop.run();
 		}
 		
 		try {
@@ -89,7 +91,7 @@ public class ClientGameServer extends GameServer {
 			} while (true);
 		} catch (IOException e) {
 			System.err.println("LOG: " + e.getLocalizedMessage());
-			_onGameDrop.run();
+			if (!_closed) _onGameDrop.run();
 			return;
 		}
 	}
