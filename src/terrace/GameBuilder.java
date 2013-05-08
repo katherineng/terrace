@@ -100,7 +100,7 @@ public class GameBuilder implements Closeable {
 		players.addAll(aiPlayers);
 		
 		GameState initialState = new GameState(BoardFactory.create(players, _size, _variant), players, 0, 0);
-		final GameServer s = new LocalGameServer(clients.isEmpty() ? 45 : Integer.MAX_VALUE, initialState);
+		final GameServer s = new LocalGameServer(clients.isEmpty() ? Integer.MAX_VALUE : 45, initialState);
 		_resources.add(s);
 		
 		for (final ClientConnection conn : clients) {
