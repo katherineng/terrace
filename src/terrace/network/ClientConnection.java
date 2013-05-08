@@ -109,7 +109,7 @@ public class ClientConnection implements Closeable, Runnable {
 		while (true) {
 			String line = _in.readLine();
 			
-			if (_in == null) {
+			if (line == null) {
 				throw new EOFException("Client connection closed");
 			} else {
 				Matcher m = MOVE.matcher(line);
