@@ -8,6 +8,7 @@ import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import terrace.GameBuilder;
 import terrace.GameServer;
@@ -91,11 +92,16 @@ public class TerraceFrame extends JFrame {
 					_port,
 					new Callback<GameServer>() {
 						@Override
-						public void call(GameServer val) {
-							if (_currentGameScreen != null) _cards.remove(_currentGameScreen);
-							_currentGameScreen = new GameScreen(val, TerraceFrame.this);
-							CardLayout layout = (CardLayout) _cards.getLayout();
-							layout.show(_cards, GAME);
+						public void call(final GameServer val) {
+							SwingUtilities.invokeLater(new Runnable() {
+								@Override
+								public void run() {
+									if (_currentGameScreen != null) _cards.remove(_currentGameScreen);
+									_currentGameScreen = new GameScreen(val, TerraceFrame.this);
+									CardLayout layout = (CardLayout) _cards.getLayout();
+									layout.show(_cards, GAME);
+								}
+							});
 						}
 					},
 					new Runnable() {

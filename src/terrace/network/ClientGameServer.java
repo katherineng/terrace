@@ -32,6 +32,7 @@ public class ClientGameServer extends GameServer {
 			Runnable onRequestDrop,
 			Runnable onGameDrop
 	) throws IOException {
+		System.err.println("LOG: Trying to connect to " + host + ":" + port);
 		_conn = new Socket(host, port);
 		_in = new BufferedReader(new InputStreamReader(_conn.getInputStream()));
 		_out = new PrintWriter(_conn.getOutputStream(), true);
@@ -52,27 +53,37 @@ public class ClientGameServer extends GameServer {
 				System.err.println("LOG: Bad server. Disconnecting.");
 				return;
 			}
+			_out.println("TERRACE-Client");
+			
 			for (String name : _localNames) {
 				_out.println(name);
 			}
 			_out.println();
 			
 			readPlayers();
-			onReady.run();
+			
+			System.err.println("LOG: Read players. Ready for game.");
 			
 		} catch (IOException e) {
+			System.err.println("LOG: " + e.getLocalizedMessage());
 			_onRequestDrop.run();
 		}
 		
 		try {
-			while (true) {
-				GameState state = GameState.read(_in, _players);
+			System.err.println("LOG: Trying to read game state");
+			_game = GameState.read(_in, _players);
+			onReady.run();
+			System.err.println("DEBUG: Called ready callback.");
+			
+			do {
+				for (Callback<GameState> cb : _updateStateCBs) cb.call(_game);
 				
-				for (Callback<GameState> cb : _updateStateCBs) cb.call(state);
+				if (_game.getWinner().isPresent()) return;
 				
-				if (state.getWinner().isPresent()) return;
-			}
+				_game = GameState.read(_in, _players);
+			} while (true);
 		} catch (IOException e) {
+			System.err.println("LOG: " + e.getLocalizedMessage());
 			_onGameDrop.run();
 			return;
 		}
