@@ -6,11 +6,14 @@ import com.google.common.base.Optional;
 
 public class LocalGameServer extends GameServer {
 	private boolean _closed = false;
+	private final int _timeout;
 	
 	public LocalGameServer(
+			int timeout,
 			GameState state
 	) {
 		_game = state;
+		_timeout = timeout;
 	}
 	
 	/* (non-Javadoc)
@@ -21,7 +24,7 @@ public class LocalGameServer extends GameServer {
 		if (onReady != null) onReady.run();
 		
 		while (!_closed) {
-			Optional<Move> move = _game.getActivePlayer().getMove(45);
+			Optional<Move> move = _game.getActivePlayer().getMove(_timeout);
 			if (move.isPresent()) {
 				try {
 					_game.makeMove(
