@@ -175,6 +175,8 @@ public class GameBuilder implements Closeable {
 						onRequestDrop,
 						onGameDrop
 				)) {
+					_resources.add(gs);
+					
 					gs.run(new Runnable() {
 						@Override
 						public void run() {
