@@ -4,12 +4,9 @@ import static org.junit.Assert.*;
 import java.util.*;
 import org.junit.Test;
 
-
 public class BoardFactoryTest {
-
 	@Test
 	public void triangleBoardTest() {
-		
 		List<Player> players = new ArrayList<>();
 		players.add(new LocalServerPlayer(PlayerColor.PINK));
 		players.add(new LocalServerPlayer(PlayerColor.BLUE));
@@ -17,13 +14,13 @@ public class BoardFactoryTest {
 		
 		assertTrue(board instanceof TriangleBoard);
 		
-		String b = "[ (BLUE, 3)	(BLUE, 2)	(BLUE, 1)	(BLUE, 0)	]\n" +
-				   "[ (BLUE, 3)	(BLUE, 2)	(BLUE, 1)	(BLUE, T)	]\n" +
+		String b = "[ (BLUE, 3)	(BLUE, 2)	(BLUE, 1)	(BLUE, T)	]\n" +
+				   "[ (BLUE, 0)	(BLUE, 1)	(BLUE, 2)	(BLUE, 3)	]\n" +
 				   "[ (..........)	(..........)	(..........)	(..........)	]\n" +
 				   "[ (..........)	(..........)	(..........)	(..........)	]\n" +
 				   "[ (..........)	(..........)	(..........)	(..........)	]\n" +
 				   "[ (..........)	(..........)	(..........)	(..........)	]\n" +
-				   "[ (PINK, 0)	(PINK, 1)	(PINK, 2)	(PINK, 3)	]\n" +
+				   "[ (PINK, 3)	(PINK, 2)	(PINK, 1)	(PINK, 0)	]\n" +
 				   "[ (PINK, T)	(PINK, 1)	(PINK, 2)	(PINK, 3)	]\n";
 		
 		assertTrue(board.piecesToString().equals(b));
@@ -120,5 +117,4 @@ public class BoardFactoryTest {
 		
 		assertTrue(board instanceof DefaultBoard);
 	}
-
 }
