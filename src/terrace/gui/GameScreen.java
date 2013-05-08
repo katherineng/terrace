@@ -90,6 +90,9 @@ public class GameScreen extends JPanel {
 						return;
 					}
 				}
+				_frame._builder.close();
+				_frame._builder = new GameBuilder();
+				
 				_frame.changeCard(TerraceFrame.START_SCREEN);
 				
 				if (_networkType == NetworkType.JOIN) {
