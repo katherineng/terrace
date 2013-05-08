@@ -625,8 +625,7 @@ public class GameSetupScreen extends TerracePanel implements MouseListener {
 					_p2Label.setText("CPU");
 					_p2Field.setText("CPU");
 					_p2Focus.setString("CPU");
-				}
-				if(_networkType == NetworkType.HOST) {
+				} else if(_networkType == NetworkType.HOST) {
 					_frame._builder.setNumLocalPlayers(1);
 					_onePlayer.setSelected(true);
 					_p2Label.setVisible(false);
