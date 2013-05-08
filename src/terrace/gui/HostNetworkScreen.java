@@ -82,17 +82,13 @@ public class HostNetworkScreen extends TerracePanel {
 		return new Callback<ClientConnection>() {
 			@Override
 			public void call(ClientConnection conn) {
-				removeClientConnection(conn);
+				if (!_requestListModel.removeElement(conn)) {
+					_acceptedClientConnections.remove(conn.toString());
+					_currentListModel.removeElement(conn.toString());
+					_numPlayers -= conn.getPlayerNames().size();
+				}
 			}
 		};
-	}
-	
-	public void removeClientConnection(ClientConnection r) {
-		if (!_requestListModel.removeElement(r)) {
-			_acceptedClientConnections.remove(r.toString());
-			_currentListModel.removeElement(r.toString());
-			_numPlayers -= r.getPlayerNames().size();
-		}
 	}
 	
 	public void addClientConnection(ClientConnection r) {
