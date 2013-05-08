@@ -113,13 +113,10 @@ public class TerraceFrame extends JFrame {
 					new Runnable() {
 						@Override
 						public void run() {
-							if (JOptionPane.showConfirmDialog(
+							JOptionPane.showConfirmDialog(
 									TerraceFrame.this,
-									"Connection has been lost.",
-									"Connection lost",
-									JOptionPane.YES_OPTION) == JOptionPane.YES_OPTION) {
-								TerraceFrame.this.changeCard(START_SCREEN);
-							}
+									"Connection has been lost.");
+							TerraceFrame.this.changeCard(START_SCREEN);
 						}
 					}
 			);
