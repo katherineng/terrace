@@ -37,8 +37,9 @@ public class GameScreen extends JPanel {
 	
 	public GameScreen(GameServer server, TerraceFrame frame) {
 		_frame = frame;
-		addComponents();
 		setBackground(backgroundColor);
+		setLayout(new BorderLayout());
+		addComponents();
 		addGamePanel(server);
 	}
 	
