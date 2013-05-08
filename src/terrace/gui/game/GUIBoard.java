@@ -13,7 +13,6 @@ import terrace.util.Posn;
 import terrace.util.Vector3d;
 
 public abstract class GUIBoard implements Drawable {
-	protected RectPrism _foundation;				/** The foundation of the board **/
 	protected BoardTile[][] _boardTiles;			/** A 2d Array of the Board tiles **/
 	protected List<GamePiece> _gamePieces;			/** An array of the game pieces **/
 	protected Map<PlayerColor, Vector3d> _playerColors;	/** Maps players to their colors **/
@@ -99,7 +98,6 @@ public abstract class GUIBoard implements Drawable {
 	
 	@Override
 	public void draw(GL2 gl) {
-		_foundation.draw(gl);
 		for (BoardTile[] tileArray : _boardTiles) {
 			for (BoardTile tile : tileArray) tile.draw(gl);
 		}

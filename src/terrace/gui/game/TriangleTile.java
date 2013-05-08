@@ -40,6 +40,7 @@ public class TriangleTile extends BoardTile{
 		gl.glTranslated(pos.y, 0, pos.x);
 		gl.glRotated(rotation, 0., 1., 0.);
 		gl.glBegin(GL2.GL_QUADS);
+		gl.glColor3f(1,1,1);
 		gl.glNormal3d(0f, 0f, 1f);
 		gl.glVertex3d(0f, 0f, 0f);
 		gl.glVertex3d(sideLength, 0f, 0f);
@@ -49,6 +50,7 @@ public class TriangleTile extends BoardTile{
 
 
 		gl.glBegin(GL2.GL_QUADS);
+		gl.glColor3f(1,1,1);
 		gl.glNormal3d(-1f, 0f, 0f);
 		gl.glVertex3d(0f, 0f, 0f);
 		gl.glVertex3d(0f, sideLength*elevation, 0f);
@@ -58,6 +60,7 @@ public class TriangleTile extends BoardTile{
 
 
 		gl.glBegin(GL2.GL_QUADS);
+		gl.glColor3f(1,1,1);
 		gl.glNormal3d(Math.sqrt(2)/2f, 0f, -Math.sqrt(2)/2f);
 		gl.glVertex3d(sideLength, 0f, 0f);
 		gl.glVertex3d(0f, 0f, -sideLength);

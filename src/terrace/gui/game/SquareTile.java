@@ -26,7 +26,8 @@ public class SquareTile extends BoardTile{
 		gl.glTranslated(pos.x, _height/2, pos.y);
 		gl.glBegin(GL2.GL_QUADS);
 		for(int side = -1; side <= 1; side += 2){
-			gl.glNormal3d(-1 * side * dim, 0,0);
+			gl.glColor3f(1,1,1);
+			gl.glNormal3d(-1 * side, 0,0);
 			gl.glVertex3d(-0.5 * dim * side, -0.5*_height, -0.5*dim);
 			gl.glVertex3d(-0.5 * dim * side, -0.5 *_height* side, 0.5 *dim* side);
 			gl.glVertex3d(-0.5 * dim * side, 0.5*_height, 0.5*dim);
@@ -62,7 +63,7 @@ public class SquareTile extends BoardTile{
 			/*============================================================*/
 
 			gl.glColor3f(1,1,1);
-			gl.glNormal3d(0, 0, -1 * side*dim);
+			gl.glNormal3d(0, 0, -1 * side);
 			gl.glVertex3d(-0.5*dim, -0.5*_height, -0.5 * side*dim);
 			gl.glVertex3d(-0.5 *dim* side, 0.5 *_height* side, -0.5 *dim* side);
 			gl.glVertex3d(0.5*dim, 0.5*_height, -0.5 * side*dim);

@@ -22,7 +22,7 @@ public abstract class BoardTile implements Drawable {
 	Vector3d _moveColor;		/** The color of the tile if the move is possible. Corresponds to the current user **/
 	
 	public BoardTile(GUIBoard board, double height, Posn pos, int level){
-		_height = height;
+		_height = height+ .02;
 		_level = level;
 		_pos = pos;
 		_board = board;
