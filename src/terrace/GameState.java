@@ -55,11 +55,12 @@ public class GameState implements Copyable<GameState> {
 		_turnNumber++;
 	}
 	
-	//TODO
 	public void forfeitGame(Player player) {
 		if (_players.indexOf(player) < _active) _active--;
 		_players.remove(player);
 		_board.removePlayer(player);
+		
+		if (_players.size() == 1) _winner = _players.get(0);
 	}
 	
 	public void makeMove(

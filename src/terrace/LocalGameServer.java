@@ -25,7 +25,14 @@ public class LocalGameServer extends GameServer {
 		
 		while (!_closed) {
 			for (Player p : _game.getPlayers()) {
-				if (p.wantToForfeit()) _game.forfeitGame(p);
+				if (p.wantToForfeit()) {
+					_game.forfeitGame(p);
+				}
+			}
+			if (_game.getWinner().isPresent()) {
+				for (Callback<Player> cb : _notifyWinnerCBs) {
+					cb.call(_game.getWinner().get());
+				}
 			}
 			
 			Optional<Move> move = _game.getActivePlayer().getMove(_timeout);
@@ -55,6 +62,10 @@ public class LocalGameServer extends GameServer {
 				}
 			} else {
 				_game.endTurn();
+			}
+			
+			for (Player p : _game.getPlayers()) {
+				if (p.wantToForfeit()) _game.forfeitGame(p);
 			}
 			
 			for (Callback<GameState> cb : _updateStateCBs) {
